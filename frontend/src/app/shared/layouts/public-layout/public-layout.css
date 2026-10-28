@@ -1,0 +1,62 @@
+.public-layout-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  /* Opcional: Agregar gradientes muy sutiles de fondo para realzar el glassmorphism */
+  background: radial-gradient(circle at 15% 50%, rgba(88, 148, 69, 0.04), transparent 25%),
+              radial-gradient(circle at 85% 30%, rgba(72, 103, 50, 0.04), transparent 25%);
+}
+
+.navbar-wrapper {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 24px 48px;
+  z-index: 1000;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  /* Anulamos un poco el radio extremo para el navbar si es necesario, o lo mantenemos Bento */
+  border-radius: 20px; 
+  
+  .brand h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-tertiary);
+    
+    span {
+      color: var(--color-primary);
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+
+    a {
+      text-decoration: none;
+      color: var(--color-tertiary-muted);
+      font-weight: 500;
+      transition: color 0.3s ease;
+
+      &:hover, &.active {
+        color: var(--color-tertiary);
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.main-content {
+  flex: 1;
+  padding: 120px 48px 48px; /* Espacio superior para compensar el navbar fixed */
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+}

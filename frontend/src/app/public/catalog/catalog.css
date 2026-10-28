@@ -1,0 +1,107 @@
+.catalog-header {
+  margin-bottom: 48px;
+
+  .headline-secondary {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-tertiary);
+    margin-bottom: 12px;
+  }
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 32px;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(27, 61, 26, 0.08);
+  }
+
+  .card-image {
+    position: relative;
+    height: 200px;
+    background-color: rgba(27, 61, 26, 0.03);
+    padding: 16px;
+    
+    .image-placeholder {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(27, 61, 26, 0.05) 0%, transparent 70%);
+    }
+
+    .category-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(4px);
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-secondary);
+      border: 1px solid rgba(27, 61, 26, 0.1);
+    }
+  }
+
+  .card-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    .product-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--color-tertiary);
+      margin-bottom: 8px;
+    }
+
+    .product-desc {
+      font-size: 0.875rem;
+      color: var(--color-tertiary-muted);
+      line-height: 1.5;
+      margin-bottom: 24px;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--color-tertiary);
+      }
+      
+      .btn-sm {
+        padding: 8px 20px;
+        border-radius: 10px;
+      }
+    }
+  }
+}
+
+/* Esqueleto de carga para UX fluida */
+.skeleton {
+  height: 380px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.4) 25%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

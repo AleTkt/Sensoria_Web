@@ -1,0 +1,32 @@
+<div class="catalog-header">
+  <h2 class="headline-secondary">Soluciones Modulares</h2>
+  <p class="body-text">Encuentra el kit ideal para las necesidades de tu empresa.</p>
+</div>
+
+<div class="catalog-grid">
+  <!-- Tarjetas de Esqueleto de Carga -->
+  <ng-container *ngIf="isLoading">
+    <div class="product-card glass-bento skeleton" *ngFor="let i of [1,2,3,4]"></div>
+  </ng-container>
+
+  <!-- Productos Reales -->
+  <ng-container *ngIf="!isLoading">
+    <div class="product-card glass-bento" *ngFor="let product of products">
+      <div class="card-image">
+        <!-- Placeholder para la imagen del hardware -->
+        <div class="image-placeholder"></div>
+        <span class="category-badge">{{ product.category?.name || 'Kit IoT' }}</span>
+      </div>
+      
+      <div class="card-body">
+        <h3 class="product-title">{{ product.name }}</h3>
+        <p class="product-desc">{{ product.description }}</p>
+        
+        <div class="card-footer">
+          <span class="price">${{ product.price }}</span>
+          <button class="btn-primary btn-sm">Agregar</button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

@@ -1,0 +1,24 @@
+<div class="public-layout-container">
+  <!-- Navbar Flotante Glassmorphism -->
+  <header class="navbar-wrapper">
+    <nav class="glass-bento navbar">
+      <div class="brand">
+        <h1>Sensoria <span>IoT</span></h1>
+      </div>
+      
+      <ul class="nav-links">
+        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
+        <li><a routerLink="/tienda" routerLinkActive="active">Kits Modulares</a></li>
+      </ul>
+
+      <div class="actions">
+        <button class="btn-primary" routerLink="/admin">Acceso Clientes</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Contenedor Principal con espaciado generoso -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

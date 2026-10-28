@@ -1,0 +1,66 @@
+<div class="dashboard-header">
+  <h2>Visión General de la Red</h2>
+  <p>Monitoreo en tiempo real de PYMES y dispositivos.</p>
+</div>
+
+<div class="metrics-grid">
+  <!-- Tarjeta 1 -->
+  <div class="metric-card glass-bento">
+    <div class="card-header">
+      <span class="title">Equipos Activos</span>
+      <div class="icon status-ok">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+        </svg>
+      </div>
+    </div>
+    <div class="card-value data-mono">1,248</div>
+    <div class="card-footer text-success">+12% este mes</div>
+  </div>
+
+  <!-- Tarjeta 2 -->
+  <div class="metric-card glass-bento">
+    <div class="card-header">
+      <span class="title">Alertas Críticas</span>
+      <div class="icon status-error">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+    </div>
+    <div class="card-value data-mono">3</div>
+    <div class="card-footer text-danger">Requieren atención inmediata</div>
+  </div>
+
+  <!-- Tarjeta 3 -->
+  <div class="metric-card glass-bento">
+    <div class="card-header">
+      <span class="title">Tráfico de Sensores</span>
+      <div class="icon status-neutral">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+          <path d="M12 12v9"></path>
+          <path d="m8 17 4 4 4-4"></path>
+        </svg>
+      </div>
+    </div>
+    <div class="card-value data-mono">45.2 <span class="unit">MB/s</span></div>
+    <div class="card-footer">Consumo de red estable</div>
+  </div>
+</div>
+
+<!-- Contenedor para gráficas o tablas futuras -->
+<div class="charts-container glass-bento mt-32">
+  <div class="chart-header">
+    <h3>Estado de Conexión (Últimas 24h)</h3>
+    <button class="btn-outlined-sm">Exportar</button>
+  </div>
+  <div class="chart-body">
+    <!-- Aquí integrarías el canvas de ng2-charts / chart.js -->
+    <div class="chart-placeholder">
+      <p class="data-mono">Cargando telemetría...</p>
+    </div>
+  </div>
+</div>
