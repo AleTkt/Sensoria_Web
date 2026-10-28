@@ -21,17 +21,27 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 32px;
-  /* Anulamos un poco el radio extremo para el navbar si es necesario, o lo mantenemos Bento */
   border-radius: 20px; 
   
+  .brand {
+    display: flex;        /* Asegura que la imagen y el h1 estén uno al lado del otro */
+    align-items: center;  /* Los centra verticalmente */
+    gap: 12px;            /* Espacio entre el logo y la palabra "Sensoria" */
+    margin-bottom: 0;     /* Quitamos el margen gigante */
+  }
+
+  .brand img {
+    width: 40px; 
+    height: auto;
+  }
+
   .brand h1 {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--color-tertiary);
+    margin: 0;
     
-    span {
-      color: var(--color-primary);
-    }
+    span { color: var(--color-primary); }
   }
 
   .nav-links {
