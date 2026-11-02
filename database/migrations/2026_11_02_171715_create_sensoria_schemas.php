@@ -1,8 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -11,10 +10,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sensoria_schemas', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        DB::statement('CREATE SCHEMA IF NOT EXISTS identity;');
+        DB::statement('CREATE SCHEMA IF NOT EXISTS commerce;');
+        DB::statement('CREATE SCHEMA IF NOT EXISTS crm;');
+        DB::statement('CREATE SCHEMA IF NOT EXISTS iot;');
     }
 
     /**
@@ -22,6 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sensoria_schemas');
+        // NOTA: No eliminamos los schemas con DROP SCHEMA en la marcha atras
+        // para evitar perdidas accidentales de tablas o cascadas de datos durante pruebas.
     }
 };

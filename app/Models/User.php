@@ -13,7 +13,12 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Nombre de la tabla explícitamente cualificada con su esquema en PostgreSQL.olp   k
+     */
+    protected $table = 'identity.users';
+
+    /**
+     * Los atributos asignables de forma masiva.
      *
      * @var list<string>
      */
@@ -21,10 +26,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'global_role',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Los atributos que deben ocultarse en la serialización (JSON/API).
      *
      * @var list<string>
      */
@@ -34,7 +40,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Los atributos que deben ser casteados.
      *
      * @return array<string, string>
      */
@@ -44,5 +50,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Relación Muchos a Muchos con Empresas.
+     */
+    public function companies(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Company::class, 'identity.company_user', 'user_id', 'company_id')
+            ->withPivot('company_role', 'is_active')
+            ->withTimestamps();
     }
 }
