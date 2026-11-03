@@ -20,6 +20,19 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
+                @php
+                    $currentCompany = null;
+                    if (session()->has('current_company_id')) {
+                        $currentCompany = Auth::user()->companies()->find(session('current_company_id'));
+                    }
+                @endphp
+
+                @if($currentCompany)
+                    <div class="mr-4 px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-semibold flex items-center shadow-sm">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        {{ $currentCompany->trade_name }}
+                    </div>
+                @endif
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
