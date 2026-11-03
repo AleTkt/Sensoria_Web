@@ -21,6 +21,23 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
+
+        // 2. Tabla para recuperación de contraseñas de Breeze
+        Schema::create('identity.password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+
+        // 3. Tabla para manejo de sesiones de Breeze
+        Schema::create('identity.sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
     }
 
     /**

@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // Agregamos nuestro middleware Multi-Tenant al grupo web
+        $middleware->web(append: [
+            \App\Http\Middleware\SetCurrentCompany::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
