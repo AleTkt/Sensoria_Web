@@ -34,3 +34,5 @@ body {
     box-shadow: var(--shadow-soft);
     border-radius: var(--radius-card);
 }
+
+[x-cloak] { display: none !important; }
