@@ -1,0 +1,134 @@
+/* public/css/layouts/app.css */
+
+.app-layout-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--color-neutral);
+}
+
+/* Sidebar Oscuro */
+.app-sidebar {
+    width: 260px;
+    background-color: var(--color-tertiary);
+    color: var(--color-neutral);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    box-shadow: 4px 0 15px rgba(27, 61, 26, 0.1);
+}
+
+.app-sidebar .brand {
+    padding: 24px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: -0.5px;
+}
+
+.app-sidebar .brand span {
+    color: var(--color-primary);
+}
+
+.app-sidebar .sidebar-nav {
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.app-sidebar .sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border-radius: var(--radius-button);
+    transition: all 0.2s ease;
+}
+
+.app-sidebar .sidebar-nav a:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.app-sidebar .sidebar-nav a.active {
+    background-color: var(--color-primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(88, 148, 69, 0.3);
+}
+
+.app-sidebar .sidebar-footer {
+    padding: 20px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Área Principal */
+.app-main {
+    flex: 1;
+    margin-left: 260px; /* Compensa el ancho del sidebar fijo */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header Superior estilo Glassmorphism */
+.app-header {
+    background: var(--glass-background);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-bottom: 1px solid var(--glass-border);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.app-header .page-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-tertiary);
+    margin: 0;
+}
+
+/* Contenedor del contenido interno */
+.app-content {
+    padding: 32px;
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Ajustes responsivos básicos para el panel */
+@media (max-width: 768px) {
+    .app-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .app-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .app-main {
+        margin-left: 0;
+    }
+}

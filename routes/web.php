@@ -26,7 +26,11 @@ Route::middleware(['auth', SetCurrentCompany::class])->group(function () {
     // Gestión de la Empresa/Tenant (Módulo A)
     Route::get('/company', [CompanyController::class, 'edit'])->name('company.edit');
     Route::patch('/company', [CompanyController::class, 'update'])->name('company.update');
+
+    // Gestión de Equipo
     Route::get('/company/team', [CompanyTeamController::class, 'index'])->name('company.team');
+    Route::get('/company/team/invite', [CompanyTeamController::class, 'create'])->name('company.team.create');
+    Route::post('/company/team/invite', [CompanyTeamController::class, 'store'])->name('company.team.store');
 });
 
 require __DIR__.'/auth.php';
