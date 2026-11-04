@@ -17,10 +17,10 @@
                 </p>
             </div>
 
-            <!-- Botón Invitar (Acción futura) -->
-            <button style="background-color: var(--color-primary); color: white; padding: 10px 20px; border: none; border-radius: var(--radius-button); font-weight: 600; cursor: pointer; box-shadow: 0 4px 10px rgba(88, 148, 69, 0.2); transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+            <!-- Botón Invitar -->
+            <a href="{{ route('company.team.create') }}" style="background-color: var(--color-primary); color: white; padding: 10px 20px; text-decoration: none; border-radius: var(--radius-button); font-weight: 600; cursor: pointer; box-shadow: 0 4px 10px rgba(88, 148, 69, 0.2); transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
                 + Invitar Miembro
-            </button>
+            </a>
         </header>
 
         <!-- Tabla de Usuarios -->

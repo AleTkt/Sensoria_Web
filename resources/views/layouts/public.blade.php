@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Sensoría IoT')</title>
 
-    <!-- Enlace directo al CSS puro sin Vite -->
     <link rel="stylesheet" href="{{ asset('css/base/variables.css') }}">
     <link rel="stylesheet" href="{{ asset('css/layouts/public.css') }}">
-    @vite(['resources/js/app.js'])
+    <!-- Alpine.js ligero para interactividad (Modales, Dropdowns) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 </head>
 <body>
 <div class="public-layout-container">
