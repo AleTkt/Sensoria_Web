@@ -25,10 +25,20 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
 
-        return redirect()->intended(url('/dashboard'));
+        $user = Auth::user();
+        $companies = $user->companies()->wherePivot('is_active', true)->get();
+
+        // Si tiene múltiples empresas, redirigir a la selección de entorno
+        if ($companies->count() > 1) {
+            return redirect()->route('company.select');
+        }
+
+        // Si solo tiene una, asignarla automáticamente y enviar al dashboard
+        session(['current_company_id' => $companies->first()?->id]);
+
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**

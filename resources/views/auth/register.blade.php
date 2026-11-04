@@ -1,9 +1,9 @@
-@extends('layouts.public')
+@extends('layouts.auth')
 
 @section('title', 'Registro de Cuenta | Sensoría IoT')
 
 @section('content')
-    <div class="glass-surface" style="max-width: 520px; margin: 40px auto 60px auto; padding: 32px;">
+    <div class="glass-surface" style="max-width: 520px; margin: 0 auto; padding: 32px; border-radius: 12px;">
 
         <!-- Indicador de Pasos Nativo -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--glass-border); padding-bottom: 16px;">
@@ -24,7 +24,7 @@
 
                 <div>
                     <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 6px;">Nombre Completo</label>
-                    <input type="text" name="name" value="{{ old('name') }}" required autofocus style="width: 100%; padding: 10px 14px; border-radius: var(--radius-button); border: 1px solid rgba(27, 61, 26, 0.2); background: rgba(255,255,255,0.85); outline: none; box-sizing: border-box;">
+                    <input type="text" name="name" value="{{ old('name') }}" required autofocus placeholder="Ej. Ana María Gómez" style="width: 100%; padding: 10px 14px; border-radius: var(--radius-button); border: 1px solid rgba(27, 61, 26, 0.2); background: rgba(255,255,255,0.85); outline: none; box-sizing: border-box;">
                     @error('name')
                     <span style="color: #e53e3e; font-size: 0.8rem; font-weight: 600; margin-top: 4px; display: block;">{{ $message }}</span>
                     @enderror
@@ -32,14 +32,14 @@
 
                 <div>
                     <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 6px;">Correo Electrónico</label>
-                    <input type="email" name="email" value="{{ old('email') }}" required style="width: 100%; padding: 10px 14px; border-radius: var(--radius-button); border: 1px solid rgba(27, 61, 26, 0.2); background: rgba(255,255,255,0.85); outline: none; box-sizing: border-box;">
+                    <input type="email" name="email" value="{{ old('email') }}" required placeholder="usuario@dominio.com" style="width: 100%; padding: 10px 14px; border-radius: var(--radius-button); border: 1px solid rgba(27, 61, 26, 0.2); background: rgba(255,255,255,0.85); outline: none; box-sizing: border-box;">
                     @error('email')
                     <span style="color: #e53e3e; font-size: 0.8rem; font-weight: 600; margin-top: 4px; display: block;">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <button type="button" onclick="goToStep(2)" style="background-color: var(--color-primary); color: white; border: none; padding: 12px; border-radius: var(--radius-button); font-weight: 600; margin-top: 12px; cursor: pointer;">
-                    Siguiente: Contacto &rarr;
+                    Siguiente: Seguridad &rarr;
                 </button>
             </div>
 
@@ -50,6 +50,17 @@
                 <div>
                     <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 6px;">Contraseña</label>
                     <input type="password" name="password" id="password-field" required style="width: 100%; padding: 10px 14px; border-radius: var(--radius-button); border: 1px solid rgba(27, 61, 26, 0.2); background: rgba(255,255,255,0.85); outline: none; box-sizing: border-box;">
+
+                    <!-- Guía visual de requerimientos de seguridad -->
+                    <div style="background: rgba(27, 61, 26, 0.04); padding: 10px 12px; border-radius: 6px; margin-top: 8px; font-size: 0.78rem; color: #4a5568;">
+                        <strong>Requisitos de la contraseña:</strong>
+                        <ul style="margin: 4px 0 0 16px; padding: 0;">
+                            <li>Mínimo 8 caracteres</li>
+                            <li>Incluir al menos una mayúscula y una minúscula</li>
+                            <li>Incluir al menos un número y un símbolo (!@#$%^&*)</li>
+                        </ul>
+                    </div>
+
                     @error('password')
                     <span style="color: #e53e3e; font-size: 0.8rem; font-weight: 600; margin-top: 4px; display: block;">{{ $message }}</span>
                     @enderror
@@ -115,7 +126,6 @@
     <script>
         let currentStep = 1;
 
-        // Bloquear que la tecla Enter envíe el formulario accidentalmente
         document.getElementById('wizard-form').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
@@ -124,25 +134,21 @@
         });
 
         function goToStep(targetStep) {
-            // Si intenta avanzar (ejemplo: del Paso 1 al Paso 2), validar estrictamente los campos del paso actual
             if (targetStep > currentStep) {
                 const currentStepEl = document.getElementById('step-' + currentStep);
                 const requiredInputs = currentStepEl.querySelectorAll('input[required]');
                 let isValid = true;
 
                 requiredInputs.forEach(input => {
-                    // reportValidity() valida la regla HTML5 (required, email, minlength) y muestra el tooltip de aviso al usuario
                     if (!input.checkValidity()) {
                         input.reportValidity();
                         isValid = false;
                     }
                 });
 
-                // Si falta algún dato en el paso actual, NO permite avanzar
                 if (!isValid) return;
             }
 
-            // Ocultar el paso actual y mostrar el nuevo
             document.getElementById('step-' + currentStep).style.display = 'none';
 
             const targetEl = document.getElementById('step-' + targetStep);
@@ -150,7 +156,6 @@
 
             currentStep = targetStep;
 
-            // Actualizar el indicador de texto y los puntos visuales
             document.getElementById('step-indicator-text').innerText = `Paso ${currentStep} de 3`;
 
             for (let i = 1; i <= 3; i++) {
@@ -191,7 +196,6 @@
             }
         }
 
-        // Redirección en caso de que Laravel devuelva un error de validación tras el submit
         @if ($errors->has('password') || $errors->has('password_confirmation'))
         goToStep(2);
         @elseif ($errors->has('company_name') || $errors->has('account_type'))

@@ -1,12 +1,12 @@
-@extends('layouts.public')
+@extends('layouts.auth')
 
 @section('title', 'Iniciar Sesión | Sensoría IoT')
 
 @section('content')
-    <div style="max-width: 440px; margin: 40px auto 60px auto;">
+    <div style="max-width: 440px; margin: 0 auto;">
 
         <!-- Tarjeta Principal con Glassmorphism -->
-        <div class="glass-surface" style="padding: 40px 32px;">
+        <div class="glass-surface" style="padding: 40px 32px; border-radius: 12px;">
 
             <!-- Header / Título -->
             <div style="text-align: center; margin-bottom: 32px;">
@@ -18,7 +18,7 @@
                 </p>
             </div>
 
-            <!-- Mensaje de Estado de Sesión (Ej. Restablecimiento de contraseña) -->
+            <!-- Mensaje de Estado de Sesión -->
             @if (session('status'))
                 <div style="background-color: rgba(88, 148, 69, 0.1); border: 1px solid var(--color-primary); color: var(--color-tertiary); padding: 12px 16px; border-radius: var(--radius-button); font-size: 0.875rem; margin-bottom: 24px;">
                     {{ session('status') }}
@@ -91,7 +91,7 @@
                 </div>
 
                 <!-- Botón de Envío -->
-                <button type="submit" style="width: 100%; background-color: var(--color-primary); color: white; border: none; padding: 13px; border-radius: var(--radius-button); font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: var(--shadow-soft); margin-top: 8px; transition: opacity 0.2s ease;">
+                <button type="submit" style="width: 100%; background-color: var(--color-primary); color: white; border: none; padding: 13px; border-radius: var(--radius-button); font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: var(--shadow-soft); margin-top: 8px;">
                     Iniciar Sesión
                 </button>
             </form>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Models\User;
 
 class CompanyTeamController extends Controller
@@ -14,13 +15,8 @@ class CompanyTeamController extends Controller
      */
     public function index(Request $request): View
     {
-        // 1. Obtener el ID de la empresa activa desde la sesión
         $companyId = session('current_company_id');
-
-        // 2. Validar que la empresa pertenece al usuario logueado
         $company = Auth::user()->companies()->findOrFail($companyId);
-
-        // 3. Obtener todos los usuarios vinculados a esta empresa
         $teamMembers = $company->users;
 
         return view('company.team.index', [
@@ -29,18 +25,18 @@ class CompanyTeamController extends Controller
         ]);
     }
 
-    public function create(): View
-    {
-        return view('company.team.create');
-    }
-
     /**
      * Procesa la invitación y vincula al usuario a la empresa.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'email' => ['required', 'email'],
+            'role' => ['required', 'in:ADMINISTRADOR,TECNICO,MIEMBRO'],
+        ], [
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Ingresa un correo electrónico válido.',
+            'role.in' => 'El rol seleccionado no es válido.',
         ]);
 
         $company = Auth::user()->companies()->findOrFail(session('current_company_id'));
@@ -61,16 +57,53 @@ class CompanyTeamController extends Controller
             ])->withInput();
         }
 
-        // 3. Vincular al usuario con rol de TÉCNICO (o el que decidan usar por defecto)
-        // Nota: Asegúrate de que tu tabla pivote (customer_account_users) tenga estos campos,
-        // o ajusta el attach() a la estructura de tu base de datos.
+        // 3. Vincular al usuario con el rol seleccionado
         $company->users()->attach($userToInvite->id, [
-            'company_role' => 'TECNICO',
+            'company_role' => $request->role,
             'is_active' => true,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        return redirect()->route('company.team')->with('status', 'Miembro agregado exitosamente.');
+        return redirect()->route('company.team')->with('success', 'Miembro agregado exitosamente.');
+    }
+
+    /**
+     * Actualiza el rol de un miembro de la empresa.
+     */
+    public function update(Request $request, int $id): RedirectResponse
+    {
+        $request->validate([
+            'role' => ['required', 'in:PROPIETARIO,ADMINISTRADOR,TECNICO,MIEMBRO'],
+        ]);
+
+        $company = Auth::user()->companies()->findOrFail(session('current_company_id'));
+
+        // Evitar cambiar rol si no existe el miembro en la empresa
+        $member = $company->users()->findOrFail($id);
+
+        $company->users()->updateExistingPivot($id, [
+            'company_role' => $request->role,
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('company.team')->with('success', 'Rol de integrante actualizado.');
+    }
+
+    /**
+     * Remueve a un usuario de la empresa.
+     */
+    public function destroy(int $id): RedirectResponse
+    {
+        $company = Auth::user()->companies()->findOrFail(session('current_company_id'));
+
+        // No permitir que el usuario se elimine a sí mismo desde este panel
+        if ($id == Auth::id()) {
+            return back()->with('error', 'No puedes eliminarte a ti mismo de la empresa.');
+        }
+
+        $company->users()->detach($id);
+
+        return redirect()->route('company.team')->with('success', 'El miembro ha sido removido de la empresa.');
     }
 }
