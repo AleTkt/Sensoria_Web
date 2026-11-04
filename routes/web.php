@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CompanySelectionController;
 use App\Http\Controllers\CompanyTeamController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\SetCurrentCompany;
@@ -15,6 +16,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/select-company', [CompanySelectionController::class, 'show'])->name('company.select');
+    Route::post('/select-company', [CompanySelectionController::class, 'setCompany'])->name('company.select.store');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -29,8 +32,9 @@ Route::middleware(['auth', SetCurrentCompany::class])->group(function () {
 
     // Gestión de Equipo
     Route::get('/company/team', [CompanyTeamController::class, 'index'])->name('company.team');
-    Route::get('/company/team/invite', [CompanyTeamController::class, 'create'])->name('company.team.create');
-    Route::post('/company/team/invite', [CompanyTeamController::class, 'store'])->name('company.team.store');
+    Route::post('/company/team', [CompanyTeamController::class, 'store'])->name('company.team.store');
+    Route::put('/company/team/{id}', [CompanyTeamController::class, 'update'])->name('company.team.update');
+    Route::delete('/company/team/{id}', [CompanyTeamController::class, 'destroy'])->name('company.team.destroy');
 });
 
 require __DIR__.'/auth.php';

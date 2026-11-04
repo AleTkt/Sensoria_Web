@@ -39,6 +39,9 @@
                     </thead>
                     <tbody>
                     @foreach($teamMembers as $member)
+                        @php
+                            $role = strtoupper($member->pivot->company_role ?? 'MIEMBRO');
+                        @endphp
                         <tr style="border-bottom: 1px solid rgba(27, 61, 26, 0.05);">
                             <td style="padding: 16px; color: var(--color-tertiary); font-weight: 500; display: flex; align-items: center; gap: 12px;">
                                 <!-- Avatar circular con la inicial -->
@@ -60,14 +63,22 @@
                             <td style="padding: 16px;">
                                 <!-- Badge de Rol -->
                                 <span style="background-color: rgba(88, 148, 69, 0.1); color: var(--color-primary); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
-                                {{ $member->pivot->company_role ?? 'Miembro' }}
+                                {{ $role }}
                             </span>
                             </td>
 
                             <td style="padding: 16px; text-align: right;">
-                                <button type="button" onclick="openEditMemberModal('{{ $member->id }}', '{{ $member->name }}', '{{ $member->pivot->company_role ?? 'Miembro' }}')" style="background: none; border: none; color: var(--color-primary); cursor: pointer; font-size: 0.875rem; font-weight: 600; padding: 4px 8px; display: inline-flex; align-items: center; gap: 4px;">
-                                    <i class="icon-edit"></i> Editar
-                                </button>
+                                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                    <button type="button" onclick="openEditMemberModal('{{ $member->id }}', '{{ $member->name }}', '{{ $role }}')" style="background: none; border: none; color: var(--color-primary); cursor: pointer; font-size: 0.875rem; font-weight: 600; padding: 4px 8px; display: inline-flex; align-items: center; gap: 4px;">
+                                        <i class="icon-edit"></i> Editar
+                                    </button>
+
+                                    @if($member->id !== Auth::id())
+                                        <button type="button" onclick="openDeleteMemberModal('{{ $member->id }}', '{{ $member->name }}')" style="background: none; border: none; color: #e53e3e; cursor: pointer; font-size: 0.875rem; font-weight: 600; padding: 4px 8px; display: inline-flex; align-items: center; gap: 4px;">
+                                            <i class="icon-trash"></i> Eliminar
+                                        </button>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -105,6 +116,7 @@
                     <label for="invite_role" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-tertiary); margin-bottom: 6px;">Rol en el Espacio</label>
                     <select id="invite_role" name="role" required style="width: 100%; padding: 10px 14px; border: 1px solid rgba(27, 61, 26, 0.2); border-radius: var(--radius-button); outline: none; background: #ffffff; box-sizing: border-box;">
                         <option value="MIEMBRO">Miembro</option>
+                        <option value="TECNICO">Técnico</option>
                         <option value="ADMINISTRADOR">Administrador</option>
                     </select>
                     @error('role')
@@ -148,8 +160,10 @@
                 <div>
                     <label for="edit_role" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-tertiary); margin-bottom: 6px;">Rol Asignado</label>
                     <select id="edit_role" name="role" required style="width: 100%; padding: 10px 14px; border: 1px solid rgba(27, 61, 26, 0.2); border-radius: var(--radius-button); outline: none; background: #ffffff; box-sizing: border-box;">
-                        <option value="MIEMBRO">Miembro</option>
+                        <option value="PROPIETARIO">Propietario</option>
                         <option value="ADMINISTRADOR">Administrador</option>
+                        <option value="TECNICO">Técnico</option>
+                        <option value="MIEMBRO">Miembro</option>
                     </select>
                 </div>
 
@@ -165,11 +179,41 @@
             </form>
         </div>
     </div>
+
+
+    <!-- MODAL 3: Confirmar Eliminación de Miembro -->
+    <div id="delete-member-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center;">
+        <div class="glass-surface" style="width: 100%; max-width: 450px; padding: 32px; border-radius: 12px; background: #ffffff;">
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid rgba(27, 61, 26, 0.1); padding-bottom: 12px;">
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: #e53e3e; margin: 0;">Remover Integrante</h3>
+                <button type="button" onclick="closeDeleteMemberModal()" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: #718096;">&times;</button>
+            </div>
+
+            <p style="color: #4a5568; font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px;">
+                ¿Estás seguro de que deseas remover a <strong id="delete-member-name" style="color: var(--color-tertiary);"></strong> de esta empresa? Perderá el acceso inmediatamente a este espacio.
+            </p>
+
+            <form id="delete-member-form" method="POST" action="">
+                @csrf
+                @method('DELETE')
+
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button type="button" onclick="closeDeleteMemberModal()" style="background: transparent; border: 1px solid rgba(27, 61, 26, 0.2); padding: 10px 20px; border-radius: var(--radius-button); font-weight: 600; cursor: pointer;">
+                        Cancelar
+                    </button>
+                    <button type="submit" style="background-color: #e53e3e; color: white; border: none; padding: 10px 24px; border-radius: var(--radius-button); font-weight: 600; cursor: pointer;">
+                        Sí, Remover
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
     <script>
-        // Control Modal Invitar
+        // Modal Invitar
         function openInviteModal() {
             document.getElementById('invite-member-modal').style.display = 'flex';
         }
@@ -178,12 +222,11 @@
             document.getElementById('invite-member-modal').style.display = 'none';
         }
 
-        // Control Modal Editar Miembro
+        // Modal Editar
         function openEditMemberModal(memberId, name, role) {
             document.getElementById('edit-member-name').innerText = name;
             document.getElementById('edit_role').value = role;
 
-            // Ajustar dinámicamente la ruta de actualización
             const form = document.getElementById('edit-member-form');
             form.action = `/company/team/${memberId}`;
 
@@ -194,16 +237,27 @@
             document.getElementById('edit-member-modal').style.display = 'none';
         }
 
-        // Cerrar modales con clic fuera del contenedor (backdrop)
-        window.addEventListener('click', function(e) {
-            const inviteModal = document.getElementById('invite-member-modal');
-            const editModal = document.getElementById('edit-member-modal');
+        // Modal Eliminar
+        function openDeleteMemberModal(memberId, name) {
+            document.getElementById('delete-member-name').innerText = name;
 
-            if (e.target === inviteModal) closeInviteModal();
-            if (e.target === editModal) closeEditMemberModal();
+            const form = document.getElementById('delete-member-form');
+            form.action = `/company/team/${memberId}`;
+
+            document.getElementById('delete-member-modal').style.display = 'flex';
+        }
+
+        function closeDeleteMemberModal() {
+            document.getElementById('delete-member-modal').style.display = 'none';
+        }
+
+        // Backdrop click
+        window.addEventListener('click', function(e) {
+            if (e.target === document.getElementById('invite-member-modal')) closeInviteModal();
+            if (e.target === document.getElementById('edit-member-modal')) closeEditMemberModal();
+            if (e.target === document.getElementById('delete-member-modal')) closeDeleteMemberModal();
         });
 
-        // Mantener modal abierto en caso de errores en invitaciones
         @if ($errors->has('email') || $errors->has('role'))
         openInviteModal();
         @endif
