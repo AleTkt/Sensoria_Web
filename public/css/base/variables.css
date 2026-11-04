@@ -1,0 +1,36 @@
+/* resources/css/base/variables.css */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+    /* Paleta Corporativa */
+    --color-neutral: #FAFAF7;
+    --color-primary: #589445;
+    --color-secondary: #486732;
+    --color-tertiary: #1B3D1A;
+
+    /* Glassmorphism y Sombras */
+    --glass-background: rgba(255, 255, 255, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-blur: 12px;
+    --shadow-soft: 0 8px 32px rgba(27, 61, 26, 0.05);
+
+    /* Radios */
+    --radius-card: 16px;
+    --radius-button: 10px;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--color-neutral);
+    color: var(--color-tertiary);
+}
+
+/* Utilidad global para paneles y menú */
+.glass-surface {
+    background: var(--glass-background);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    box-shadow: var(--shadow-soft);
+    border-radius: var(--radius-card);
+}

@@ -1,0 +1,179 @@
+/* public/css/layouts/public.css */
+
+.public-layout-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: radial-gradient(circle at 15% 50%, rgba(88, 148, 69, 0.04), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(72, 103, 50, 0.04), transparent 25%);
+}
+
+.navbar-wrapper {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 24px 24px; /* Reduje el padding lateral para pantallas más pequeñas */
+    z-index: 1000;
+    box-sizing: border-box; /* Asegura que el padding no desborde el ancho 100% */
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+    border-radius: 20px;
+    background: var(--glass-background); /* Fondo semitransparente */
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur)); /* El efecto mágico de desenfoque */
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    box-shadow: var(--shadow-soft);
+    max-width: 1440px; /* Limita el ancho máximo del navbar */
+    margin: 0 auto; /* Centra el navbar si la pantalla es muy grande */
+}
+
+/* Traducción del anidamiento SCSS a CSS Puro */
+.navbar .brand h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-tertiary);
+}
+
+.navbar .brand h1 span {
+    color: var(--color-primary);
+}
+
+.navbar .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar .nav-links a {
+    text-decoration: none;
+    color: #718096; /* Color muted de respaldo */
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar .nav-links a:hover,
+.navbar .nav-links a.active {
+    color: var(--color-tertiary);
+    font-weight: 600;
+}
+
+.main-content {
+    flex: 1;
+    padding: 120px 24px 48px; /* Reduje el padding lateral */
+    max-width: 1440px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box; /* Previene desbordes horizontales */
+}
+
+.public-footer {
+    border-top: 1px solid rgba(27, 61, 26, 0.1);
+    padding: 64px 48px 24px;
+    background-color: var(--color-neutral);
+    margin-top: 48px;
+}
+
+.public-footer .footer-content {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+}
+
+.public-footer .brand-col h2 {
+    font-size: 1.5rem;
+    color: var(--color-tertiary);
+    margin-bottom: 16px;
+}
+
+.public-footer .brand-col h2 span {
+    color: var(--color-primary);
+}
+
+.public-footer .brand-col p {
+    color: #718096;
+    line-height: 1.6;
+    max-width: 300px;
+}
+
+.public-footer .links-col h4 {
+    color: var(--color-tertiary);
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+.public-footer .links-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0;
+}
+
+.public-footer .links-col ul a {
+    color: #718096;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.public-footer .links-col ul a:hover {
+    color: var(--color-primary);
+}
+
+.public-footer .footer-bottom {
+    max-width: 1440px;
+    margin: 0 auto;
+    border-top: 1px solid rgba(27, 61, 26, 0.05);
+    padding-top: 24px;
+    text-align: center;
+    color: #718096;
+    font-size: 0.875rem;
+}
+
+.dropdown-container {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    width: 240px;
+    background-color: var(--color-neutral);
+    border: 1px solid rgba(27, 61, 26, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(27, 61, 26, 0.1);
+    padding: 8px 0;
+    z-index: 50;
+}
+
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    color: var(--color-tertiary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-menu a:hover {
+    background-color: rgba(88, 148, 69, 0.05); /* Un hover sutil en primario */
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: rgba(27, 61, 26, 0.1);
+    margin: 8px 0;
+}

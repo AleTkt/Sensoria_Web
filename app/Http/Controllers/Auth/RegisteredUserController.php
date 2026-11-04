@@ -75,7 +75,6 @@ class RegisteredUserController extends Controller
             Auth::login($user);
         });
 
-        // Redirigir al dashboard (ruta que maneja Breeze)
-        return redirect(route('dashboard', absolute: false));
+        return redirect(url('/'));
     }
 }
