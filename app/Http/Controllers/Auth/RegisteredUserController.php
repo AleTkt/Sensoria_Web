@@ -35,13 +35,12 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'account_type' => ['required', 'in:personal,business'],
-            'company_name' => ['required_if:account_type,business', 'nullable', 'string', 'max:255'],
+            'account_type' => ['required', 'in:personal,company'], // <- Cambiado a company
+            'company_name' => ['required_if:account_type,company', 'nullable', 'string', 'max:255'], // <- Cambiado a company
         ]);
 
-        // Usamos una transacción para asegurar que ambos registros se creen o ninguno
+        // DB::transaction...
         DB::transaction(function () use ($request) {
-            // 1. Crear el usuario
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -49,14 +48,12 @@ class RegisteredUserController extends Controller
                 'global_role' => 'CLIENTE',
             ]);
 
-            // 2. Determinar el nombre del Espacio/Empresa
-            $companyName = $request->account_type === 'business'
+            $companyName = $request->account_type === 'company'
                 ? $request->company_name
                 : 'Hogar de ' . $request->name;
 
-            $sector = $request->account_type === 'business' ? 'Comercio' : 'Residencial';
+            $sector = $request->account_type === 'company' ? 'Comercio' : 'Residencial';
 
-            // 3. Crear el tenant
             $company = Company::create([
                 'legal_name' => $companyName,
                 'trade_name' => $companyName,
@@ -65,7 +62,6 @@ class RegisteredUserController extends Controller
                 'is_active' => true,
             ]);
 
-            // 4. Vincular al usuario con su empresa como PROPIETARIO
             $user->companies()->attach($company->id, [
                 'company_role' => 'PROPIETARIO',
                 'is_active' => true
@@ -75,6 +71,6 @@ class RegisteredUserController extends Controller
             Auth::login($user);
         });
 
-        return redirect(url('/'));
+        return redirect(route('dashboard'));
     }
 }

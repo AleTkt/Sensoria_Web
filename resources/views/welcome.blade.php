@@ -1,31 +1,87 @@
 @extends('layouts.public')
 
-@section('title', 'Sensoría IoT - Llevando la tecnología a tu PYME')
+@section('title', 'Sensoría IoT - Plataforma de Monitoreo Inteligente para tu Empresa')
 
 @section('content')
-    <!-- Hero Section (Sección Principal) -->
-    <div style="text-align: center; padding: 80px 20px;">
-        <h1 style="font-size: 3.5rem; font-weight: 700; color: var(--color-tertiary); margin-bottom: 24px; line-height: 1.2;">
-            Inteligencia <span style="color: var(--color-primary);">IoT</span><br>para tu negocio
-        </h1>
-        <p style="font-size: 1.25rem; color: #718096; max-width: 600px; margin: 0 auto 40px auto; line-height: 1.6;">
-            Automatiza, asegura y monitorea tus operaciones con dispositivos modulares de instalación sencilla (Plug & Play). Sin complicaciones técnicas.
-        </p>
+    <div style="max-width: 1200px; margin: 0 auto;">
 
-        <div style="display: flex; gap: 16px; justify-content: center; align-items: center;">
-            <a href="{{ url('/tienda') }}" style="background-color: var(--color-primary); color: white; padding: 14px 32px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 1.1rem; box-shadow: 0 4px 14px rgba(88, 148, 69, 0.3);">
-                Explorar Kits
-            </a>
-            <a href="{{ route('register') }}" style="background-color: transparent; color: var(--color-secondary); border: 2px solid var(--color-secondary); padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 1.1rem;">
-                Crear Cuenta
-            </a>
-        </div>
-    </div>
+        <!-- Hero Section -->
+        <section style="text-align: center; padding: 60px 20px 80px 20px;">
+        <span style="color: var(--color-primary); font-weight: 700; font-size: 0.875rem; letter-spacing: 1.5px; text-transform: uppercase;">
+            Plataforma IoT & B2B
+        </span>
+            <h1 style="font-size: 3.25rem; font-weight: 800; color: var(--color-tertiary); margin: 16px 0 24px 0; line-height: 1.2;">
+                Monitoreo inteligente para tu empresa
+            </h1>
+            <p style="max-width: 650px; margin: 0 auto 36px auto; color: #718096; font-size: 1.15rem; line-height: 1.6;">
+                Diseñamos e implementamos kits modulares de sensores para garantizar el control en tiempo real de tus operaciones, instalaciones y activos corporativos.
+            </p>
 
-    <!-- Bloque de relleno para probar el Scroll y el efecto del Navbar -->
-    <div style="height: 600px; background-color: rgba(250, 250, 247, 0.5); border: 1px solid rgba(27, 61, 26, 0.05); border-radius: 24px; margin-top: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-        <svg style="width: 64px; height: 64px; color: var(--color-primary); opacity: 0.5; margin-bottom: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-        <p style="color: var(--color-tertiary); font-weight: 500; font-size: 1.2rem;">[ Espacio para mostrar los beneficios y catálogo ]</p>
-        <p style="color: #718096; margin-top: 8px;">(Haz scroll para ver el efecto cristalino en el menú superior)</p>
+            <div style="display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap;">
+                <a href="{{ route('register') }}" style="background-color: var(--color-primary); color: white; padding: 14px 32px; text-decoration: none; border-radius: var(--radius-button); font-weight: 600; box-shadow: var(--shadow-soft); transition: transform 0.2s ease;">
+                    Comenzar Ahora
+                </a>
+                <a href="#caracteristicas" style="background-color: transparent; color: var(--color-tertiary); padding: 14px 32px; text-decoration: none; border: 1px solid rgba(27, 61, 26, 0.2); border-radius: var(--radius-button); font-weight: 600;">
+                    Conocer Más
+                </a>
+            </div>
+        </section>
+
+        <!-- Sección de Valor Destacado / Métricas -->
+        <section id="caracteristicas" style="margin-bottom: 80px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+
+                <div class="glass-surface" style="padding: 32px; text-align: left;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(88, 148, 69, 0.1); color: var(--color-primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; margin-bottom: 20px;">
+                        01
+                    </div>
+                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-tertiary); margin-bottom: 12px;">
+                        Sensores Modulares
+                    </h3>
+                    <p style="color: #718096; font-size: 0.95rem; line-height: 1.6; margin: 0;">
+                        Kits de Hardware listos para instalar y adaptar según las necesidades de monitoreo ambiental, energía o seguridad de tu PYME.
+                    </p>
+                </div>
+
+                <div class="glass-surface" style="padding: 32px; text-align: left;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(88, 148, 69, 0.1); color: var(--color-primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; margin-bottom: 20px;">
+                        02
+                    </div>
+                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-tertiary); margin-bottom: 12px;">
+                        Plataforma Multi-tenant
+                    </h3>
+                    <p style="color: #718096; font-size: 0.95rem; line-height: 1.6; margin: 0;">
+                        Gestiona múltiples empresas, sucursales y permisos de equipo centralizadamente bajo una arquitectura robusta y aislada.
+                    </p>
+                </div>
+
+                <div class="glass-surface" style="padding: 32px; text-align: left;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(88, 148, 69, 0.1); color: var(--color-primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; margin-bottom: 20px;">
+                        03
+                    </div>
+                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-tertiary); margin-bottom: 12px;">
+                        Reportes & Control
+                    </h3>
+                    <p style="color: #718096; font-size: 0.95rem; line-height: 1.6; margin: 0;">
+                        Obtén métricas claras en tiempo real, alertas instantáneas y análisis de datos enfocados en la productividad de tu negocio.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Banner Call-to-Action Inferior -->
+        <section class="glass-surface" style="padding: 48px; text-align: center; margin-bottom: 60px; background: linear-gradient(135deg, rgba(88, 148, 69, 0.08), rgba(27, 61, 26, 0.04));">
+            <h2 style="font-size: 2rem; font-weight: 700; color: var(--color-tertiary); margin-bottom: 16px;">
+                ¿Listo para digitalizar la infraestructura de tu empresa?
+            </h2>
+            <p style="color: #718096; max-width: 550px; margin: 0 auto 28px auto; font-size: 1rem; line-height: 1.5;">
+                Crea tu cuenta de organización en pocos pasos y comienza a explorar las soluciones de Sensoría.
+            </p>
+            <a href="{{ route('register') }}" style="background-color: var(--color-primary); color: white; padding: 12px 28px; text-decoration: none; border-radius: var(--radius-button); font-weight: 600; display: inline-block;">
+                Registrar mi Empresa
+            </a>
+        </section>
+
     </div>
 @endsection

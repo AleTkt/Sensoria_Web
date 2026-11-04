@@ -5,52 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Sensoria IoT') }}</title>
+    <title>@yield('title', config('app.name', 'Sensoria IoT'))</title>
 
     <!-- CSS Puro -->
     <link rel="stylesheet" href="{{ asset('css/base/variables.css') }}">
     <link rel="stylesheet" href="{{ asset('css/layouts/app.css') }}">
 
-    <!-- Alpine.js para interactividad (Modales y Dropdowns) -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    @stack('styles')
 </head>
 <body class="font-sans antialiased">
 <div class="app-layout-container">
 
-    <!-- Sidebar -->
+    <!-- Sidebar Oscuro -->
     <aside class="app-sidebar">
         <a href="{{ url('/') }}" class="brand">
             Sensoría <span>IoT</span>
         </a>
 
         <nav class="sidebar-nav">
-            <a href="{{ route('company.edit') }}" class="{{ request()->routeIs('company.*') && !request()->routeIs('company.team') ? 'active' : '' }}">
-                Mi Empresa
+            <!-- Opción para regresar al sitio público -->
+            <a href="{{ url('/') }}" class="nav-link-return">
+                <i class="icon-home"></i> Volver al Sitio Principal
             </a>
+
+            <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 8px 0;"></div>
+
+            <a href="{{ route('company.edit') }}" class="{{ request()->routeIs('company.edit') || request()->routeIs('company.update') ? 'active' : '' }}">
+                <i class="icon-company"></i> Mi Empresa
+            </a>
+
             <a href="{{ route('company.team') }}" class="{{ request()->routeIs('company.team*') ? 'active' : '' }}">
-                Mi Equipo
+                <i class="icon-team"></i> Mi Equipo
             </a>
         </nav>
 
+        <!-- Footer del Sidebar: Usuario y Cierre de Sesión -->
         <div class="sidebar-footer">
-            <!-- Dropdown de usuario o botón de salida -->
+            <div style="padding: 12px 16px; background: rgba(255,255,255,0.05); border-radius: var(--radius-button); display: flex; align-items: center; justify-content: space-between;">
+                <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px;">
+                    <span style="display: block; font-weight: 600; font-size: 0.875rem; color: #ffffff;">{{ Auth::user()->name }}</span>
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6);">{{ Auth::user()->email }}</span>
+                </div>
+
+                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                    @csrf
+                    <button type="submit" title="Cerrar Sesión" style="background: none; border: none; color: #feb2b2; font-size: 1.1rem; cursor: pointer; padding: 4px; display: flex; align-items: center;">
+                        <i class="icon-logout"> Cerrar sesión </i>
+                    </button>
+                </form>
+            </div>
         </div>
     </aside>
 
     <!-- Contenido Principal -->
     <main class="app-main">
-        <!-- Header -->
-        @isset($header)
-            <header class="app-header">
-                <h2 class="page-title">{{ $header }}</h2>
-            </header>
-        @endisset
+        <!-- Header del Panel -->
+        <header class="app-header">
+            <h2 class="page-title">@yield('header', 'Panel de Administración')</h2>
+
+            <!-- Estado de empresa activa -->
+            @if(session('current_company'))
+                <span style="font-size: 0.875rem; font-weight: 600; color: var(--color-primary); background: rgba(88, 148, 69, 0.1); padding: 6px 14px; border-radius: 20px;">
+                    {{ session('current_company')->trade_name }}
+                </span>
+            @endif
+        </header>
+
+        <!-- Toast de Notificaciones Flash (Éxito / Error) -->
+        @if(session('success') || session('error') || session('warning'))
+            <div style="padding: 16px 32px 0 32px;">
+                @if(session('success'))
+                    <div style="background-color: rgba(88, 148, 69, 0.15); border: 1px solid var(--color-primary); color: var(--color-tertiary); padding: 12px 16px; border-radius: var(--radius-button); font-weight: 600; font-size: 0.9rem;">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div style="background-color: rgba(229, 62, 62, 0.15); border: 1px solid #e53e3e; color: #9b2c2c; padding: 12px 16px; border-radius: var(--radius-button); font-weight: 600; font-size: 0.9rem;">
+                        {{ session('error') }}
+                    </div>
+                @endif
+                @if(session('warning'))
+                    <div style="background-color: rgba(221, 107, 32, 0.15); border: 1px solid #dd6b20; color: #9c4221; padding: 12px 16px; border-radius: var(--radius-button); font-weight: 600; font-size: 0.9rem;">
+                        {{ session('warning') }}
+                    </div>
+                @endif
+            </div>
+        @endif
 
         <!-- Page Content -->
         <div class="app-content">
-            {{ $slot }}
+            @yield('content')
         </div>
     </main>
 </div>
+
+@stack('scripts')
 </body>
 </html>
