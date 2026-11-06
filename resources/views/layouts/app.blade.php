@@ -28,14 +28,46 @@
                 <i class="icon-home"></i> Volver al Sitio Principal
             </a>
 
-            <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 8px 0;"></div>
+            <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 12px 0;"></div>
 
+            <!-- BLOQUE 1: Módulo D (IoT y Operaciones) - Próximamente -->
+            <span style="display: block; padding: 0 16px; font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Operativa IoT</span>
+            <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
+                <i class="icon-dashboard"></i> Dashboard IoT
+            </a>
+            <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
+                <i class="icon-device"></i> Hubs y Dispositivos
+            </a>
+            <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
+                <i class="icon-alert"></i> Centro de Alertas
+            </a>
+
+            <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 12px 0;"></div>
+
+            <!-- BLOQUE 2: Módulo A (Administración) -->
+            <span style="display: block; padding: 0 16px; font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Organización</span>
             <a href="{{ route('company.edit') }}" class="{{ request()->routeIs('company.edit') || request()->routeIs('company.update') ? 'active' : '' }}">
                 <i class="icon-company"></i> Mi Empresa
             </a>
-
             <a href="{{ route('company.team') }}" class="{{ request()->routeIs('company.team*') ? 'active' : '' }}">
                 <i class="icon-team"></i> Mi Equipo
+            </a>
+            <a href="{{ route('company.settings') }}" class="{{ request()->routeIs('company.settings*') ? 'active' : '' }}">
+                <i class="icon-settings"></i> Ajustes del Espacio
+            </a>
+            <a href="{{ route('company.activity') }}" class="{{ request()->routeIs('company.activity*') ? 'active' : '' }}">
+                <i class="icon-activity"></i> Bitácora de Actividad
+            </a>
+
+            <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 12px 0;"></div>
+
+            <!-- BLOQUE 3: Módulos B y C (Facturación y Soporte) - Próximamente -->
+            <span style="display: block; padding: 0 16px; font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Servicios</span>
+            <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
+                <i class="icon-billing"></i> Facturación y Pagos
+            </a>
+            <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
+                <i class="icon-support"></i> Soporte Técnico
             </a>
         </nav>
 

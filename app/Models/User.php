@@ -62,4 +62,30 @@ class User extends Authenticatable
             ->withPivot('company_role', 'is_active')
             ->withTimestamps();
     }
+
+    /**
+     * Verifica si el usuario tiene uno o varios roles específicos en la empresa activa.
+     */
+    public function hasCompanyRole($roles,$companyId = null): bool
+    {
+        $companyId =$companyId ?? session('current_company_id');
+
+        if (!$companyId) {
+            return false;
+        }
+
+        // Obtenemos directamente el rol desde la tabla pivote para optimizar la consulta
+        $userRole =$this->companies()
+            ->where('identity.companies.id', $companyId)
+            ->value('identity.company_user.company_role');
+
+        if (!$userRole) {
+            return false;
+        }
+
+        // Convertimos a mayúsculas para evitar errores de tipeo y verificamos
+        $roles = is_array($roles) ? array_map('strtoupper', $roles) : [strtoupper($roles)];
+
+        return in_array(strtoupper($userRole),$roles);
+    }
 }

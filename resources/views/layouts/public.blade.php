@@ -27,7 +27,7 @@
 
             <ul class="nav-links">
                 <li><a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}">Inicio</a></li>
-                <li><a href="{{ route('register') }}" class="{{ request()->routeIs('shop.*') ? 'active' : '' }}">Kits Modulares</a></li>
+                <li><a href="#" class="{{ request()->routeIs('shop.*') ? 'active' : '' }}">Kits Modulares</a></li>
             </ul>
 
             <div>
@@ -38,12 +38,17 @@
                         </button>
 
                         <div id="user-dropdown-menu" class="dropdown-menu" style="display: none;">
-                            <a href="{{ route('company.edit') }}">Mi Empresa</a>
+                            <!-- Acceso al Panel B2B -->
+                            <a href="{{ route('company.edit') }}" style="font-weight: 600; color: var(--color-tertiary);">
+                                💼 Mi Espacio de Trabajo
+                            </a>
 
-                            <!-- Futuros Módulos -->
-                            <a href="#" style="opacity: 0.6; cursor: not-allowed;" title="Próximamente">Billetera y Pagos</a>
-                            <a href="#" style="opacity: 0.6; cursor: not-allowed;" title="Próximamente">Historial de Pedidos</a>
-                            <a href="#" style="opacity: 0.6; cursor: not-allowed;" title="Próximamente">Ajustes de Cuenta</a>
+                            <div class="dropdown-divider"></div>
+
+                            <!-- Módulo B2C (Facturación y Perfil) -->
+                            <a href="#" style="opacity: 0.7;" title="Próximamente">Mis Pedidos</a>
+                            <a href="#" style="opacity: 0.7;" title="Próximamente">Billetera y Pagos</a>
+                            <a href="#">Ajustes de Perfil</a>
 
                             <div class="dropdown-divider"></div>
 

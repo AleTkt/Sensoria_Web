@@ -11,9 +11,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Agregamos nuestro middleware Multi-Tenant al grupo web
+        // 1. Tu middleware global actual (Se ejecuta en todas las rutas web)
         $middleware->web(append: [
             \App\Http\Middleware\SetCurrentCompany::class,
+        ]);
+
+        // 2. Nuestro nuevo alias (Se ejecuta solo cuando ponemos middleware('role:...') en web.php)
+        $middleware->alias([
+            'role' => \App\Http\Middleware\CheckCompanyRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
