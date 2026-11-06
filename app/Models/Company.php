@@ -27,6 +27,8 @@ class Company extends Model
         'email',
         'phone',
         'address',
+        'timezone',
+        'locale',
         'is_active',
     ];
 

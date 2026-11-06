@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Models\User;
+use App\Models\CompanyActivityLog;
 
 class CompanyTeamController extends Controller
 {
@@ -65,6 +66,15 @@ class CompanyTeamController extends Controller
             'updated_at' => now(),
         ]);
 
+        // 4. Guardar Log de Actividad
+        CompanyActivityLog::create([
+            'company_id' => $company->id,
+            'user_id' => Auth::id(),
+            'category' => 'EQUIPO',
+            'action' => 'Invitación de miembro',
+            'description' => "Se agregó a {$userToInvite->name} ({$userToInvite->email}) al espacio de trabajo con el rol de {$request->role}.",
+        ]);
+
         return redirect()->route('company.team')->with('success', 'Miembro agregado exitosamente.');
     }
 
@@ -87,6 +97,15 @@ class CompanyTeamController extends Controller
             'updated_at' => now(),
         ]);
 
+        // Guardar Log de Actividad
+        CompanyActivityLog::create([
+            'company_id' => $company->id,
+            'user_id' => Auth::id(),
+            'category' => 'EQUIPO',
+            'action' => 'Rol actualizado',
+            'description' => "Se actualizó el rol de {$member->name} a {$request->role}.",
+        ]);
+
         return redirect()->route('company.team')->with('success', 'Rol de integrante actualizado.');
     }
 
@@ -102,7 +121,19 @@ class CompanyTeamController extends Controller
             return back()->with('error', 'No puedes eliminarte a ti mismo de la empresa.');
         }
 
+        // Obtener datos del miembro antes de desvincularlo para el log
+        $member = $company->users()->findOrFail($id);
+
         $company->users()->detach($id);
+
+        // Guardar Log de Actividad
+        CompanyActivityLog::create([
+            'company_id' => $company->id,
+            'user_id' => Auth::id(),
+            'category' => 'EQUIPO',
+            'action' => 'Miembro removido',
+            'description' => "Se removió a {$member->name} ({$member->email}) del espacio de trabajo.",
+        ]);
 
         return redirect()->route('company.team')->with('success', 'El miembro ha sido removido de la empresa.');
     }

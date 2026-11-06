@@ -23,18 +23,31 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Rutas protegidas que requieren usuario logueado y una empresa activa en sesión
-Route::middleware(['auth', SetCurrentCompany::class])->group(function () {
+// Rutas protegidas que requieren usuario logueado y una empresa activa
+Route::middleware(['auth', App\Http\Middleware\SetCurrentCompany::class])->group(function () {
 
-    // Gestión de la Empresa/Tenant (Módulo A)
+    // Rutas de lectura (Disponibles para todos los miembros)
     Route::get('/company', [CompanyController::class, 'edit'])->name('company.edit');
-    Route::patch('/company', [CompanyController::class, 'update'])->name('company.update');
-
-    // Gestión de Equipo
     Route::get('/company/team', [CompanyTeamController::class, 'index'])->name('company.team');
-    Route::post('/company/team', [CompanyTeamController::class, 'store'])->name('company.team.store');
-    Route::put('/company/team/{id}', [CompanyTeamController::class, 'update'])->name('company.team.update');
-    Route::delete('/company/team/{id}', [CompanyTeamController::class, 'destroy'])->name('company.team.destroy');
+    Route::get('/company/settings', [CompanyController::class, 'settings'])->name('company.settings');
+    Route::get('/company/activity', [CompanyController::class, 'activity'])->name('company.activity');
+
+    // Módulo A: Edición de Empresa (Solo Propietarios y Administradores)
+    Route::middleware('role:PROPIETARIO,ADMINISTRADOR')->group(function () {
+        Route::patch('/company', [CompanyController::class, 'update'])->name('company.update');
+        Route::put('/company/settings', [CompanyController::class, 'updateSettings'])->name('company.settings.update');
+
+        // Gestión de Equipo
+        Route::post('/company/team', [CompanyTeamController::class, 'store'])->name('company.team.store');
+        Route::put('/company/team/{id}', [CompanyTeamController::class, 'update'])->name('company.team.update');
+        Route::delete('/company/team/{id}', [CompanyTeamController::class, 'destroy'])->name('company.team.destroy');
+    });
+
+    // Zona de Peligro (Únicamente Propietarios)
+    Route::middleware('role:PROPIETARIO')->group(function () {
+        Route::post('/company/transfer-ownership', [CompanyController::class, 'transferOwnership'])->name('company.transfer');
+        Route::delete('/company/destroy', [CompanyController::class, 'destroy'])->name('company.destroy');
+    });
 });
 
 require __DIR__.'/auth.php';

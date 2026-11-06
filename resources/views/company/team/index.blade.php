@@ -21,9 +21,11 @@
                 </div>
 
                 <!-- Botón Invitar Miembro (Abre Modal) -->
-                <button type="button" onclick="openInviteModal()" style="background-color: var(--color-primary); color: white; border: none; padding: 10px 20px; border-radius: var(--radius-button); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
-                    <i class="icon-user-plus"></i> Invitar Miembro
-                </button>
+                @if(Auth::user()->hasCompanyRole(['PROPIETARIO', 'ADMINISTRADOR']))
+                    <button type="button" onclick="openInviteModal()" style="background-color: var(--color-primary); color: white; border: none; padding: 10px 20px; border-radius: var(--radius-button); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="icon-user-plus"></i> Invitar Miembro
+                    </button>
+                @endif
             </div>
 
             <!-- Tabla de Usuarios -->
@@ -69,14 +71,16 @@
 
                             <td style="padding: 16px; text-align: right;">
                                 <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                                    <button type="button" onclick="openEditMemberModal('{{ $member->id }}', '{{ $member->name }}', '{{ $role }}')" style="background: none; border: none; color: var(--color-primary); cursor: pointer; font-size: 0.875rem; font-weight: 600; padding: 4px 8px; display: inline-flex; align-items: center; gap: 4px;">
-                                        <i class="icon-edit"></i> Editar
-                                    </button>
-
-                                    @if($member->id !== Auth::id())
-                                        <button type="button" onclick="openDeleteMemberModal('{{ $member->id }}', '{{ $member->name }}')" style="background: none; border: none; color: #e53e3e; cursor: pointer; font-size: 0.875rem; font-weight: 600; padding: 4px 8px; display: inline-flex; align-items: center; gap: 4px;">
-                                            <i class="icon-trash"></i> Eliminar
+                                    @if(Auth::user()->hasCompanyRole(['PROPIETARIO', 'ADMINISTRADOR']))
+                                        <button type="button" onclick="openEditMemberModal('{{ $member->id }}', '{{ $member->name }}', '{{ $role }}')" style="background: none; border: none; color: var(--color-primary); cursor: pointer; font-size: 0.875rem; font-weight: 600; padding: 4px 8px; display: inline-flex; align-items: center; gap: 4px;">
+                                            <i class="icon-edit"></i> Editar
                                         </button>
+
+                                        @if($member->id !== Auth::id())
+                                            <button type="button" onclick="openDeleteMemberModal('{{ $member->id }}', '{{ $member->name }}')" style="background: none; border: none; color: #e53e3e; cursor: pointer; font-size: 0.875rem; font-weight: 600; padding: 4px 8px; display: inline-flex; align-items: center; gap: 4px;">
+                                                <i class="icon-trash"></i> Eliminar
+                                            </button>
+                                        @endif
                                     @endif
                                 </div>
                             </td>
