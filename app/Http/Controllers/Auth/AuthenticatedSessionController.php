@@ -11,17 +11,11 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
     public function create(): View
     {
         return view('auth.login');
     }
 
-    /**
-     * Handle an incoming authentication request.
-     */
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
@@ -29,32 +23,34 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
-        // 1. NUEVO: Redirección prioritaria para el Staff de Sensoría
+        // 1. Redirección prioritaria para el Staff de Sensoría
         if (in_array($user->global_role, ['ADMIN', 'SOPORTE'])) {
             return redirect()->intended(route('admin.dashboard', absolute: false));
         }
 
         // 2. Lógica existente para Clientes B2B
-        $companies = $user->companies()->wherePivot('is_active', true)->get();
+        // NUEVO: Verificamos que la empresa (tenant) TAMBIÉN esté activa globalmente
+        $companies = $user->companies()
+            ->where('companies.is_active', true)
+            ->wherePivot('is_active', true)
+            ->get();
 
         if ($companies->count() > 1) {
             return redirect()->route('company.select');
         }
 
+        // Si la empresa fue suspendida y el conteo es 0, current_company_id quedará nulo.
+        // El middleware (que modificaremos a continuación) se encargará de bloquearlo.
         session(['current_company_id' => $companies->first()?->id]);
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
-    /**
-     * Destroy an authenticated session.
-     */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');
