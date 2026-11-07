@@ -28,14 +28,19 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = Auth::user();
+
+        // 1. NUEVO: Redirección prioritaria para el Staff de Sensoría
+        if (in_array($user->global_role, ['ADMIN', 'SOPORTE'])) {
+            return redirect()->intended(route('admin.dashboard', absolute: false));
+        }
+
+        // 2. Lógica existente para Clientes B2B
         $companies = $user->companies()->wherePivot('is_active', true)->get();
 
-        // Si tiene múltiples empresas, redirigir a la selección de entorno
         if ($companies->count() > 1) {
             return redirect()->route('company.select');
         }
 
-        // Si solo tiene una, asignarla automáticamente y enviar al dashboard
         session(['current_company_id' => $companies->first()?->id]);
 
         return redirect()->intended(route('dashboard', absolute: false));

@@ -27,9 +27,19 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'min:3', 'max:255'],
-            // Validamos email con TLD obligatorio (requiere .com, .net, etc.)
-            'email' => ['required', 'string', 'email:rfc,dns', 'max:255', 'unique:'.User::class],
-            // Regla de contraseña estricta (Mínimo 8 caracteres, números, mayúsculas y símbolos)
+
+            // EL CAMBIO ESTÁ AQUÍ:
+            // 1. Quitamos 'dns' de 'email:rfc'
+            // 2. Agregamos una expresión regular para forzar que el dominio tenga un punto (ej: .com, .edu.sv)
+            'email' => [
+                'required',
+                'string',
+                'email:rfc',
+                'regex:/^[^\s@]+@[^\s@]+\.[^\s@]+$/', // Obliga estructura texto@texto.texto
+                'max:255',
+                'unique:'.User::class
+            ],
+
             'password' => [
                 'required',
                 'confirmed',
@@ -40,7 +50,7 @@ class RegisterRequest extends FormRequest
                     ->symbols()
             ],
             'account_type' => ['required', 'in:personal,company'],
-            // Exigimos que el nombre de la empresa no sean solo espacios vacíos si el tipo es company
+
             'company_name' => [
                 'required_if:account_type,company',
                 'nullable',
@@ -56,6 +66,7 @@ class RegisterRequest extends FormRequest
         return [
             'name.required' => 'El nombre completo es obligatorio.',
             'email.email' => 'Debes ingresar un correo electrónico válido (ejemplo: usuario@dominio.com).',
+            'email.regex' => 'El correo debe tener un formato válido con un dominio (ejemplo: @sensoria.com).',
             'email.unique' => 'Este correo electrónico ya está registrado.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'password' => 'La contraseña debe incluir mayúsculas, minúsculas, números y al menos un símbolo.',

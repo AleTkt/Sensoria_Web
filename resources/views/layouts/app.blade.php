@@ -28,6 +28,12 @@
                 <i class="icon-home"></i> Volver al Sitio Principal
             </a>
 
+            @if(in_array(Auth::user()->global_role, ['ADMIN', 'SOPORTE']))
+                <a href="{{ route('admin.dashboard') }}" style="color: #feb2b2; background-color: rgba(229, 62, 62, 0.1); margin-top: 8px;">
+                    Regresar al Backoffice
+                </a>
+            @endif
+
             <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 12px 0;"></div>
 
             <!-- BLOQUE 1: Módulo D (IoT y Operaciones) - Próximamente -->
