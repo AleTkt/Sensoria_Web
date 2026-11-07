@@ -20,6 +20,18 @@
             <div class="shop-grid">
                 @forelse($products as $product)
                     <div class="product-card glass-surface">
+
+                        @if($product->image_path)
+                            <div class="product-image-preview">
+                                <!-- Asumiendo que usarás el Storage público de Laravel/Supabase -->
+                                <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="product-img">
+                            </div>
+                        @else
+                            <div class="product-image-preview">
+                                <i class="icon-device placeholder-icon-small"></i>
+                            </div>
+                        @endif
+
                         <div>
                             <span class="badge-category">{{ $product->category->name ?? 'Dispositivo' }}</span>
                             <h3 class="card-title">{{ $product->name }}</h3>

@@ -20,8 +20,12 @@
 
                 <!-- Ilustración del Producto (Aplicando directiva ESTRICTA de íconos) -->
                 <div class="product-image-container">
-                    <i class="icon-device placeholder-icon"></i>
-                    <span class="placeholder-text">Dispositivo IoT Sensoría</span>
+                    @if($product->image_path)
+                        <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="product-detail-img">
+                    @else
+                        <i class="icon-device placeholder-icon"></i>
+                        <span class="placeholder-text">Dispositivo IoT Sensoría</span>
+                    @endif
                 </div>
 
                 <!-- Información y Compras -->
