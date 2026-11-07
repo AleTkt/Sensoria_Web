@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminCompanyController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanySelectionController;
 use App\Http\Controllers\CompanyTeamController;
@@ -58,6 +61,25 @@ Route::middleware(['auth', App\Http\Middleware\SetCurrentCompany::class])->group
         Route::post('/company/transfer-ownership', [CompanyController::class, 'transferOwnership'])->name('company.transfer');
         Route::delete('/company/destroy', [CompanyController::class, 'destroy'])->name('company.destroy');
     });
+});
+
+// Grupo exclusivo para el Staff de Sensoría (Super Admins y Soporte)
+Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(function () {
+
+    // Plataforma
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/empresas', [AdminCompanyController::class, 'index'])->name('companies.index');
+    Route::get('/usuarios', [AdminUserController::class, 'index'])->name('users.index');
+
+    // Catálogo
+    // Route::get('/catalogo/kits', [KitController::class, 'index'])->name('catalog.kits');
+    // Route::get('/catalogo/hardware', [HardwareController::class, 'index'])->name('catalog.hardware');
+    // Route::get('/catalogo/categorias', [CategoryController::class, 'index'])->name('catalog.categories');
+
+    // Logística y Soporte
+    // Route::get('/pedidos', [OrderController::class, 'index'])->name('orders.index');
+    // Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+    // Route::get('/bitacora', [AdminLogController::class, 'index'])->name('logs.index');
 });
 
 require __DIR__.'/auth.php';

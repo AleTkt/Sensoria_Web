@@ -42,9 +42,17 @@
                         </button>
 
                         <div id="user-dropdown-menu" class="dropdown-menu" style="display: none;">
+
+                            @if(in_array(Auth::user()->global_role, ['ADMIN', 'SOPORTE']))
+                                <a href="{{ route('admin.dashboard') }}" style="font-weight: 700; color: #e53e3e;">
+                                     Ir al Backoffice
+                                </a>
+                                <div class="dropdown-divider"></div>
+                            @endif
+
                             <!-- Acceso al Panel B2B -->
                             <a href="{{ route('company.edit') }}" style="font-weight: 600; color: var(--color-tertiary);">
-                                💼 Mi Espacio de Trabajo
+                                Mi Espacio de Trabajo
                             </a>
 
                             <div class="dropdown-divider"></div>
