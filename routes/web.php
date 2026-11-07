@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminCompanyController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Auth\InvitationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanySelectionController;
 use App\Http\Controllers\CompanyTeamController;
@@ -19,6 +20,10 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+// Public Invitation Routes
+Route::get('/invitacion/{token}', [InvitationController::class, 'showAcceptForm'])->name('invitations.accept');
+Route::post('/invitacion/{token}', [InvitationController::class, 'accept'])->name('invitations.process');
 
 //Rutas del E-Commerce B2B
 Route::get('shop/products', [ProductCatalogController::class, 'index']) ->name('shop.products.index');
@@ -69,6 +74,7 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
     // Plataforma
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/empresas', [AdminCompanyController::class, 'index'])->name('companies.index');
+    Route::patch('/empresas/{company}/toggle-status', [AdminCompanyController::class, 'toggleStatus'])->name('companies.toggle-status');
     Route::get('/usuarios', [AdminUserController::class, 'index'])->name('users.index');
 
     // Catálogo
