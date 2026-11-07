@@ -1,0 +1,50 @@
+@extends('layouts.public')
+
+@section('title', 'Kits y Soluciones IoT | Sensoría')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/pages/shop/product-detail.css') }}">
+@endpush
+
+@section('content')
+    <div class="shop-page-wrapper">
+        <div class="shop-container">
+
+            <!-- Encabezado comercial -->
+            <div class="shop-header">
+                <h1 class="page-title">Kits Modulares & Dispositivos IoT</h1>
+                <p class="page-subtitle">Soluciones Plug & Play para automatizar, asegurar y monitorear tu PYME.</p>
+            </div>
+
+            <!-- Rejilla de Productos / Kits en CSS Puro -->
+            <div class="shop-grid">
+                @forelse($products as $product)
+                    <div class="product-card glass-surface">
+                        <div>
+                            <span class="badge-category">{{ $product->category->name ?? 'Dispositivo' }}</span>
+                            <h3 class="card-title">{{ $product->name }}</h3>
+                            <p class="card-desc">{{ $product->description }}</p>
+                        </div>
+
+                        <div class="card-footer">
+                            <span class="card-price">${{ number_format($product->price, 2) }}</span>
+                            <a href="{{ route('shop.products.show', $product->id) }}" class="btn-sensoria">
+                                Ver detalle
+                            </a>
+                        </div>
+                    </div>
+                @empty
+                    <div style="text-align: center; padding: 3rem 0; color: #6b7280;">
+                        <p>No hay productos ni kits disponibles por el momento.</p>
+                    </div>
+                @endforelse
+            </div>
+
+            <!-- Paginación -->
+            <div style="margin-top: 3rem;">
+                {{ $products->links() }}
+            </div>
+
+        </div>
+    </div>
+@endsection

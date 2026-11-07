@@ -27,7 +27,11 @@
 
             <ul class="nav-links">
                 <li><a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}">Inicio</a></li>
-                <li><a href="#" class="{{ request()->routeIs('shop.*') ? 'active' : '' }}">Kits Modulares</a></li>
+                <li>
+                    <a href="{{ route('shop.products.index') }}" class="{{ request()->routeIs('shop.products.*') ? 'active' : '' }}">
+                        Kits Modulares
+                    </a>
+                </li>
             </ul>
 
             <div>

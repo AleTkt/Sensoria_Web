@@ -1,0 +1,241 @@
+/* public/css/pages/shop/product-detail.css */
+:root {
+    --color-neutral: #FAFAF7;
+    --color-primary: #589445;
+    --color-secondary: #486732;
+    --color-tertiary: #1B3D1A;
+}
+
+/* =========================================
+   ESTILOS GENERALES Y LAYOUT
+   ========================================= */
+.shop-page-wrapper {
+    background-color: var(--color-neutral);
+    min-height: 100vh;
+    padding: 3rem 1.5rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.shop-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* =========================================
+   VISTA: CATÁLOGO (INDEX)
+   ========================================= */
+.shop-header {
+    margin-bottom: 3rem;
+}
+
+.page-title {
+    color: var(--color-tertiary);
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+    color: #4b5563;
+    font-size: 1.125rem;
+}
+
+/* Cuadrícula de productos (Reemplaza grid-cols-3 de Tailwind) */
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+/* =========================================
+   COMPONENTES: TARJETAS (CARDS)
+   ========================================= */
+/* Hereda del .glass-surface global si existe, o aplica aquí el efecto */
+.product-card {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(27, 61, 26, 0.05);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(27, 61, 26, 0.08);
+}
+
+.badge-category {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    background-color: rgba(88, 148, 69, 0.15);
+    color: var(--color-tertiary);
+    margin-bottom: 1rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-tertiary);
+    margin: 0 0 0.5rem 0;
+}
+
+.card-desc {
+    font-size: 0.875rem;
+    color: #6b7280;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.card-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-price {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.btn-sensoria {
+    background-color: var(--color-secondary);
+    color: #FFFFFF;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.6rem 1.2rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-sensoria:hover {
+    background-color: var(--color-tertiary);
+}
+
+/* =========================================
+   VISTA: DETALLE DE PRODUCTO (SHOW)
+   ========================================= */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-secondary);
+    text-decoration: none;
+    margin-bottom: 2rem;
+}
+
+.back-link:hover {
+    color: var(--color-tertiary);
+}
+
+.detail-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .detail-layout {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.product-image-container {
+    background-color: rgba(88, 148, 69, 0.05);
+    border: 1px solid rgba(88, 148, 69, 0.1);
+    border-radius: 16px;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Regla para el ícono según directiva */
+.placeholder-icon {
+    font-size: 4rem; /* Restringe el tamaño del ícono */
+    color: var(--color-tertiary);
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+.placeholder-text {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-tertiary);
+}
+
+.detail-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--color-tertiary);
+    margin: 0 0 1rem 0;
+}
+
+.detail-price {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    margin: 0 0 1.5rem 0;
+}
+
+.detail-desc {
+    font-size: 1rem;
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.form-add-cart {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-top: 1.5rem;
+}
+
+.qty-input {
+    width: 80px;
+    padding: 0.8rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.btn-add-cart {
+    flex: 1;
+    background-color: var(--color-secondary);
+    color: #FFFFFF;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-add-cart:hover {
+    background-color: var(--color-tertiary);
+    transform: translateY(-1px);
+}
