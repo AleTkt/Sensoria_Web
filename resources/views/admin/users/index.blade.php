@@ -83,22 +83,36 @@
                     </td>
                     <td>{{ $user->created_at->format('d/m/Y') }}</td>
                     <td style="text-align: right;">
-                        <button onclick="document.getElementById('modal-manage-{{ $user->id }}').style.display='flex'" title="Gestionar Usuario" style="background: none; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 4px; cursor: pointer; color: #475569; font-weight: 600;">
-                            Gestionar ⚙️
-                        </button>
+                        <div style="display: flex; justify-content: flex-end; gap: 6px;">
+                            {{-- Botón Editar --}}
+                            <button onclick="document.getElementById('modal-edit-{{ $user->id }}').style.display='flex'" title="Editar Usuario" style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 4px; cursor: pointer; color: #475569;">
+                                ✏️
+                            </button>
+
+                            {{-- Botón Modal Restablecer Contraseña --}}
+                            <button onclick="document.getElementById('modal-reset-{{ $user->id }}').style.display='flex'" title="Restablecer Contraseña" style="background: #e0f2fe; border: 1px solid #bae6fd; padding: 6px 10px; border-radius: 4px; cursor: pointer; color: #0369a1;">
+                                🔑
+                            </button>
+
+                            {{-- Botón Modal Suspender / Reactivar --}}
+                            @if($user->id !== auth()->id())
+                                <button onclick="document.getElementById('modal-status-{{ $user->id }}').style.display='flex'" title="{{ $user->is_active ? 'Suspender Usuario' : 'Reactivar Usuario' }}" style="background: {{ $user->is_active ? '#fee2e2' : '#dcfce3' }}; border: 1px solid {{ $user->is_active ? '#fecaca' : '#bbf7d0' }}; padding: 6px 10px; border-radius: 4px; cursor: pointer;">
+                                    {{ $user->is_active ? '🚫' : '✅' }}
+                                </button>
+                            @endif
+                        </div>
                     </td>
                 </tr>
 
-                {{-- Modal de Gestión por Usuario --}}
-                <div id="modal-manage-{{ $user->id }}" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
-                    <div style="background: white; width: 100%; max-width: 500px; border-radius: 8px; padding: 24px; box-sizing: border-box; position: relative;">
+                {{-- Modal de Edición --}}
+                <div id="modal-edit-{{ $user->id }}" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+                    <div style="background: white; width: 100%; max-width: 450px; border-radius: 8px; padding: 24px; box-sizing: border-box; position: relative; text-align: left;">
 
-                        <button onclick="document.getElementById('modal-manage-{{ $user->id }}').style.display='none'" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
+                        <button onclick="document.getElementById('modal-edit-{{ $user->id }}').style.display='none'" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
 
-                        <h3 style="margin-top: 0; margin-bottom: 20px; color: #0f172a;">Gestionar Usuario: {{ $user->name }}</h3>
+                        <h3 style="margin-top: 0; margin-bottom: 20px; color: #0f172a;">Editar Usuario: {{ $user->name }}</h3>
 
-                        {{-- Formulario de Edición --}}
-                        <form action="{{ route('admin.users.update', $user->id) }}" method="POST" style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0;">
+                        <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
                             @csrf
                             @method('PUT')
 
@@ -121,35 +135,62 @@
                                 </select>
                             </div>
 
-                            <button type="submit" style="width: 100%; background: #2563eb; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: 600; cursor: pointer;">
-                                Guardar Cambios
-                            </button>
+                            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px;">
+                                <button type="button" onclick="document.getElementById('modal-edit-{{ $user->id }}').style.display='none'" style="background: white; border: 1px solid #cbd5e1; padding: 10px 16px; border-radius: 4px; cursor: pointer; color: #475569; font-weight: 600;">Cancelar</button>
+                                <button type="submit" style="background: #2563eb; color: white; border: none; padding: 10px 16px; border-radius: 4px; font-weight: 600; cursor: pointer;">Guardar Cambios</button>
+                            </div>
                         </form>
-
-                        {{-- Acciones Peligrosas / Extras --}}
-                        <div style="display: flex; gap: 10px;">
-                            {{-- Restablecer Contraseña --}}
-                            <form action="{{ route('admin.users.password-reset', $user->id) }}" method="POST" style="flex: 1;">
-                                @csrf
-                                <button type="submit" onclick="return confirm('¿Enviar correo de restablecimiento de contraseña a este usuario?')" style="width: 100%; background: #f8fafc; color: #475569; border: 1px solid #cbd5e1; padding: 10px; border-radius: 4px; font-weight: 600; cursor: pointer;">
-                                    🔑 Enviar Password Reset
-                                </button>
-                            </form>
-
-                            {{-- Suspender / Reactivar (Bloqueamos si es el mismo usuario logueado) --}}
-                            @if($user->id !== auth()->id())
-                                <form action="{{ route('admin.users.toggle-status', $user->id) }}" method="POST" style="flex: 1;">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit" onclick="return confirm('¿Estás seguro de cambiar el estado de acceso de este usuario?')" style="width: 100%; background: {{ $user->is_active ? '#fee2e2' : '#dcfce3' }}; color: {{ $user->is_active ? '#991b1b' : '#166534' }}; border: 1px solid {{ $user->is_active ? '#fecaca' : '#bbf7d0' }}; padding: 10px; border-radius: 4px; font-weight: 600; cursor: pointer;">
-                                        {{ $user->is_active ? '🚫 Suspender Acceso' : '✅ Reactivar Acceso' }}
-                                    </button>
-                                </form>
-                            @endif
-                        </div>
-
                     </div>
                 </div>
+
+                {{-- Modal Confirmación Restablecer Contraseña --}}
+                <div id="modal-reset-{{ $user->id }}" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+                    <div style="background: white; width: 100%; max-width: 400px; border-radius: 8px; padding: 24px; box-sizing: border-box; position: relative; text-align: left;">
+                        <button onclick="document.getElementById('modal-reset-{{ $user->id }}').style.display='none'" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
+
+                        <h3 style="margin-top: 0; margin-bottom: 16px; color: #0f172a;">Restablecer Contraseña</h3>
+                        <p style="color: #475569; margin-bottom: 24px;">¿Estás seguro que deseas enviar un correo de restablecimiento de contraseña al usuario <strong>{{ $user->name }}</strong>?</p>
+
+                        <form action="{{ route('admin.users.password-reset', $user->id) }}" method="POST">
+                            @csrf
+                            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                                <button type="button" onclick="document.getElementById('modal-reset-{{ $user->id }}').style.display='none'" style="background: white; border: 1px solid #cbd5e1; padding: 10px 16px; border-radius: 4px; cursor: pointer; color: #475569; font-weight: 600;">Cancelar</button>
+                                <button type="submit" style="background: #0369a1; color: white; border: none; padding: 10px 16px; border-radius: 4px; font-weight: 600; cursor: pointer;">Sí, Enviar Correo</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                {{-- Modal Confirmación Suspender/Reactivar --}}
+                @if($user->id !== auth()->id())
+                    <div id="modal-status-{{ $user->id }}" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+                        <div style="background: white; width: 100%; max-width: 400px; border-radius: 8px; padding: 24px; box-sizing: border-box; position: relative; text-align: left;">
+                            <button onclick="document.getElementById('modal-status-{{ $user->id }}').style.display='none'" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
+
+                            <h3 style="margin-top: 0; margin-bottom: 16px; color: #0f172a;">
+                                {{ $user->is_active ? 'Suspender Usuario' : 'Reactivar Usuario' }}
+                            </h3>
+                            <p style="color: #475569; margin-bottom: 24px;">
+                                ¿Estás seguro que deseas {{ $user->is_active ? 'suspender' : 'reactivar' }} al usuario <strong>{{ $user->name }}</strong>?
+                                @if($user->is_active)
+                                    <br><br><span style="color: #dc2626; font-size: 0.85rem;">Al suspenderlo, no podrá acceder a la plataforma. Sus datos e historial se mantendrán intactos.</span>
+                                @endif
+                            </p>
+
+                            <form action="{{ route('admin.users.toggle-status', $user->id) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                                    <button type="button" onclick="document.getElementById('modal-status-{{ $user->id }}').style.display='none'" style="background: white; border: 1px solid #cbd5e1; padding: 10px 16px; border-radius: 4px; cursor: pointer; color: #475569; font-weight: 600;">Cancelar</button>
+                                    <button type="submit" style="background: {{ $user->is_active ? '#dc2626' : '#16a34a' }}; color: white; border: none; padding: 10px 16px; border-radius: 4px; font-weight: 600; cursor: pointer;">
+                                        Sí, {{ $user->is_active ? 'Suspender' : 'Reactivar' }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                @endif
+
             @endforeach
             </tbody>
         </table>
@@ -201,7 +242,7 @@
             $('#users-table').DataTable({
                 order: [[0, 'desc']],
                 columnDefs: [
-                    { orderable: false, targets: 6 } // La columna de acciones (ahora es la índice 6 porque agregamos Estado)
+                    { orderable: false, targets: 6 }
                 ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'

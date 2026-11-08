@@ -65,7 +65,7 @@
                             <!-- Módulo B2C (Facturación y Perfil) -->
                             <a href="#" style="opacity: 0.7;" title="Próximamente"><i class="fa-solid fa-box"></i>  Mis Pedidos</a>
                             <a href="#" style="opacity: 0.7;" title="Próximamente"><i class="fa-solid fa-wallet"></i>  Billetera y Pagos</a>
-                            <a href="#"><i class="fa-solid fa-user-gear"></i>  Ajustes de Perfil</a>
+                            <a href="{{'profile'}}"><i class="fa-solid fa-user-gear"></i>  Ajustes de Perfil</a>
 
                             <div class="dropdown-divider"></div>
 
