@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Http\Controllers\Api\V1;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Device;
+use App\Models\Hub;
+
+class DeviceController extends Controller
+{
+    public function index(Request $request)
+    {
+        $companyId = $request->header('X-Company-Id');
+
+        if (!$companyId) {
+            return response()->json(['message' => 'Falta el contexto de la empresa (X-Company-Id)'], 400);
+        }
+
+        $belongsToCompany = $request->user()->companies()->where('companies.id', $companyId)->exists();
+
+        if (!$belongsToCompany) {
+            return response()->json(['message' => 'No autorizado para ver este Workspace'], 403);
+        }
+
+        $hubIds = Hub::where('company_id', $companyId)->pluck('id');
+
+        $devices = Device::whereIn('hub_id', $hubIds)->get()->map(function ($device) {
+            return [
+                'id' => (string) $device->id,
+                'name' => $device->name,
+                'type' => $device->type,
+                'lastReading' => $device->last_reading ?? 'Sin datos',
+                'isOnline' => (bool) ($device->is_active ?? true)
+            ];
+        });
+
+        return response()->json([
+            'data' => $devices
+        ], 200);
+    }
+}
