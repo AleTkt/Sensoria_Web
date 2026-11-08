@@ -77,6 +77,12 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/empresas/{company}/toggle-status', [AdminCompanyController::class, 'toggleStatus'])->name('companies.toggle-status');
     Route::get('/usuarios', [AdminUserController::class, 'index'])->name('users.index');
 
+    Route::get('/usuarios', [AdminUserController::class, 'index'])->name('users.index');
+    Route::post('/usuarios', [AdminUserController::class, 'store'])->name('users.store');
+    Route::put('/usuarios/{user}', [AdminUserController::class, 'update'])->name('users.update');
+    Route::patch('/usuarios/{user}/estado', [AdminUserController::class, 'toggleStatus'])->name('users.toggle-status');
+    Route::post('/usuarios/{user}/password-reset', [AdminUserController::class, 'sendPasswordReset'])->name('users.password-reset');
+
     // Catálogo
     // Route::get('/catalogo/kits', [KitController::class, 'index'])->name('catalog.kits');
     // Route::get('/catalogo/hardware', [HardwareController::class, 'index'])->name('catalog.hardware');

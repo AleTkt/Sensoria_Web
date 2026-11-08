@@ -9,7 +9,12 @@
 
     <!-- CSS Puro -->
     <link rel="stylesheet" href="{{ asset('css/base/variables.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/base/animations.css') }}"> <!-- ANIMACIONES -->
     <link rel="stylesheet" href="{{ asset('css/layouts/public.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/toast.css') }}"> <!-- TOASTS -->
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     @stack('styles')
 </head>
@@ -18,7 +23,7 @@
 
     <!-- Navbar -->
     <div class="navbar-wrapper">
-        <nav class="navbar">
+        <nav class="navbar animate-fade-in-up">
             <div class="brand">
                 <a href="{{ url('/') }}" style="text-decoration: none;">
                     <h1>Sensoría <span>IoT</span></h1>
@@ -37,44 +42,44 @@
             <div>
                 @auth
                     <div class="dropdown-container">
-                        <button type="button" id="user-menu-btn" onclick="toggleUserDropdown(event)" style="background: var(--color-primary); color: white; border: none; padding: 10px 18px; border-radius: var(--radius-button); font-weight: 600; cursor: pointer;">
-                            {{ Auth::user()->name }} &#9662;
+                        <button type="button" id="user-menu-btn" onclick="toggleUserDropdown(event)" style="background: var(--color-primary); color: white; border: none; padding: 10px 18px; border-radius: var(--radius-button); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-regular fa-circle-user"></i> {{ Auth::user()->name }} <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem;"></i>
                         </button>
 
                         <div id="user-dropdown-menu" class="dropdown-menu" style="display: none;">
 
                             @if(in_array(Auth::user()->global_role, ['ADMIN', 'SOPORTE']))
                                 <a href="{{ route('admin.dashboard') }}" style="font-weight: 700; color: #e53e3e;">
-                                     Ir al Backoffice
+                                    <i class="fa-solid fa-shield-halved"></i>  Ir al Backoffice
                                 </a>
                                 <div class="dropdown-divider"></div>
                             @endif
 
                             <!-- Acceso al Panel B2B -->
                             <a href="{{ route('company.edit') }}" style="font-weight: 600; color: var(--color-tertiary);">
-                                Mi Espacio de Trabajo
+                                <i class="fa-solid fa-building"></i>  Mi Espacio de Trabajo
                             </a>
 
                             <div class="dropdown-divider"></div>
 
                             <!-- Módulo B2C (Facturación y Perfil) -->
-                            <a href="#" style="opacity: 0.7;" title="Próximamente">Mis Pedidos</a>
-                            <a href="#" style="opacity: 0.7;" title="Próximamente">Billetera y Pagos</a>
-                            <a href="#">Ajustes de Perfil</a>
+                            <a href="#" style="opacity: 0.7;" title="Próximamente"><i class="fa-solid fa-box"></i>  Mis Pedidos</a>
+                            <a href="#" style="opacity: 0.7;" title="Próximamente"><i class="fa-solid fa-wallet"></i>  Billetera y Pagos</a>
+                            <a href="#"><i class="fa-solid fa-user-gear"></i>  Ajustes de Perfil</a>
 
                             <div class="dropdown-divider"></div>
 
-                            <form method="POST" action="{{ route('logout') }}">
+                            <form method="POST" action="{{ route('logout') }}" class="form-with-loading">
                                 @csrf
-                                <button type="submit" style="background: none; border: none; width: 100%; text-align: left; padding: 10px 16px; color: #e53e3e; cursor: pointer; font-weight: 600;">
-                                    Cerrar Sesión
+                                <button type="submit" class="btn-submit-loading" style="background: none; border: none; width: 100%; text-align: left; padding: 10px 16px; color: #e53e3e; cursor: pointer; font-weight: 600;">
+                                    <i class="fa-solid fa-power-off"></i>  Cerrar Sesión
                                 </button>
                             </form>
                         </div>
                     </div>
                 @else
                     <a href="{{ route('login') }}" style="background-color: var(--color-primary); color: white; padding: 10px 20px; text-decoration: none; border-radius: var(--radius-button); font-weight: 600;">
-                        Acceso Clientes
+                        Acceso Clientes <i class="fa-solid fa-right-to-bracket" style="margin-left: 5px;"></i>
                     </a>
                 @endauth
             </div>
@@ -82,7 +87,7 @@
     </div>
 
     <!-- Contenido Inyectado mediante Blade Tradicional -->
-    <main class="main-content">
+    <main class="main-content animate-fade-in-up" style="animation-delay: 0.1s;">
         @yield('content')
     </main>
 
@@ -95,7 +100,12 @@
 
 </div>
 
-<!-- JavaScript Nativo para Interacciones del Layout -->
+<!-- Componentes Globales -->
+@include('layouts.toast')
+
+<!-- JavaScript Nativo -->
+<script src="{{ asset('js/toast.js') }}"></script>
+<script src="{{ asset('js/loading-buttons.js') }}"></script>
 <script>
     function toggleUserDropdown(event) {
         event.stopPropagation();

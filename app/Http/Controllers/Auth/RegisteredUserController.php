@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\RegisterRequest; // <- Importamos la nueva Request
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -22,6 +22,9 @@ class RegisteredUserController extends Controller
 
     public function store(RegisterRequest $request): RedirectResponse
     {
+        // Si hay errores de validación, RegisterRequest devolverá back()
+        // automáticamente con los errores, y nuestro Toast de error de validación los mostrará.
+
         $validated = $request->validated();
 
         DB::transaction(function () use ($validated) {
@@ -53,8 +56,12 @@ class RegisteredUserController extends Controller
 
             event(new Registered($user));
             Auth::login($user);
+
+            // Asignamos la empresa actual a la sesión, igual que en el login
+            session(['current_company_id' => $company->id]);
         });
 
-        return redirect(route('dashboard'));
+        return redirect(route('dashboard'))
+            ->with('success', '¡Registro completado! Tu entorno ha sido creado exitosamente.');
     }
 }

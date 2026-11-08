@@ -9,18 +9,15 @@ use Illuminate\Http\RedirectResponse;
 
 class CompanySelectionController extends Controller
 {
-    /**
-     * Muestra la pantalla para elegir el entorno de trabajo.
-     */
     public function show(Request $request): View|RedirectResponse
     {
         $user = Auth::user();
         $companies = $user->companies()->wherePivot('is_active', true)->get();
 
-        // Si solo tiene una empresa, no hace falta mostrar la pantalla de selección
         if ($companies->count() <= 1) {
             $companyId = $companies->first()?->id;
             session(['current_company_id' => $companyId]);
+
             return redirect()->route('dashboard');
         }
 
@@ -29,22 +26,28 @@ class CompanySelectionController extends Controller
         ]);
     }
 
-    /**
-     * Establece la empresa elegida en la sesión activa.
-     */
     public function setCompany(Request $request): RedirectResponse
     {
         $request->validate([
             'company_id' => ['required', 'integer'],
+        ], [
+            // Mensaje personalizado para el Toast si manipulan el HTML
+            'company_id.required' => 'Debes seleccionar un espacio de trabajo para continuar.'
         ]);
 
         $user = Auth::user();
 
-        // Validar que la empresa realmente pertenezca al usuario autenticado
-        $company = $user->companies()->where('companies.id', $request->company_id)->firstOrFail();
+        // Si intentan inyectar un ID de empresa que no les pertenece
+        $company = $user->companies()->where('companies.id', $request->company_id)->first();
+
+        if (!$company) {
+            return back()->with('error', 'No tienes permiso para acceder a este entorno.');
+        }
 
         session(['current_company_id' => $company->id]);
 
-        return redirect()->route('dashboard');
+        // Al cambiar de empresa, les mostramos un Toast informativo
+        return redirect()->route('dashboard')
+            ->with('info', "Has ingresado al entorno de {$company->trade_name}.");
     }
 }
