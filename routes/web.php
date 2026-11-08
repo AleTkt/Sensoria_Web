@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\AdminCompanyController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\Products\KitController;
+use App\Http\Controllers\Admin\Products\HardwareController;
 use App\Http\Controllers\Auth\InvitationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanySelectionController;
@@ -84,13 +86,12 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/usuarios/{user}/password-reset', [AdminUserController::class, 'sendPasswordReset'])->name('users.password-reset');
 
     // Catálogo
-    // Route::get('/catalogo/kits', [KitController::class, 'index'])->name('catalog.kits');
-    // Route::get('/catalogo/hardware', [HardwareController::class, 'index'])->name('catalog.hardware');
-    // Route::get('/catalogo/categorias', [CategoryController::class, 'index'])->name('catalog.categories');
+      Route::get('/Products/kits', [KitController::class, 'index'])->name('catalog.kits');
+      Route::get('/Products/hardware', [HardwareController::class, 'index'])->name('catalog.hardware');
 
     // Logística y Soporte
     // Route::get('/pedidos', [OrderController::class, 'index'])->name('orders.index');
-    // Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+    // Route::get('/tickets', [TicketController::class,y  'index'])->name('tickets.index');
     // Route::get('/bitacora', [AdminLogController::class, 'index'])->name('logs.index');
 });
 

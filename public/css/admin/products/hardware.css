@@ -1,0 +1,172 @@
+
+
+    /* Estilos del Modal (Mismos que aplicaste en tu layout global) */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+.modal-content { width: 100%; max-width: 650px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+.modal-header { padding: 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+.modal-header h2 { margin: 0; font-size: 1.25rem; color: var(--color-tertiary); }
+.btn-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280; }
+.modal-body { padding: 1.5rem; max-height: 70vh; overflow-y: auto; }
+.modal-footer { padding: 1rem 1.5rem; background: #f9fafb; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; gap: 1rem; }
+.form-control { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; }
+
+    /* =========================================
+       ESTILOS ADAPTABLES PARA MODALES (CSS PURO)
+       ========================================= */
+
+    /* Fondo oscuro y centrado */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem; /* Espaciado de seguridad en móviles */
+        box-sizing: border-box;
+    }
+
+    /* Contenedor del Modal */
+    .modal-content {
+        width: 100%;
+        max-width: 650px;
+        max-height: 90vh; /* No sobrepasa la pantalla verticalmente */
+        background: #ffffff;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        animation: modalFadeIn 0.2s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #ffffff;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--color-tertiary, #1B3D1A);
+    }
+
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        line-height: 1;
+        cursor: pointer;
+        color: #9ca3af;
+        transition: color 0.15s ease;
+    }
+
+    .btn-close:hover {
+        color: #111827;
+    }
+
+    /* Cuerpo con scroll propio si los campos sobrepasan la pantalla */
+    .modal-body {
+        padding: 1.5rem;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .modal-footer {
+        padding: 1rem 1.5rem;
+        background: #f9fafb;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+    }
+
+    /* =========================================
+       FORMULARIO Y GRID RESPONSIVE
+       ========================================= */
+
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+        font-size: 0.875rem;
+        color: #374151;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.65rem 0.85rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--color-primary, #589445);
+        box-shadow: 0 0 0 3px rgba(88, 148, 69, 0.15);
+    }
+
+    /* Filas compuestas que se ajustan en móviles */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr; /* 1 sola columna por defecto (Móvil) */
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+    }
+
+    /* Pantallas medianas en adelante: 2 o 3 columnas */
+    @media (min-width: 640px) {
+        .form-row-2 {
+            grid-template-columns: 1fr 2fr;
+        }
+        .form-row-3 {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: #374151;
+    }
+
+    .alert-danger-custom {
+        background-color: #fee2e2;
+        color: #991b1b;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.25rem;
+    }
+
+    .alert-danger-custom ul {
+        margin: 0;
+        padding-left: 1.25rem;
+    }
