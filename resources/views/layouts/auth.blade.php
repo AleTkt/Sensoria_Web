@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,6 +11,9 @@
     <!-- CSS Puro -->
     <link rel="stylesheet" href="{{ asset('css/base/variables.css') }}">
     <link rel="stylesheet" href="{{ asset('css/layouts/public.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/toast.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/base/animations.css') }}">
+
 
     @stack('styles')
 </head>
@@ -31,5 +35,8 @@
 </div>
 
 @stack('scripts')
+@include('layouts.toast')
+<script src="{{ asset('js/toast.js') }}"></script>
+<script src="{{ asset('js/loading-buttons.js') }}"></script>
 </body>
 </html>

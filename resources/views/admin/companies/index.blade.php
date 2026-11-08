@@ -146,7 +146,7 @@
 
         // Cerrar modal al hacer clic fuera de la caja blanca
         window.onclick = function(event) {
-            if (event.target == modal) {
+            if (event.target === modal) {
                 closeModal();
             }
         }

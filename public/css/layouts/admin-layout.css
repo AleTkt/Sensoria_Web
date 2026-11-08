@@ -1,12 +1,12 @@
-/* Variables específicas del Backoffice */
+/* Variables específicas del Backoffice basadas en la Paleta Corporativa */
 :root {
-    --admin-bg-sidebar: #0f172a;
-    --admin-text-sidebar: #94a3b8;
-    --admin-hover-sidebar: #1e293b;
-    --admin-active-sidebar: #38bdf8;
-    --admin-bg-banner: #dc2626;
-    --admin-bg-main: #f8fafc;
-    --admin-border: #e2e8f0;
+    --admin-bg-sidebar: var(--color-tertiary, #1B3D1A); /* Verde muy oscuro corporativo */
+    --admin-text-sidebar: rgba(255, 255, 255, 0.7);
+    --admin-hover-sidebar: rgba(255, 255, 255, 0.05);
+    --admin-active-sidebar: var(--color-primary, #589445); /* Verde primario para destacar */
+    --admin-bg-banner: var(--color-secondary, #486732); /* Verde secundario para el banner de seguridad */
+    --admin-bg-main: var(--color-neutral, #FAFAF7); /* Fondo neutral corporativo */
+    --admin-border: rgba(27, 61, 26, 0.15); /* Bordes sutiles basados en el color terciario */
 }
 
 body.admin-body {
@@ -14,9 +14,10 @@ body.admin-body {
     padding: 0;
     background-color: var(--admin-bg-main);
     overflow: hidden;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
 
+/* Banner de Seguridad Superior */
 .admin-top-banner {
     background-color: var(--admin-bg-banner);
     color: #ffffff;
@@ -40,11 +41,12 @@ body.admin-body {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
+    box-shadow: 4px 0 15px rgba(27, 61, 26, 0.1);
 }
 
 .admin-brand {
     padding: 24px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .admin-brand h2 {
@@ -52,6 +54,7 @@ body.admin-body {
     margin: 0;
     font-size: 1.4rem;
     font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
 .admin-brand span {
@@ -71,8 +74,9 @@ body.admin-body {
 }
 
 .nav-section h3 {
-    color: rgba(255,255,255,0.3);
+    color: rgba(255, 255, 255, 0.4);
     font-size: 0.7rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
     padding: 0 24px;
@@ -87,7 +91,7 @@ body.admin-body {
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 500;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
 
 .nav-section a:hover {
@@ -97,23 +101,41 @@ body.admin-body {
 
 .nav-section a.active {
     background-color: var(--admin-hover-sidebar);
-    color: var(--admin-active-sidebar);
+    color: #ffffff;
     border-left: 4px solid var(--admin-active-sidebar);
+}
+
+.nav-section a.active i {
+    color: var(--admin-active-sidebar);
 }
 
 /* Footer de Usuario */
 .admin-user-footer {
     padding: 16px 24px;
-    background-color: rgba(0,0,0,0.25);
-    border-top: 1px solid rgba(255,255,255,0.05);
+    background-color: rgba(0, 0, 0, 0.15); /* Ligeramente más oscuro que el fondo del sidebar */
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.user-info { display: flex; flex-direction: column; }
-.user-name { color: #ffffff; font-size: 0.9rem; font-weight: 600; }
-.user-role { color: var(--admin-active-sidebar); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; }
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.user-role {
+    color: var(--admin-active-sidebar);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
 
 .btn-logout {
     background: none;
@@ -121,8 +143,12 @@ body.admin-body {
     color: var(--admin-text-sidebar);
     cursor: pointer;
     font-weight: 600;
+    transition: color 0.2s;
 }
-.btn-logout:hover { color: var(--admin-bg-banner); }
+
+.btn-logout:hover {
+    color: #e53e3e; /* Único color fuera de paleta por ser destructivo */
+}
 
 /* Área Principal */
 .admin-main {
@@ -139,12 +165,14 @@ body.admin-body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(27, 61, 26, 0.05);
 }
 
 .header-titles h1 {
     margin: 0;
     font-size: 1.5rem;
-    color: #1e293b;
+    font-weight: 700;
+    color: var(--admin-bg-sidebar); /* Texto oscuro corporativo */
 }
 
 .admin-content {
@@ -155,27 +183,38 @@ body.admin-body {
 
 /* Ajustes genéricos para DataTables dentro de nuestro diseño */
 .dataTables_wrapper .dataTables_filter input {
-    border: 1px solid #cbd5e1;
+    border: 1px solid rgba(27, 61, 26, 0.2);
     border-radius: 6px;
     padding: 6px 12px;
     outline: none;
     margin-left: 8px;
+    color: var(--admin-bg-sidebar);
 }
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    border-color: var(--admin-active-sidebar);
+}
+
 .dataTables_wrapper .dataTables_length select {
-    border: 1px solid #cbd5e1;
+    border: 1px solid rgba(27, 61, 26, 0.2);
     border-radius: 6px;
     padding: 4px;
     outline: none;
+    color: var(--admin-bg-sidebar);
 }
+
 table.dataTable thead th {
-    border-bottom: 2px solid var(--admin-border);
-    background-color: #f1f5f9;
-    color: #475569;
+    border-bottom: 2px solid var(--admin-border) !important;
+    background-color: rgba(27, 61, 26, 0.03);
+    color: var(--admin-bg-sidebar);
     font-size: 0.85rem;
     text-transform: uppercase;
+    font-weight: 700;
 }
+
 table.dataTable tbody td {
     border-bottom: 1px solid var(--admin-border);
     vertical-align: middle;
-    color: #334155;
+    color: var(--admin-bg-sidebar);
+    font-size: 0.95rem;
 }

@@ -1,0 +1,123 @@
+/* public/css/pages/dashboard.css */
+
+.dashboard-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+}
+
+.dashboard-header {
+    margin-bottom: 48px;
+}
+
+.dashboard-subtitle {
+    color: var(--color-primary);
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dashboard-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--color-tertiary);
+    margin: 12px 0;
+    letter-spacing: -0.5px;
+}
+
+.dashboard-desc {
+    color: #64748b;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 600px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 32px;
+}
+
+/* Tarjetas Interactivas */
+.dashboard-card {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    cursor: pointer;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(27, 61, 26, 0.08);
+}
+
+/* Acentos por Módulo */
+.card-module-b { border-left: 4px solid var(--color-primary); }
+.card-module-a { border-left: 4px solid var(--color-tertiary); }
+
+.card-header-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.card-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.badge-b { background: rgba(88, 148, 69, 0.1); color: var(--color-primary); }
+.badge-a { background: rgba(27, 61, 26, 0.08); color: var(--color-tertiary); }
+
+.card-icon {
+    font-size: 1.5rem;
+}
+
+.icon-b { color: var(--color-primary); }
+.icon-a { color: var(--color-tertiary); }
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-tertiary);
+    margin-bottom: 12px;
+}
+
+.card-text {
+    color: #64748b;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.card-action {
+    margin-top: 32px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: gap 0.2s ease;
+}
+
+.action-b { color: var(--color-primary); }
+.action-a { color: var(--color-tertiary); }
+
+/* Animación de la flecha al hacer hover en la tarjeta */
+.dashboard-card:hover .card-action {
+    gap: 14px;
+}

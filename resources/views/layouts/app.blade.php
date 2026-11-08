@@ -9,7 +9,12 @@
 
     <!-- CSS Puro -->
     <link rel="stylesheet" href="{{ asset('css/base/variables.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/base/animations.css') }}"> <!-- ANIMACIONES -->
     <link rel="stylesheet" href="{{ asset('css/layouts/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/toast.css') }}"> <!-- TOASTS -->
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     @stack('styles')
 </head>
@@ -17,7 +22,7 @@
 <div class="app-layout-container">
 
     <!-- Sidebar Oscuro -->
-    <aside class="app-sidebar">
+    <aside class="app-sidebar animate-fade-in-up"> <!-- ANIMACIÓN -->
         <a href="{{ url('/') }}" class="brand">
             Sensoría <span>IoT</span>
         </a>
@@ -25,12 +30,12 @@
         <nav class="sidebar-nav">
             <!-- Opción para regresar al sitio público -->
             <a href="{{ url('/') }}" class="nav-link-return">
-                <i class="icon-home"></i> Volver al Sitio Principal
+                <i class="fa-solid fa-house"></i> Volver al Sitio Principal
             </a>
 
             @if(in_array(Auth::user()->global_role, ['ADMIN', 'SOPORTE']))
                 <a href="{{ route('admin.dashboard') }}" style="color: #feb2b2; background-color: rgba(229, 62, 62, 0.1); margin-top: 8px;">
-                    Regresar al Backoffice
+                    <i class="fa-solid fa-shield-halved"></i> Regresar al Backoffice
                 </a>
             @endif
 
@@ -39,13 +44,13 @@
             <!-- BLOQUE 1: Módulo D (IoT y Operaciones) - Próximamente -->
             <span style="display: block; padding: 0 16px; font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Operativa IoT</span>
             <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
-                <i class="icon-dashboard"></i> Dashboard IoT
+                <i class="fa-solid fa-gauge-high"></i> Dashboard IoT
             </a>
             <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
-                <i class="icon-device"></i> Hubs y Dispositivos
+                <i class="fa-solid fa-microchip"></i> Hubs y Dispositivos
             </a>
             <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
-                <i class="icon-alert"></i> Centro de Alertas
+                <i class="fa-solid fa-bell"></i> Centro de Alertas
             </a>
 
             <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 12px 0;"></div>
@@ -53,16 +58,16 @@
             <!-- BLOQUE 2: Módulo A (Administración) -->
             <span style="display: block; padding: 0 16px; font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Organización</span>
             <a href="{{ route('company.edit') }}" class="{{ request()->routeIs('company.edit') || request()->routeIs('company.update') ? 'active' : '' }}">
-                <i class="icon-company"></i> Mi Empresa
+                <i class="fa-solid fa-building"></i> Mi Empresa
             </a>
             <a href="{{ route('company.team') }}" class="{{ request()->routeIs('company.team*') ? 'active' : '' }}">
-                <i class="icon-team"></i> Mi Equipo
+                <i class="fa-solid fa-users"></i> Mi Equipo
             </a>
             <a href="{{ route('company.settings') }}" class="{{ request()->routeIs('company.settings*') ? 'active' : '' }}">
-                <i class="icon-settings"></i> Ajustes del Espacio
+                <i class="fa-solid fa-gear"></i> Ajustes del Espacio
             </a>
             <a href="{{ route('company.activity') }}" class="{{ request()->routeIs('company.activity*') ? 'active' : '' }}">
-                <i class="icon-activity"></i> Bitácora de Actividad
+                <i class="fa-solid fa-list-check"></i> Bitácora de Actividad
             </a>
 
             <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 12px 0;"></div>
@@ -70,10 +75,10 @@
             <!-- BLOQUE 3: Módulos B y C (Facturación y Soporte) - Próximamente -->
             <span style="display: block; padding: 0 16px; font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Servicios</span>
             <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
-                <i class="icon-billing"></i> Facturación y Pagos
+                <i class="fa-solid fa-file-invoice-dollar"></i> Facturación y Pagos
             </a>
             <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
-                <i class="icon-support"></i> Soporte Técnico
+                <i class="fa-solid fa-headset"></i> Soporte Técnico
             </a>
         </nav>
 
@@ -85,10 +90,10 @@
                     <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6);">{{ Auth::user()->email }}</span>
                 </div>
 
-                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                <form method="POST" action="{{ route('logout') }}" class="form-with-loading" style="margin: 0;"> <!-- LOADING -->
                     @csrf
-                    <button type="submit" title="Cerrar Sesión" style="background: none; border: none; color: #feb2b2; font-size: 1.1rem; cursor: pointer; padding: 4px; display: flex; align-items: center;">
-                        <i class="icon-logout"> Cerrar sesión </i>
+                    <button type="submit" class="btn-submit-loading" title="Cerrar Sesión" style="background: none; border: none; color: #feb2b2; font-size: 1.1rem; cursor: pointer; padding: 4px; display: flex; align-items: center;">
+                        <i class="fa-solid fa-power-off"></i>
                     </button>
                 </form>
             </div>
@@ -98,45 +103,30 @@
     <!-- Contenido Principal -->
     <main class="app-main">
         <!-- Header del Panel -->
-        <header class="app-header">
+        <header class="app-header animate-fade-in-up" style="animation-delay: 0.1s;">
             <h2 class="page-title">@yield('header', 'Panel de Administración')</h2>
 
             <!-- Estado de empresa activa -->
             @if(session('current_company'))
                 <span style="font-size: 0.875rem; font-weight: 600; color: var(--color-primary); background: rgba(88, 148, 69, 0.1); padding: 6px 14px; border-radius: 20px;">
-                    {{ session('current_company')->trade_name }}
+                    <i class="fa-solid fa-building-user"></i> {{ session('current_company')->trade_name }}
                 </span>
             @endif
         </header>
 
-        <!-- Toast de Notificaciones Flash (Éxito / Error) -->
-        @if(session('success') || session('error') || session('warning'))
-            <div style="padding: 16px 32px 0 32px;">
-                @if(session('success'))
-                    <div style="background-color: rgba(88, 148, 69, 0.15); border: 1px solid var(--color-primary); color: var(--color-tertiary); padding: 12px 16px; border-radius: var(--radius-button); font-weight: 600; font-size: 0.9rem;">
-                        {{ session('success') }}
-                    </div>
-                @endif
-                @if(session('error'))
-                    <div style="background-color: rgba(229, 62, 62, 0.15); border: 1px solid #e53e3e; color: #9b2c2c; padding: 12px 16px; border-radius: var(--radius-button); font-weight: 600; font-size: 0.9rem;">
-                        {{ session('error') }}
-                    </div>
-                @endif
-                @if(session('warning'))
-                    <div style="background-color: rgba(221, 107, 32, 0.15); border: 1px solid #dd6b20; color: #9c4221; padding: 12px 16px; border-radius: var(--radius-button); font-weight: 600; font-size: 0.9rem;">
-                        {{ session('warning') }}
-                    </div>
-                @endif
-            </div>
-        @endif
-
         <!-- Page Content -->
-        <div class="app-content">
+        <div class="app-content animate-fade-in-up" style="animation-delay: 0.2s;">
             @yield('content')
         </div>
     </main>
 </div>
 
+<!-- Componentes Globales -->
+@include('layouts.toast')
+
+<!-- Scripts Vanilla JS -->
+<script src="{{ asset('js/toast.js') }}"></script>
+<script src="{{ asset('js/loading-buttons.js') }}"></script>
 @stack('scripts')
 </body>
 </html>
