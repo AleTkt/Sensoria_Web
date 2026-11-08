@@ -13,7 +13,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\SetCurrentCompany;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Shop\ProductCatalogController;
-
+use App\Http\Controllers\Admin\AdminCompanyTeamController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -75,10 +75,19 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
 
     // Plataforma
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/empresas', [AdminCompanyController::class, 'index'])->name('companies.index');
-    Route::patch('/empresas/{company}/toggle-status', [AdminCompanyController::class, 'toggleStatus'])->name('companies.toggle-status');
-    Route::get('/usuarios', [AdminUserController::class, 'index'])->name('users.index');
 
+    // Gestión de Empresas
+    Route::get('/empresas', [AdminCompanyController::class, 'index'])->name('companies.index');
+    Route::post('/empresas', [AdminCompanyController::class, 'store'])->name('companies.store');
+    Route::put('/empresas/{company}', [AdminCompanyController::class, 'update'])->name('companies.update');
+    Route::patch('/empresas/{company}/toggle-status', [AdminCompanyController::class, 'toggleStatus'])->name('companies.toggle-status');
+
+    // Gestión del Equipo de la Empresa (Admin)
+    Route::post('/empresas/{company}/equipo', [AdminCompanyTeamController::class, 'store'])->name('companies.team.store');
+    Route::put('/empresas/{company}/equipo/{user}', [AdminCompanyTeamController::class, 'update'])->name('companies.team.update');
+    Route::delete('/empresas/{company}/equipo/{user}', [AdminCompanyTeamController::class, 'destroy'])->name('companies.team.destroy');
+
+    // Gestión de Usuarios
     Route::get('/usuarios', [AdminUserController::class, 'index'])->name('users.index');
     Route::post('/usuarios', [AdminUserController::class, 'store'])->name('users.store');
     Route::put('/usuarios/{user}', [AdminUserController::class, 'update'])->name('users.update');
@@ -86,9 +95,8 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/usuarios/{user}/password-reset', [AdminUserController::class, 'sendPasswordReset'])->name('users.password-reset');
 
     // Catálogo
-      Route::get('/Products/kits', [KitController::class, 'index'])->name('catalog.kits');
-      Route::get('/Products/hardware', [HardwareController::class, 'index'])->name('catalog.hardware');
-
+    Route::get('/Products/kits', [KitController::class, 'index'])->name('catalog.kits');
+    Route::get('/Products/hardware', [HardwareController::class, 'index'])->name('catalog.hardware');
     // Logística y Soporte
     // Route::get('/pedidos', [OrderController::class, 'index'])->name('orders.index');
     // Route::get('/tickets', [TicketController::class,y  'index'])->name('tickets.index');

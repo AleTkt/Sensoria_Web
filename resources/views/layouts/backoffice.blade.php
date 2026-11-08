@@ -72,7 +72,7 @@
                 </a>
             </div>
 
-            <!--  Soporte y Auditoría -->
+            <!-- Soporte y Auditoría -->
             <div class="nav-section">
                 <h3>Soporte y Auditoría</h3>
                 <a href="{{ url('/admin/tickets') }}" class="{{ request()->is('admin/tickets*') ? 'active' : '' }}">
@@ -80,6 +80,13 @@
                 </a>
                 <a href="{{ url('/admin/bitacora') }}" class="{{ request()->is('admin/bitacora*') ? 'active' : '' }}">
                     <i class="icon-activity"></i> Auditoría de Sistema
+                </a>
+            </div>
+
+            <!-- Navegación General -->
+            <div class="nav-section" style="margin-top: auto; padding-top: 15px;">
+                <a href="{{ url('/') }}" class="nav-link-return" style="color: #64748b; text-decoration: none; display: flex; align-items: center; gap: 10px; padding: 10px 15px; border-radius: 6px; transition: all 0.2s;">
+                    <i class="fa-solid fa-house"></i> Volver al Sitio Principal
                 </a>
             </div>
         </nav>
