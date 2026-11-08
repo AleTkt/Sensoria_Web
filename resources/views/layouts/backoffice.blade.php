@@ -53,14 +53,11 @@
             <!-- Catálogo (Módulo B) -->
             <div class="nav-section">
                 <h3>Catálogo y Hardware</h3>
-                <a href="{{ url('/admin/catalogo/kits') }}" class="{{ request()->is('admin/catalogo/kits*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-box-open"></i> Kits Comerciales
+                <a href="{{ route('admin.catalog.kits') }}" class="{{ request()->routeIs('admin.catalog.kits*') ? 'active' : '' }}">
+                    <i class="icon-kit"></i> Kits Comerciales
                 </a>
-                <a href="{{ url('/admin/catalogo/hardware') }}" class="{{ request()->is('admin/catalogo/hardware*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-microchip"></i> Hardware Base
-                </a>
-                <a href="{{ url('/admin/catalogo/categorias') }}" class="{{ request()->is('admin/catalogo/categorias*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-tags"></i> Categorías
+                <a href="{{ route('admin.catalog.hardware') }}" class="{{ request()->routeIs('admin.catalog.hardware*') ? 'active' : '' }}">
+                    <i class="icon-device"></i> Hardware Base
                 </a>
             </div>
 
@@ -68,10 +65,10 @@
             <div class="nav-section">
                 <h3>Logística y Finanzas</h3>
                 <a href="{{ url('/admin/pedidos') }}" class="{{ request()->is('admin/pedidos*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-truck-fast"></i> Pedidos Globales
+                    <i class="icon-orders"></i> Pedidos Globales
                 </a>
                 <a href="{{ url('/admin/facturacion') }}" class="{{ request()->is('admin/facturacion*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-file-invoice-dollar"></i> Facturación
+                    <i class="icon-billing"></i> Facturación
                 </a>
             </div>
 
@@ -79,10 +76,10 @@
             <div class="nav-section">
                 <h3>Soporte y Auditoría</h3>
                 <a href="{{ url('/admin/tickets') }}" class="{{ request()->is('admin/tickets*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-headset"></i> Tickets Globales
+                    <i class="icon-support"></i> Tickets Globales
                 </a>
                 <a href="{{ url('/admin/bitacora') }}" class="{{ request()->is('admin/bitacora*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-list-check"></i> Auditoría de Sistema
+                    <i class="icon-activity"></i> Auditoría de Sistema
                 </a>
             </div>
         </nav>
@@ -93,10 +90,10 @@
                 <span class="user-name">{{ Auth::user()->name ?? 'Admin' }}</span>
                 <span class="user-role">{{ Auth::user()->global_role ?? 'STAFF' }}</span>
             </div>
-            <form method="POST" action="{{ route('logout') }}" class="form-with-loading" style="margin:0;">
+            <form method="POST" action="{{ route('logout') }}" style="margin:0;">
                 @csrf
-                <button type="submit" class="btn-logout btn-submit-loading" title="Cerrar Sesión">
-                    <i class="fa-solid fa-power-off"></i>
+                <button type="submit" class="btn-logout" title="Cerrar Sesión">
+                    <i class="icon-logout"> Salir</i>
                 </button>
             </form>
         </div>
@@ -104,7 +101,7 @@
 
     <!-- Contenido Principal -->
     <main class="admin-main">
-        <header class="admin-header animate-fade-in-up" style="animation-delay: 0.1s;">
+        <header class="admin-header">
             <div class="header-titles">
                 <h1>@yield('header', 'Panel de Administración')</h1>
             </div>
@@ -113,7 +110,7 @@
             </div>
         </header>
 
-        <div class="admin-content animate-fade-in-up" style="animation-delay: 0.2s;">
+        <div class="admin-content">
             @yield('content')
         </div>
     </main>
