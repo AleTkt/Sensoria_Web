@@ -4,6 +4,7 @@
 @section('header', 'Gestión de Hardware Base')
 
 @push('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <link rel="stylesheet" href="{{ asset('css/admin/products/hardware.css') }}">
 @endpush
@@ -54,20 +55,44 @@
                         @endif
                     </td>
                     <td>
-                        <button type="button" class="btn-sensoria-secondary text-sm"
-                                data-id="{{ $item->id }}"
-                                data-sku="{{ $item->sku }}"
-                                data-name="{{ $item->name }}"
-                                data-category="{{ $item->category }}"
-                                data-price="{{ $item->price }}"
-                                data-stock="{{ $item->stock }}"
-                                data-desc="{{ $item->description }}"
-                                data-kits="{{ json_encode($item->kits->pluck('id')) }}"
-                                data-active="{{ $item->is_active ? '1' : '0' }}"
-                                data-image="{{ $item->image_path ? asset('storage/' . $item->image_path) : '' }}"
-                                onclick="openHardwareModal(this)">
-                            <i class="icon-edit"></i> Editar
-                        </button>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+
+                            <button type="button" class="btn-sensoria-secondary text-sm"
+                                    data-id="{{ $item->id }}"
+                                    data-sku="{{ $item->sku }}"
+                                    data-name="{{ $item->name }}"
+                                    data-category="{{ $item->category }}"
+                                    data-price="{{ $item->price }}"
+                                    data-stock="{{ $item->stock }}"
+                                    data-desc="{{ $item->description }}"
+                                    data-kits="{{ json_encode($item->kits->pluck('id')) }}"
+                                    data-active="{{ $item->is_active ? '1' : '0' }}"
+                                    data-image="{{ $item->image_path ? asset('storage/' . $item->image_path) : '' }}"
+                                    onclick="openHardwareModal(this)">
+                                <i class="icon-edit"></i> Editar
+                            </button>
+
+                            <form id="toggle-form-{{ $item->id }}" action="{{ route('admin.catalog.hardware.toggle', $item->id) }}" method="POST" style="margin: 0;">
+                                @csrf
+                                @method('PATCH')
+                                @if($item->is_active)
+                                    <button type="button" class="text-sm"
+                                            style="background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; padding: 0.4rem 0.75rem; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;"
+                                            onclick="openConfirmModal('{{ $item->id }}', 'desactivar', '{{ $item->name }}')"
+                                            title="Desactivar este hardware">
+                                        <i class="fa-solid fa-power-off"></i> Desactivar
+                                    </button>
+                                @else
+                                    <button type="button" class="text-sm"
+                                            style="background: #dcfce7; color: #166534; border: 1px solid #86efac; padding: 0.4rem 0.75rem; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;"
+                                            onclick="openConfirmModal('{{ $item->id }}', 'activar', '{{ $item->name }}')"
+                                            title="Activar este hardware">
+                                        <i class="fa-solid fa-check"></i> Activar
+                                    </button>
+                                @endif
+                            </form>
+
+                        </div>
                     </td>
                 </tr>
             @endforeach
@@ -75,7 +100,7 @@
         </table>
     </div>
 
-    <!-- MODAL JS NATIVO RESPONSIVE -->
+    <!-- MODAL PRINCIPAL: NUEVO/EDITAR HARDWARE -->
     <div id="hardwareModal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -83,7 +108,8 @@
                 <button type="button" class="btn-close" onclick="closeHardwareModal()">&times;</button>
             </div>
 
-            <form id="hardwareForm" method="POST" action="#" enctype="multipart/form-data">
+            <!-- AQUÍ SE AGREGA LA CLASE 'form-with-loading' -->
+            <form id="hardwareForm" method="POST" action="#" enctype="multipart/form-data" class="form-with-loading">
                 @csrf
                 <input type="hidden" name="_method" id="formMethod" value="POST">
                 <input type="hidden" name="id" id="hardwareId" value="">
@@ -99,7 +125,6 @@
                         </div>
                     @endif
 
-                    <!-- Fila 1: SKU y Nombre -->
                     <div class="form-row form-row-2">
                         <div class="form-group mb-0">
                             <label for="sku">SKU</label>
@@ -111,7 +136,6 @@
                         </div>
                     </div>
 
-                    <!-- Fila 2: Categoría, Precio y Stock -->
                     <div class="form-row form-row-3">
                         <div class="form-group mb-0">
                             <label for="category">Categoría</label>
@@ -127,13 +151,11 @@
                         </div>
                     </div>
 
-                    <!-- Fila 3: Descripción -->
                     <div class="form-group">
                         <label for="description">Descripción</label>
                         <textarea id="description" name="description" class="form-control" rows="3"></textarea>
                     </div>
 
-                    <!-- Fila 4: Relación con Kits -->
                     <div class="form-group" style="position: relative; z-index: 10;">
                         <label for="kits" style="margin-bottom: 0.5rem; display:block;">Incluir en Kits Comerciales (Opcional)</label>
                         <select id="kits" name="kits[]" multiple>
@@ -143,7 +165,6 @@
                         </select>
                     </div>
 
-                    <!-- Fila 5: Imagen con Vista Previa -->
                     <div class="form-group">
                         <label for="image">Imagen del Hardware (Opcional)</label>
                         <div class="image-preview-container">
@@ -158,7 +179,6 @@
                         </div>
                     </div>
 
-                    <!-- Fila 6: Estado (Toggle Switch) -->
                     <div class="form-group mb-0">
                         <label class="toggle-container">
                             <div class="toggle-switch">
@@ -172,9 +192,27 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn-sensoria-outline" onclick="closeHardwareModal()">Cancelar</button>
-                    <button type="submit" class="btn-sensoria">Guardar Hardware</button>
+                    <!-- AQUÍ SE AGREGA LA CLASE 'btn-submit-loading' -->
+                    <button type="submit" class="btn-sensoria btn-submit-loading">Guardar Hardware</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- NUEVO MODAL: CONFIRMACIÓN PARA ACTIVAR/DESACTIVAR -->
+    <div id="confirmToggleModal" class="modal-overlay" style="display: none; z-index: 10001;">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h2 id="confirmModalTitle">Confirmar Acción</h2>
+                <button type="button" class="btn-close" onclick="closeConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmModalMessage" style="margin-top: 0; color: #374151; font-size: 0.95rem; line-height: 1.5;"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-sensoria-outline" onclick="closeConfirmModal()">Cancelar</button>
+                <button type="button" id="btnConfirmToggle" class="btn-sensoria" onclick="submitToggleForm()">Confirmar</button>
+            </div>
         </div>
     </div>
 
@@ -188,8 +226,12 @@
     <!-- JS de Choices.js -->
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
+    <!-- AQUÍ IMPORTAMOS TU SCRIPT ORIGINAL -->
+    <script src="{{ asset('js/loading-buttons.js') }}"></script>
+
     <script>
         let kitsChoiceInstance;
+        let currentToggleFormId = null;
 
         $(document).ready(function() {
             $('#hardwareTable').DataTable();
@@ -212,13 +254,68 @@
             });
         });
 
+        // ----------------------------------------------------
+        // FUNCIONES DEL MODAL DE CONFIRMACIÓN (ACTIVAR/DESACTIVAR)
+        // ----------------------------------------------------
+        function openConfirmModal(itemId, action, itemName) {
+            currentToggleFormId = 'toggle-form-' + itemId;
+
+            const modal = document.getElementById('confirmToggleModal');
+            const title = document.getElementById('confirmModalTitle');
+            const message = document.getElementById('confirmModalMessage');
+            const confirmBtn = document.getElementById('btnConfirmToggle');
+
+            // Restaurar estado visual del botón por si se cerró anteriormente
+            confirmBtn.disabled = false;
+            confirmBtn.style.opacity = '1';
+            confirmBtn.style.cursor = 'pointer';
+
+            if (action === 'desactivar') {
+                title.innerText = 'Desactivar Hardware';
+                message.innerHTML = `¿Estás seguro que deseas desactivar el hardware <strong>"${itemName}"</strong>?<br><br><span style="font-size: 0.85rem; color: #6b7280;">Este producto dejará de estar visible para ventas.</span>`;
+
+                confirmBtn.style.backgroundColor = '#dc2626';
+                confirmBtn.style.borderColor = '#dc2626';
+                confirmBtn.innerHTML = '<i class="fa-solid fa-power-off"></i> Sí, desactivar';
+            } else {
+                title.innerText = 'Activar Hardware';
+                message.innerHTML = `¿Estás seguro que deseas activar el hardware <strong>"${itemName}"</strong>?<br><br><span style="font-size: 0.85rem; color: #6b7280;">Este producto volverá a estar disponible públicamente en la plataforma.</span>`;
+
+                confirmBtn.style.backgroundColor = 'var(--color-primary)';
+                confirmBtn.style.borderColor = 'var(--color-primary)';
+                confirmBtn.innerHTML = '<i class="fa-solid fa-check"></i> Sí, activar';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmToggleModal').style.display = 'none';
+            currentToggleFormId = null;
+        }
+
+        function submitToggleForm() {
+            if (currentToggleFormId) {
+                // Aplicamos el mismo efecto visual de tu loading-buttons.js al botón de confirmar
+                const confirmBtn = document.getElementById('btnConfirmToggle');
+                confirmBtn.disabled = true;
+                confirmBtn.style.opacity = '0.7';
+                confirmBtn.style.cursor = 'not-allowed';
+                confirmBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
+
+                document.getElementById(currentToggleFormId).submit();
+            }
+        }
+
+        // ----------------------------------------------------
+        // FUNCIONES DEL MODAL PRINCIPAL (NUEVO/EDITAR)
+        // ----------------------------------------------------
         function openHardwareModal(btn = null) {
             const modal = document.getElementById('hardwareModal');
             const form = document.getElementById('hardwareForm');
             const formMethod = document.getElementById('formMethod');
             const title = document.getElementById('modalTitle');
             const activeCheckbox = document.getElementById('is_active');
-
             const previewImg = document.getElementById('imagePreview');
             const placeholder = document.getElementById('previewPlaceholder');
 
@@ -243,7 +340,6 @@
                     kitsChoiceInstance.setChoiceByValue(kitIds.map(String));
                 }
 
-                // Cargar la imagen existente en la vista previa
                 if (btn.dataset.image) {
                     previewImg.src = btn.dataset.image;
                     previewImg.style.display = 'block';
@@ -265,7 +361,6 @@
                 if (kitsChoiceInstance) kitsChoiceInstance.removeActiveItems();
                 document.getElementById('hardwareId').value = '';
 
-                // Limpiar la vista previa
                 previewImg.src = '#';
                 previewImg.style.display = 'none';
                 placeholder.style.display = 'flex';
@@ -279,6 +374,9 @@
             if (kitsChoiceInstance) kitsChoiceInstance.removeActiveItems();
         }
 
+        // ----------------------------------------------------
+        // FUNCIONES DE VISTA PREVIA Y PANTALLA COMPLETA
+        // ----------------------------------------------------
         function previewSelectedImage(event) {
             const file = event.target.files[0];
             const previewImg = document.getElementById('imagePreview');

@@ -99,9 +99,13 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
       Route::get('/Products/kits', [KitController::class, 'index'])->name('catalog.kits');
       Route::get('/Products/hardware', [HardwareController::class, 'index'])->name('catalog.hardware');
       //Ruta para creacion de hardware
-    Route::post('/Products/hardware', [HardwareController::class, 'store'])->name('catalog.hardware.store');
-    //Ruta para editar los campos
-    Route::put('/Products/hardware/{id}', [HardwareController::class, 'update'])->name('catalog.hardware.update');
+      Route::post('/Products/hardware', [HardwareController::class, 'store'])->name('catalog.hardware.store');
+      //Ruta para editar los campos
+       Route::put('/Products/hardware/{id}', [HardwareController::class, 'update'])->name('catalog.hardware.update');
+    // Ruta rápida para cambiar el estado (Activo/Inactivo)
+    Route::patch('/Products/hardware/{id}/toggle-status', [HardwareController::class, 'toggleStatus'])->name('catalog.hardware.toggle');
+
+
 
     // Logística y Soporte
     // Route::get('/pedidos', [OrderController::class, 'index'])->name('orders.index');

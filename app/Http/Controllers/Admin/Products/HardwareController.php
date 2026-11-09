@@ -124,4 +124,17 @@ class HardwareController extends Controller
         return redirect()->route('admin.catalog.hardware')
             ->with('success', 'Hardware actualizado exitosamente.');
     }
+
+
+    public function toggleStatus($id)
+    {
+        $hardware = Product::findOrFail($id);
+
+        // Alternamos el estado actual (si es true pasa a false, y viceversa)
+        $hardware->is_active = !$hardware->is_active;
+        $hardware->save();
+
+        return redirect()->route('admin.catalog.hardware')
+            ->with('success', 'Estado del hardware actualizado exitosamente.');
+    }
 }
