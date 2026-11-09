@@ -31,4 +31,28 @@ class KitController extends Controller
         return redirect()->route('admin.catalog.kits')
             ->with('success', '¡Kit comercial creado exitosamente!');
     }
+
+    public function update(\App\Http\Requests\UpdateKitRequest $request, $id)
+    {
+        $kit = Kit::findOrFail($id);
+
+        $validated = $request->validated();
+        $validated['is_active'] = $request->has('is_active') ? 1 : 0;
+
+        $kit->update($validated);
+
+        return redirect()->route('admin.catalog.kits')
+            ->with('success', '¡Kit comercial actualizado exitosamente!');
+    }
+
+    public function toggleStatus($id)
+    {
+        $kit = Kit::findOrFail($id);
+        $kit->is_active = !$kit->is_active;
+        $kit->save();
+
+        $action = $kit->is_active ? 'activado' : 'desactivado';
+        return redirect()->route('admin.catalog.kits')
+            ->with('success', "Kit {$action} exitosamente.");
+    }
 }
