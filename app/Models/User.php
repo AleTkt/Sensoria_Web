@@ -90,4 +90,12 @@ class User extends Authenticatable
 
         return in_array(strtoupper($userRole),$roles);
     }
+
+    /**
+     * Métodos de pago del usuario.
+     */
+    public function paymentMethods(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PaymentMethod::class, 'user_id');
+    }
 }
