@@ -7,10 +7,6 @@
     <link rel="stylesheet" href="{{ asset('css/admin/products/kit.css') }}">
     <link rel="stylesheet" href="{{ asset('css/components/toast.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-
-
-
 @endpush
 
 @section('header-actions')
@@ -49,16 +45,41 @@
                         @endif
                     </td>
                     <td>
-                        <button type="button" class="btn-sensoria-secondary text-sm"
-                                data-id="{{ $kit->id }}"
-                                data-sku="{{ $kit->sku }}"
-                                data-name="{{ $kit->name }}"
-                                data-sector="{{ $kit->target_sector }}"
-                                data-price="{{ $kit->price }}"
-                                data-desc="{{ $kit->description }}"
-                                onclick="openKitModal(this)">
-                            <i class="icon-edit"></i> Editar
-                        </button>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <!-- Botón Editar -->
+                            <button type="button" class="btn-sensoria-secondary text-sm"
+                                    data-id="{{ $kit->id }}"
+                                    data-sku="{{ $kit->sku }}"
+                                    data-name="{{ $kit->name }}"
+                                    data-sector="{{ $kit->target_sector }}"
+                                    data-price="{{ $kit->price }}"
+                                    data-desc="{{ $kit->description }}"
+                                    data-active="{{ $kit->is_active ? '1' : '0' }}"
+                                    onclick="openKitModal(this)">
+                                <i class="icon-edit"></i> Editar
+                            </button>
+
+                            <!-- Botón Activar/Desactivar -->
+                            <form id="toggle-form-{{ $kit->id }}" action="{{ route('admin.catalog.kits.toggle', $kit->id) }}" method="POST" style="margin: 0;">
+                                @csrf
+                                @method('PATCH')
+                                @if($kit->is_active)
+                                    <button type="button" class="text-sm"
+                                            style="background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; padding: 0.4rem 0.75rem; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;"
+                                            onclick="openConfirmModal('{{ $kit->id }}', 'desactivar', '{{ $kit->name }}')"
+                                            title="Desactivar este kit">
+                                        <i class="fa-solid fa-power-off"></i> Desactivar
+                                    </button>
+                                @else
+                                    <button type="button" class="text-sm"
+                                            style="background: #dcfce7; color: #166534; border: 1px solid #86efac; padding: 0.4rem 0.75rem; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;"
+                                            onclick="openConfirmModal('{{ $kit->id }}', 'activar', '{{ $kit->name }}')"
+                                            title="Activar este kit">
+                                        <i class="fa-solid fa-check"></i> Activar
+                                    </button>
+                                @endif
+                            </form>
+                        </div>
                     </td>
                 </tr>
             @endforeach
@@ -74,7 +95,6 @@
                 <button type="button" class="btn-close" onclick="closeKitModal()">&times;</button>
             </div>
 
-            <!-- 'novalidate' desactiva la validación del navegador para usar la de Laravel -->
             <form id="kitForm" method="POST" action="#" class="form-with-loading" novalidate>
                 @csrf
                 <input type="hidden" name="_method" id="formMethod" value="POST">
@@ -111,11 +131,14 @@
                         <textarea id="description" name="description" class="form-control" rows="3"></textarea>
                     </div>
 
-                    <!-- Fila 4: Estado Activo -->
+                    <!-- Fila 4: Toggle de Estado Activo -->
                     <div class="form-group mb-0">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="is_active" name="is_active" value="1" checked>
-                            <span>Kit Activo en Tienda</span>
+                        <label class="toggle-container">
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="is_active" name="is_active" value="1" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                            <span id="toggleText">Kit Activo en Tienda</span>
                         </label>
                     </div>
                 </div>
@@ -128,9 +151,24 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- CONTENEDOR DE TOASTS REUTILIZABLES         -->
-    <!-- ========================================== -->
+    <!-- MODAL DE CONFIRMACIÓN PARA ACTIVAR/DESACTIVAR -->
+    <div id="confirmToggleModal" class="modal-overlay" style="display: none; z-index: 10001;">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h2 id="confirmModalTitle">Confirmar Acción</h2>
+                <button type="button" class="btn-close" onclick="closeConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmModalMessage" style="margin-top: 0; color: #374151; font-size: 0.95rem; line-height: 1.5;"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-sensoria-outline" onclick="closeConfirmModal()">Cancelar</button>
+                <button type="button" id="btnConfirmToggle" class="btn-sensoria" onclick="submitToggleForm()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR DE TOASTS REUTILIZABLES -->
     <div class="toast-container-brutal" id="toast-container">
         @if(session('success'))
             <div class="toast-brutal toast-success">
@@ -161,22 +199,19 @@
 @endsection
 
 @push('scripts')
-    <!-- 1. Script de loading para el botón -->
     <script src="{{ asset('js/loading-buttons.js') }}"></script>
-
-    <!-- 2. Tu componente reutilizable de Toasts -->
     <script src="{{ asset('js/toast.js') }}"></script>
+    <script src="{{ asset('js/admin/kits-ajax.js') }}"></script>
+
 
     <script>
         $(document).ready(function() {
             $('#kitsTable').DataTable();
 
-            // Si hay errores de validación, abrimos el modal automáticamente
             @if ($errors->any())
             document.getElementById('kitModal').style.display = 'flex';
             @endif
 
-            // Prevenir envío con Enter en campos que no sean textarea
             document.getElementById('kitForm').addEventListener('keydown', function(event) {
                 if (event.key === 'Enter' && event.target.tagName !== 'TEXTAREA') {
                     event.preventDefault();
@@ -184,36 +219,11 @@
             });
         });
 
-        function openKitModal(btn = null) {
-            const modal = document.getElementById('kitModal');
-            const form = document.getElementById('kitForm');
-            const formMethod = document.getElementById('formMethod');
-            const title = document.getElementById('modalTitle');
 
-            if (btn) {
-                title.innerText = 'Editar Kit';
-                formMethod.value = 'PUT';
-                form.action = `/admin/catalogo/kits/${btn.dataset.id}`;
 
-                document.getElementById('kitId').value = btn.dataset.id;
-                document.getElementById('sku').value = btn.dataset.sku;
-                document.getElementById('name').value = btn.dataset.name;
-                document.getElementById('sector').value = btn.dataset.sector;
-                document.getElementById('price').value = btn.dataset.price;
-                document.getElementById('description').value = btn.dataset.desc;
-            } else {
-                title.innerText = 'Nuevo Kit';
-                formMethod.value = 'POST';
-                form.action = `/admin/catalogo/kits`;
-                form.reset();
-                document.getElementById('kitId').value = '';
-            }
-            modal.style.display = 'flex';
-        }
-
-        function closeKitModal() {
-            document.getElementById('kitModal').style.display = 'none';
-            document.getElementById('kitForm').reset();
-        }
     </script>
+
+
+
+
 @endpush

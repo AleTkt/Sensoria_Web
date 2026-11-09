@@ -111,6 +111,8 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
       //Kits
       Route::get('/Products/kits', [KitController::class, 'index'])->name('catalog.kits');
       Route::post('/catalogo/kits', [KitController::class, 'store'])->name('catalog.kits.store');
+      Route::put('/catalogo/kits/{id}', [KitController::class, 'update'])->name('catalog.kits.update');
+      Route::patch('/catalogo/kits/{id}/toggle-status', [KitController::class, 'toggleStatus'])->name('catalog.kits.toggle');
 
 
       //Hardware
