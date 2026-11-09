@@ -70,6 +70,18 @@ Route::middleware(['auth', App\Http\Middleware\SetCurrentCompany::class])->group
     });
 });
 
+// ==========================================
+// Módulo C y D: Operativa B2B (Workspace IoT y Soporte)
+// ==========================================
+Route::prefix('workspace')->name('workspace.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/devices', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'devices'])->name('devices');
+    Route::get('/tickets', [\App\Http\Controllers\Workspace\TicketController::class, 'index'])->name('tickets.index');
+    Route::post('/tickets', [\App\Http\Controllers\Workspace\TicketController::class, 'store'])->name('tickets.store');
+    Route::get('/devices', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'devices'])->name('devices');
+    Route::get('/devices/{id}/metrics', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'metrics'])->name('devices.metrics'); // NUEVA
+});
+
 // Grupo exclusivo para el Staff de Sensoría (Super Admins y Soporte)
 Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(function () {
 
