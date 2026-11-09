@@ -9,9 +9,12 @@
 
     <!-- CSS Puro -->
     <link rel="stylesheet" href="{{ asset('css/base/variables.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/base/animations.css') }}"> <!-- ANIMACIONES -->
+    <link rel="stylesheet" href="{{ asset('css/base/animations.css') }}">
     <link rel="stylesheet" href="{{ asset('css/layouts/public.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/toast.css') }}"> <!-- TOASTS -->
+    <link rel="stylesheet" href="{{ asset('css/components/toast.css') }}">
+
+    <!-- CSS del Componente Carrito -->
+    <link rel="stylesheet" href="{{ asset('css/components/cart-offcanvas.css') }}">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -19,6 +22,16 @@
     @stack('styles')
 </head>
 <body>
+
+<!-- Lógica PHP para obtener el total del carrito (Disponible en todo el Navbar) -->
+@php
+    $cart = session()->get('cart', []);
+    $cartCount = array_sum(array_column($cart, 'quantity'));
+    $cartTotal = array_sum(array_map(function($item) {
+        return $item['price'] * $item['quantity'];
+    }, $cart));
+@endphp
+
 <div class="public-layout-container">
 
     <!-- Navbar -->
@@ -39,7 +52,21 @@
                 </li>
             </ul>
 
-            <div>
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <!-- Botón Disparador del Carrito Off-canvas -->
+                <div class="nav-cart-trigger" onclick="toggleCart()">
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-cart-shopping" style="font-size: 1.2rem; color: var(--color-tertiary);"></i>
+                        @if($cartCount > 0)
+                            <span class="cart-badge">{{ $cartCount }}</span>
+                        @endif
+                    </div>
+                    <span style="font-weight: 700; color: var(--color-tertiary); font-size: 0.95rem;">
+                        ${{ number_format($cartTotal, 2) }}
+                    </span>
+                </div>
+
+                <!-- Menú de Usuario -->
                 @auth
                     <div class="dropdown-container">
                         <button type="button" id="user-menu-btn" onclick="toggleUserDropdown(event)" style="background: var(--color-primary); color: white; border: none; padding: 10px 18px; border-radius: var(--radius-button); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
@@ -55,14 +82,12 @@
                                 <div class="dropdown-divider"></div>
                             @endif
 
-                            <!-- Acceso al Panel B2B -->
                             <a href="{{ route('company.edit') }}" style="font-weight: 600; color: var(--color-tertiary);">
                                 <i class="fa-solid fa-building"></i>  Mi Espacio de Trabajo
                             </a>
 
                             <div class="dropdown-divider"></div>
 
-                            <!-- Módulo B2C (Facturación y Perfil) -->
                             <a href="#" style="opacity: 0.7;" title="Próximamente"><i class="fa-solid fa-box"></i>  Mis Pedidos</a>
                             <a href="#" style="opacity: 0.7;" title="Próximamente"><i class="fa-solid fa-wallet"></i>  Billetera y Pagos</a>
                             <a href="{{'profile'}}"><i class="fa-solid fa-user-gear"></i>  Ajustes de Perfil</a>
@@ -98,15 +123,19 @@
         </div>
     </footer>
 
-</div>
+</div> <!-- Fin de public-layout-container -->
 
 <!-- Componentes Globales -->
 @include('layouts.toast')
+
+<!-- Inclusión del Componente del Carrito (¡FUERA DEL CONTENEDOR PRINCIPAL!) -->
+@include('components.shop.cart-offcanvas', ['cart' => $cart, 'cartCount' => $cartCount, 'cartTotal' => $cartTotal])
 
 <!-- JavaScript Nativo -->
 <script src="{{ asset('js/toast.js') }}"></script>
 <script src="{{ asset('js/loading-buttons.js') }}"></script>
 <script>
+    // Lógica menú usuario
     function toggleUserDropdown(event) {
         event.stopPropagation();
         const dropdown = document.getElementById('user-dropdown-menu');
@@ -123,6 +152,22 @@
             }
         }
     });
+
+    // Lógica del Panel Off-canvas
+    function toggleCart() {
+        const sidebar = document.getElementById('cartSidebar');
+        const overlay = document.getElementById('cartOverlay');
+
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+
+        // Prevenir scroll en el body cuando el carrito está abierto
+        if (sidebar.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
 </script>
 
 @stack('scripts')
