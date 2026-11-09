@@ -16,52 +16,96 @@
                 <p class="page-subtitle">Soluciones Plug & Play para automatizar, asegurar y monitorear tu PYME.</p>
             </div>
 
-            <!-- Rejilla de Productos / Kits en CSS Puro -->
+            <!-- Sección de Kits Modulares Destacados -->
+            @if(isset($kits) && $kits->count() > 0)
+                <div class="shop-header" style="margin-bottom: 1.5rem;">
+                    <h2 style="font-size: 1.5rem; color: var(--color-tertiary); font-weight: 700;">Kits Especializados por Sector</h2>
+                </div>
+
+                <div class="shop-grid" style="margin-bottom: 3.5rem;">
+                    @foreach($kits as $kit)
+                        <div class="product-card glass-surface" style="border: 2px solid rgba(88, 148, 69, 0.25);">
+                            <div class="product-image-preview" style="background-color: rgba(88, 148, 69, 0.08);">
+                                @if(isset($kit->image_path) && $kit->image_path)
+                                    <img src="{{ asset('storage/' . $kit->image_path) }}" alt="{{ $kit->name }}" class="product-img">
+                                @else
+                                    <i class="fa-solid fa-box-open placeholder-icon-small" style="color: var(--color-primary);"></i>
+                                @endif
+                            </div>
+
+                            <div>
+                                <span class="badge-category" style="background-color: var(--color-primary); color: white;">Kit {{ $kit->target_sector ?? 'Empresarial' }}</span>
+                                <h3 class="card-title">{{ $kit->name }}</h3>
+                                <p class="card-desc">{{ Str::limit($kit->description, 80) }}</p>
+                            </div>
+
+                            <div class="card-footer">
+                                <span class="card-price">${{ number_format($kit->price, 2) }}</span>
+
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <a href="{{ route('shop.products.show', $kit->id) }}" class="btn-sensoria" style="width: 42px; height: 42px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 8px;" title="Ver detalle del Kit">
+                                        <i class="fa-regular fa-eye" style="font-size: 1rem; color: #FFFFFF;"></i>
+                                    </a>
+
+                                    <form action="{{ route('shop.cart.add', $kit->id) }}" method="POST" class="form-with-loading" style="margin: 0;">
+                                        @csrf
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn-sensoria btn-submit-loading">
+                                            <i class="fa-solid fa-cart-plus"></i> Agregar Kit
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+            <!-- Sección de Dispositivos Individuales -->
+            <div class="shop-header" style="margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.5rem; color: var(--color-tertiary); font-weight: 700;">Dispositivos IoT Individuales</h2>
+            </div>
+
             <div class="shop-grid">
                 @forelse($products as $product)
                     <div class="product-card glass-surface">
-
                         @if($product->image_path)
                             <div class="product-image-preview">
-                                <!-- Asumiendo que usarás el Storage público de Laravel/Supabase -->
                                 <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="product-img">
                             </div>
                         @else
                             <div class="product-image-preview">
-                                <i class="icon-device placeholder-icon-small"></i>
+                                <i class="fa-solid fa-microchip placeholder-icon-small"></i>
                             </div>
                         @endif
 
                         <div>
                             <span class="badge-category">{{ $product->category->name ?? 'Dispositivo' }}</span>
                             <h3 class="card-title">{{ $product->name }}</h3>
-                            <p class="card-desc">{{ $product->description }}</p>
+                            <p class="card-desc">{{ Str::limit($product->description, 80) }}</p>
                         </div>
 
-                            <div class="card-footer">
-                                <span class="card-price">${{ number_format($product->price, 2) }}</span>
+                        <div class="card-footer">
+                            <span class="card-price">${{ number_format($product->price, 2) }}</span>
 
-                                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <!-- Botón secundario para ver detalle -->
-                                    <a href="{{ route('shop.products.show', $product->id) }}" class="btn-sensoria" style="width: 42px; height: 42px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 8px;" title="Ver detalle">
-                                        <i class="fa-regular fa-eye" style="font-size: 1rem; color: #FFFFFF;"></i>
-                                    </a>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <a href="{{ route('shop.products.show', $product->id) }}" class="btn-sensoria" style="width: 42px; height: 42px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 8px;" title="Ver detalle">
+                                    <i class="fa-regular fa-eye" style="font-size: 1rem; color: #FFFFFF;"></i>
+                                </a>
 
-                                    <!-- Formulario principal con las clases para loading-buttons.js -->
-                                    <form action="{{ route('shop.cart.add', $product->id) }}" method="POST" class="form-with-loading" style="margin: 0;">
-                                        @csrf
-                                        <input type="hidden" name="quantity" value="1">
-                                        <button type="submit" class="btn-sensoria btn-submit-loading">
-                                            <i class="fa-solid fa-cart-plus"></i> Agregar
-                                        </button>
-                                    </form>
-                                </div>
+                                <form action="{{ route('shop.cart.add', $product->id) }}" method="POST" class="form-with-loading" style="margin: 0;">
+                                    @csrf
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn-sensoria btn-submit-loading">
+                                        <i class="fa-solid fa-cart-plus"></i> Agregar
+                                    </button>
+                                </form>
                             </div>
-
+                        </div>
                     </div>
                 @empty
-                    <div style="text-align: center; padding: 3rem 0; color: #6b7280;">
-                        <p>No hay productos ni kits disponibles por el momento.</p>
+                    <div style="text-align: center; padding: 3rem 0; grid-column: 1 / -1; color: #6b7280;">
+                        <p>No hay productos disponibles por el momento.</p>
                     </div>
                 @endforelse
             </div>

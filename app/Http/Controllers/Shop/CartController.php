@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Shop;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Kit;
 
 class CartController extends Controller
 {
@@ -13,42 +14,55 @@ class CartController extends Controller
      */
     public function index()
     {
-        // Recuperamos el carrito de la sesión actual; si no hay nada, devuelve un arreglo vacío.
         $cart = session()->get('cart', []);
-
         return view('shop.cart.index', compact('cart'));
     }
 
     /**
-     * Añade un producto al carrito almacenado en sesión.
+     * Añade un producto o un kit al carrito almacenado en sesión.
      */
     public function add(Request $request, $id)
     {
-        // 1. Validamos que el producto exista y esté activo en la BD
-        $product = Product::where('is_active', true)->findOrFail($id);
         $quantity = $request->input('quantity', 1);
+        $item = null;
+        $isKit = false;
 
-        // 2. Recuperamos el carrito actual
+        // 1. Buscamos primero si el ID corresponde a un Kit activo
+        $kit = Kit::where('is_active', true)->find($id);
+
+        if ($kit) {
+            $item = $kit;
+            $isKit = true;
+        } else {
+            // 2. Si no es un kit, buscamos como producto individual activo
+            $item = Product::where('is_active', true)->findOrFail($id);
+            $isKit = false;
+        }
+
+        // 3. Recuperamos el carrito actual de la sesión
         $cart = session()->get('cart', []);
 
-        // 3. Si el producto ya está en el carrito, sumamos la cantidad
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity'] += $quantity;
+        // Generamos una clave única en el carrito para evitar colidencias si un producto y un kit compartieran ID (ej: kit_1 o prod_1, o mantenemos el ID simple si son independientes)
+        $cartKey = $isKit ? 'kit_' . $item->id : 'prod_' . $item->id;
+
+        // 4. Si el ítem ya está en el carrito, sumamos la cantidad
+        if (isset($cart[$cartKey])) {
+            $cart[$cartKey]['quantity'] += $quantity;
         } else {
-            // Si es nuevo en el carrito, registramos sus propiedades esenciales
-            $cart[$id] = [
-                'id' => $product->id,
-                'name' => $product->name,
+            // Registramos sus propiedades esenciales incluyendo la bandera is_kit
+            $cart[$cartKey] = [
+                'id' => $item->id,
+                'name' => $item->name,
                 'quantity' => $quantity,
-                'price' => $product->price,
-                'image_path' => $product->image_path,
+                'price' => $item->price,
+                'image_path' => $item->image_path,
+                'is_kit' => $isKit,
             ];
         }
 
-        // 4. Actualizamos la sesión con el nuevo arreglo
+        // 5. Actualizamos la sesión
         session()->put('cart', $cart);
 
-        // 5. Redirigimos a la vista del carrito
-        return redirect()->route('shop.cart.index')->with('success', 'Producto añadido al carrito correctamente.');
+        return redirect()->route('shop.cart.index')->with('success', 'Solución IoT añadida al carrito correctamente.');
     }
 }
