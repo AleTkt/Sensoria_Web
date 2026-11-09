@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\Products\KitController;
 use App\Http\Controllers\Admin\Products\HardwareController;
+use App\Http\Controllers\Admin\Products\KitProductController;
 use App\Http\Controllers\Auth\InvitationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanySelectionController;
@@ -121,10 +122,18 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
       Route::post('/Products/hardware', [HardwareController::class, 'store'])->name('catalog.hardware.store');
       //Ruta para editar los campos
        Route::put('/Products/hardware/{id}', [HardwareController::class, 'update'])->name('catalog.hardware.update');
-    // Ruta rápida para cambiar el estado (Activo/Inactivo)
-    Route::patch('/Products/hardware/{id}/toggle-status', [HardwareController::class, 'toggleStatus'])->name('catalog.hardware.toggle');
+       // Ruta rápida para cambiar el estado (Activo/Inactivo)
+       Route::patch('/Products/hardware/{id}/toggle-status', [HardwareController::class, 'toggleStatus'])->name('catalog.hardware.toggle');
+       Route::get('/Products/hardware/data', [HardwareController::class, 'getData'])->name('catalog.hardware.data');
+    Route::get('/Products/hardware/categories', [HardwareController::class, 'getCategories'])->name('catalog.hardware.categories');
 
 
+    // Gestión de Productos en Kits
+    Route::get('/catalogo/kits/productos', [KitProductController::class, 'index'])->name('catalog.kits.products.index');
+    Route::get('/catalogo/kits/{kitId}/productos-data', [KitProductController::class, 'getProductsData'])->name('catalog.kits.products.data');
+    Route::post('/catalogo/kits/{kitId}/productos/batch', [KitProductController::class, 'batchAddProducts'])->name('catalog.kits.products.batch');
+    Route::patch('/catalogo/kits/{kitId}/productos/{productId}', [KitProductController::class, 'updateQuantity'])->name('catalog.kits.products.update');
+    Route::delete('/catalogo/kits/{kitId}/productos/{productId}', [KitProductController::class, 'removeProduct'])->name('catalog.kits.products.destroy');
 
     // Logística y Soporte
     // Route::get('/pedidos', [OrderController::class, 'index'])->name('orders.index');

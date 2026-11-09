@@ -137,4 +137,31 @@ class HardwareController extends Controller
         return redirect()->route('admin.catalog.hardware')
             ->with('success', 'Estado del hardware actualizado exitosamente.');
     }
+
+
+    /**
+     * Obtener todos los productos de hardware en formato JSON
+     */
+    public function getData()
+    {
+        $products = Product::where('is_active', true)
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name', 'sku', 'category', 'price']);
+
+        return response()->json(['products' => $products]);
+    }
+
+
+    /**
+     * Obtener categorías únicas de productos
+     */
+    public function getCategories()
+    {
+        $categories = Product::where('is_active', true)
+            ->distinct()
+            ->orderBy('category')
+            ->pluck('category');
+
+        return response()->json(['categories' => $categories]);
+    }
 }
