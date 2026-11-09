@@ -18,7 +18,7 @@ class Order extends Model
         'company_id',
         'total_amount',
         'status',
-        'payment_method',
+        'payment_method_id',
         'paid_at',
     ];
 
