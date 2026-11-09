@@ -65,4 +65,46 @@ class CartController extends Controller
 
         return redirect()->route('shop.cart.index')->with('success', 'Solución IoT añadida al carrito correctamente.');
     }
+
+
+    /**
+     * Actualiza la cantidad de un ítem en el carrito (incrementar o disminuir).
+     */
+    public function updateQuantity(Request $request, $key)
+    {
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$key])) {
+            $action = $request->input('action');
+
+            if ($action === 'increase') {
+                $cart[$key]['quantity']++;
+            } elseif ($action === 'decrease') {
+                $cart[$key]['quantity']--;
+                // Si la cantidad llega a 0, eliminamos el ítem automáticamente
+                if ($cart[$key]['quantity'] <= 0) {
+                    unset($cart[$key]);
+                }
+            }
+
+            session()->put('cart', $cart);
+        }
+
+        return redirect()->route('shop.cart.index')->with('success', 'Cantidad actualizada correctamente.');
+    }
+
+    /**
+     * Elimina un ítem específico del carrito.
+     */
+    public function removeItem($key)
+    {
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$key])) {
+            unset($cart[$key]);
+            session()->put('cart', $cart);
+        }
+
+        return redirect()->route('shop.cart.index')->with('success', 'Solución IoT eliminada del carrito.');
+    }
 }

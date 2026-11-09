@@ -21,8 +21,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     submitBtn.dataset.originalContent = submitBtn.innerHTML;
                 }
 
-                // Cambiamos el texto y agregamos el icono de spinner de FontAwesome
-                submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
+                // Si el botón es pequeño (como los del carrito con solo iconos), mostramos solo el spinner giratorio
+                if (submitBtn.closest('td') || submitBtn.style.width === '32px') {
+                    submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" style="font-size: 0.8rem;"></i>';
+                } else {
+                    submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
+                }
             }
         });
     });

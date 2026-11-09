@@ -30,8 +30,9 @@
                             <th style="padding: 1rem; color: var(--color-tertiary);">Ítem / Solución IoT</th>
                             <th style="padding: 1rem; color: var(--color-tertiary);">Tipo</th>
                             <th style="padding: 1rem; color: var(--color-tertiary);">Precio</th>
-                            <th style="padding: 1rem; color: var(--color-tertiary);">Cantidad</th>
+                            <th style="padding: 1rem; color: var(--color-tertiary); text-align: center;">Cantidad</th>
                             <th style="padding: 1rem; color: var(--color-tertiary);">Subtotal</th>
+                            <th style="padding: 1rem; color: var(--color-tertiary); text-align: center;">Acción</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -60,9 +61,51 @@
                                 </td>
 
                                 <td style="padding: 1rem; color: #4b5563;">${{ number_format($details['price'], 2) }}</td>
-                                <td style="padding: 1rem; color: #4b5563;">{{ $details['quantity'] }}</td>
+
+                                <!-- Controles de Cantidad (+ / -) con soporte de Loading -->
+                                <td style="padding: 1rem; text-align: center;">
+                                    <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.9); padding: 0.25rem 0.5rem; border-radius: 8px; border: 1px solid rgba(27, 61, 26, 0.15);">
+
+                                        <!-- Botón Disminuir -->
+                                        <form action="{{ route('shop.cart.update', $key) }}" method="POST" class="form-with-loading" style="margin: 0;">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="action" value="decrease">
+                                            <button type="submit" class="btn-submit-loading" style="background: none; border: none; cursor: pointer; color: var(--color-tertiary); padding: 0.2rem 0.4rem; font-weight: bold;" title="Disminuir">
+                                                <i class="fa-solid fa-minus" style="font-size: 0.75rem;"></i>
+                                            </button>
+                                        </form>
+
+                                        <span style="font-weight: 700; color: var(--color-tertiary); min-width: 20px; text-align: center;">
+                                            {{ $details['quantity'] }}
+                                        </span>
+
+                                        <!-- Botón Aumentar -->
+                                        <form action="{{ route('shop.cart.update', $key) }}" method="POST" class="form-with-loading" style="margin: 0;">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="action" value="increase">
+                                            <button type="submit" class="btn-submit-loading" style="background: none; border: none; cursor: pointer; color: var(--color-tertiary); padding: 0.2rem 0.4rem; font-weight: bold;" title="Aumentar">
+                                                <i class="fa-solid fa-plus" style="font-size: 0.75rem;"></i>
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+
                                 <td style="padding: 1rem; font-weight: bold; color: var(--color-tertiary);">
                                     ${{ number_format($subtotal, 2) }}
+                                </td>
+
+                                <!-- Botón Eliminar Ítem con soporte de Loading -->
+                                <td style="padding: 1rem; text-align: center;">
+                                    <form action="{{ route('shop.cart.remove', $key) }}" method="POST" class="form-with-loading" style="margin: 0;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-submit-loading" style="background: rgba(229, 62, 62, 0.1); color: #e53e3e; border: none; border-radius: 6px; width: 32px; height: 32px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background 0.2s;" title="Eliminar ítem">
+                                            <i class="fa-regular fa-trash-can" style="font-size: 0.9rem;"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach
