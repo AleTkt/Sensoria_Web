@@ -11,6 +11,7 @@ Route::prefix('v1')->group(function () {
     // Rutas Privadas (Requieren Token Sanctum).
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/devices', [DeviceController::class, 'index']);
+        Route::get('/devices/{id}/telemetry', [DeviceController::class, 'telemetry']);
         Route::post('/logout', [AuthController::class, 'logout']);
     });
 });

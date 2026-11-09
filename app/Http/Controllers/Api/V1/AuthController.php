@@ -36,6 +36,7 @@ class AuthController extends Controller
                     return [
                         'id' => (string) $company->id,
                         'name' => $company->legal_name ?? 'Workspace sin nombre',
+
                     ];
                 })->toArray()
             ]

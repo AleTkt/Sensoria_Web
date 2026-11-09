@@ -41,17 +41,19 @@
 
             <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 12px 0;"></div>
 
-            <!-- BLOQUE 1: Módulo D (IoT y Operaciones) - Próximamente -->
+            <!-- BLOQUE 1: Módulo D (IoT y Operaciones) -->
             <span style="display: block; padding: 0 16px; font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Operativa IoT</span>
-            <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
+            <a href="{{ route('workspace.dashboard') }}" class="{{ request()->routeIs('workspace.dashboard') ? 'active' : '' }}">
                 <i class="fa-solid fa-gauge-high"></i> Dashboard IoT
             </a>
-            <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
+            <a href="{{ route('workspace.devices') }}" class="{{ request()->routeIs('workspace.devices*') ? 'active' : '' }}">
                 <i class="fa-solid fa-microchip"></i> Hubs y Dispositivos
             </a>
-            <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
+            <a href="#" class="" title="Próximamente">
                 <i class="fa-solid fa-bell"></i> Centro de Alertas
             </a>
+
+            <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 12px 0;"></div>
 
             <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 12px 0;"></div>
 
@@ -72,12 +74,14 @@
 
             <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 12px 0;"></div>
 
-            <!-- BLOQUE 3: Módulos B y C (Facturación y Soporte) - Próximamente -->
+            <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 12px 0;"></div>
+
+            <!-- BLOQUE 3: Módulos B y C (Facturación y Soporte) -->
             <span style="display: block; padding: 0 16px; font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Servicios</span>
-            <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
+            <a href="#" class="" title="Próximamente">
                 <i class="fa-solid fa-file-invoice-dollar"></i> Facturación y Pagos
             </a>
-            <a href="#" class="" style="opacity: 0.7;" title="Próximamente">
+            <a href="{{ route('workspace.tickets.index') }}" class="{{ request()->routeIs('workspace.tickets.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-headset"></i> Soporte Técnico
             </a>
         </nav>
