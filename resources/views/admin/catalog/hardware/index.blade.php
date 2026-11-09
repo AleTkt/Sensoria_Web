@@ -4,6 +4,7 @@
 @section('header', 'Gestión de Hardware Base')
 
 @push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <link rel="stylesheet" href="{{ asset('css/admin/products/hardware.css') }}">
 @endpush
 
@@ -61,6 +62,9 @@
                                 data-price="{{ $item->price }}"
                                 data-stock="{{ $item->stock }}"
                                 data-desc="{{ $item->description }}"
+                                data-kits="{{ json_encode($item->kits->pluck('id')) }}"
+                                data-active="{{ $item->is_active ? '1' : '0' }}"
+                                data-image="{{ $item->image_path ? asset('storage/' . $item->image_path) : '' }}"
                                 onclick="openHardwareModal(this)">
                             <i class="icon-edit"></i> Editar
                         </button>
@@ -95,7 +99,7 @@
                         </div>
                     @endif
 
-                    <!-- Fila 1: SKU y Nombre (Responsive 2 columnas) -->
+                    <!-- Fila 1: SKU y Nombre -->
                     <div class="form-row form-row-2">
                         <div class="form-group mb-0">
                             <label for="sku">SKU</label>
@@ -107,7 +111,7 @@
                         </div>
                     </div>
 
-                    <!-- Fila 2: Categoría, Precio y Stock (Responsive 3 columnas) -->
+                    <!-- Fila 2: Categoría, Precio y Stock -->
                     <div class="form-row form-row-3">
                         <div class="form-group mb-0">
                             <label for="category">Categoría</label>
@@ -129,17 +133,39 @@
                         <textarea id="description" name="description" class="form-control" rows="3"></textarea>
                     </div>
 
-                    <!-- Fila 4: Imagen -->
-                    <div class="form-group">
-                        <label for="image">Imagen (Opcional)</label>
-                        <input type="file" id="image" name="image" class="form-control" accept="image/*">
+                    <!-- Fila 4: Relación con Kits -->
+                    <div class="form-group" style="position: relative; z-index: 10;">
+                        <label for="kits" style="margin-bottom: 0.5rem; display:block;">Incluir en Kits Comerciales (Opcional)</label>
+                        <select id="kits" name="kits[]" multiple>
+                            @foreach($kits as $kit)
+                                <option value="{{ $kit->id }}">{{ $kit->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
-                    <!-- Fila 5: Estado -->
+                    <!-- Fila 5: Imagen con Vista Previa -->
+                    <div class="form-group">
+                        <label for="image">Imagen del Hardware (Opcional)</label>
+                        <div class="image-preview-container">
+                            <div class="image-preview-box" id="previewBox" onclick="openFullscreenImage()" title="Click para ver en pantalla completa">
+                                <span id="previewPlaceholder" class="image-preview-placeholder"><i class="icon-device"></i></span>
+                                <img id="imagePreview" src="#" alt="Vista previa" style="display: none;" />
+                            </div>
+                            <div style="flex: 1;">
+                                <input type="file" id="image" name="image" class="form-control" accept="image/*" onchange="previewSelectedImage(event)">
+                                <small style="color: #6b7280; font-size: 0.75rem; margin-top: 4px; display: block;">Formatos permitidos: PNG, JPG, WEBP. Máx: 2MB.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fila 6: Estado (Toggle Switch) -->
                     <div class="form-group mb-0">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="is_active" name="is_active" value="1" checked>
-                            <span>Hardware Activo</span>
+                        <label class="toggle-container">
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="is_active" name="is_active" value="1" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                            <span id="toggleText">Hardware Activo</span>
                         </label>
                     </div>
                 </div>
@@ -151,12 +177,31 @@
             </form>
         </div>
     </div>
+
+    <!-- LIGHTBOX PARA PANTALLA COMPLETA -->
+    <div id="fullscreenImageModal" class="image-modal-overlay" style="display: none;" onclick="closeFullscreenImage()">
+        <img id="fullscreenImage" class="image-modal-content" src="" alt="Vista ampliada">
+    </div>
 @endsection
 
 @push('scripts')
+    <!-- JS de Choices.js -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
     <script>
+        let kitsChoiceInstance;
+
         $(document).ready(function() {
             $('#hardwareTable').DataTable();
+
+            const element = document.getElementById('kits');
+            kitsChoiceInstance = new Choices(element, {
+                removeItemButton: true,
+                searchPlaceholderValue: 'Busca y selecciona kits...',
+                placeholderValue: 'Selecciona uno o más kits...',
+                itemSelectText: 'Presiona para seleccionar',
+                noResultsText: 'No se encontraron kits'
+            });
 
             @if ($errors->any())
             document.getElementById('hardwareModal').style.display = 'flex';
@@ -172,11 +217,15 @@
             const form = document.getElementById('hardwareForm');
             const formMethod = document.getElementById('formMethod');
             const title = document.getElementById('modalTitle');
+            const activeCheckbox = document.getElementById('is_active');
+
+            const previewImg = document.getElementById('imagePreview');
+            const placeholder = document.getElementById('previewPlaceholder');
 
             if (btn) {
                 title.innerText = 'Editar Hardware';
                 formMethod.value = 'PUT';
-                form.action = `/admin/catalogo/hardware/${btn.dataset.id}`;
+                form.action = `/admin/Products/hardware/${btn.dataset.id}`;
 
                 document.getElementById('hardwareId').value = btn.dataset.id;
                 document.getElementById('sku').value = btn.dataset.sku;
@@ -185,12 +234,41 @@
                 document.getElementById('price').value = btn.dataset.price;
                 document.getElementById('stock').value = btn.dataset.stock;
                 document.getElementById('description').value = btn.dataset.desc;
+
+                activeCheckbox.checked = (btn.dataset.active === '1');
+
+                if (kitsChoiceInstance) {
+                    kitsChoiceInstance.removeActiveItems();
+                    const kitIds = JSON.parse(btn.dataset.kits || '[]');
+                    kitsChoiceInstance.setChoiceByValue(kitIds.map(String));
+                }
+
+                // Cargar la imagen existente en la vista previa
+                if (btn.dataset.image) {
+                    previewImg.src = btn.dataset.image;
+                    previewImg.style.display = 'block';
+                    placeholder.style.display = 'none';
+                } else {
+                    previewImg.src = '#';
+                    previewImg.style.display = 'none';
+                    placeholder.style.display = 'flex';
+                }
+
             } else {
                 title.innerText = 'Nuevo Hardware';
                 formMethod.value = 'POST';
-                form.action = `/admin/catalogo/hardware`;
+                form.action = `/admin/Products/hardware`;
                 form.reset();
+
+                activeCheckbox.checked = true;
+
+                if (kitsChoiceInstance) kitsChoiceInstance.removeActiveItems();
                 document.getElementById('hardwareId').value = '';
+
+                // Limpiar la vista previa
+                previewImg.src = '#';
+                previewImg.style.display = 'none';
+                placeholder.style.display = 'flex';
             }
             modal.style.display = 'flex';
         }
@@ -198,6 +276,38 @@
         function closeHardwareModal() {
             document.getElementById('hardwareModal').style.display = 'none';
             document.getElementById('hardwareForm').reset();
+            if (kitsChoiceInstance) kitsChoiceInstance.removeActiveItems();
+        }
+
+        function previewSelectedImage(event) {
+            const file = event.target.files[0];
+            const previewImg = document.getElementById('imagePreview');
+            const placeholder = document.getElementById('previewPlaceholder');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                    placeholder.style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function openFullscreenImage() {
+            const previewImg = document.getElementById('imagePreview');
+            const fullscreenModal = document.getElementById('fullscreenImageModal');
+            const fullscreenImg = document.getElementById('fullscreenImage');
+
+            if (previewImg.style.display === 'block' && previewImg.src) {
+                fullscreenImg.src = previewImg.src;
+                fullscreenModal.style.display = 'flex';
+            }
+        }
+
+        function closeFullscreenImage() {
+            document.getElementById('fullscreenImageModal').style.display = 'none';
         }
     </script>
 @endpush
