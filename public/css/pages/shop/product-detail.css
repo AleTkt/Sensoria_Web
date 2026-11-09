@@ -1,4 +1,8 @@
 /* public/css/pages/shop/product-detail.css */
+
+/* Fuente Plus Jakarta Sans (los @import deben ir al inicio del archivo) */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 :root {
     --color-neutral: #FAFAF7;
     --color-primary: #589445;
@@ -278,4 +282,272 @@
     max-height: 350px;
     object-fit: contain;
     padding: 2rem;
+}
+
+
+/* =========================================================
+   ▼▼▼  NUEVO · SISTEMA VISUAL SENSORÍA PARA LA TIENDA  ▼▼▼
+   Glassmorphism sutil · Plus Jakarta Sans
+   Estandariza botones, carrito y detalle de producto usando
+   las clases que YA existen en los blades. No requiere
+   cambios en HTML ni en la lógica.
+
+   Nota: el carrito usa estilos inline en tabla, alerta y botón
+   "Proceder al Pago"; esas reglas se apoyan en la estructura
+   o en el atributo style y usan !important donde hace falta.
+   ========================================================= */
+
+:root {
+    --font-sensoria: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+    --sb-primary: var(--color-primary, #589445);
+    --sb-primary-light: #66a551;
+    --sb-primary-dark: #4a7d3a;
+    --sb-tertiary: var(--color-tertiary, #1B3D1A);
+    --sb-radius: var(--radius-button, 10px);
+}
+
+/* ---------------------------------------------------------
+   1. FONDO · destellos verdes muy tenues para que el cristal
+      de las tarjetas se note (sin cambiar el color base)
+   --------------------------------------------------------- */
+.shop-page-wrapper {
+    background-image:
+        radial-gradient(ellipse 600px 400px at 8% 0%, rgba(88, 148, 69, 0.10), transparent 70%),
+        radial-gradient(ellipse 500px 360px at 95% 30%, rgba(72, 103, 50, 0.07), transparent 70%);
+    background-repeat: no-repeat;
+}
+
+/* ---------------------------------------------------------
+   2. BOTÓN PRIMARIO · .btn-sensoria y .btn-add-cart
+      (catálogo, detalle, carrito y estado vacío)
+   --------------------------------------------------------- */
+.btn-sensoria,
+.btn-add-cart {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 42px;
+    font-family: var(--font-sensoria);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.005em;
+    white-space: nowrap;
+    text-decoration: none;
+    user-select: none;
+    color: #ffffff;
+    background: linear-gradient(180deg, var(--sb-primary-light) 0%, var(--sb-primary) 100%);
+    border: 1px solid rgba(27, 61, 26, 0.14);
+    border-radius: var(--sb-radius);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 4px 14px rgba(88, 148, 69, 0.28);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.btn-sensoria:hover,
+.btn-add-cart:hover {
+    color: #ffffff;
+    background: linear-gradient(180deg, var(--sb-primary) 0%, var(--sb-primary-dark) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 8px 20px rgba(88, 148, 69, 0.34);
+    transform: translateY(-1px);
+}
+
+.btn-sensoria:active,
+.btn-add-cart:active {
+    transform: translateY(0);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.16),
+    0 2px 6px rgba(88, 148, 69, 0.25);
+}
+
+/* Botón grande del detalle de producto (conserva su flex: 1) */
+.btn-add-cart {
+    min-height: 48px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+}
+
+/* Enlaces .btn-sensoria que traen display:inline-block inline (estado vacío) */
+.shop-container .btn-sensoria[style*="inline-block"] {
+    display: inline-flex !important;
+}
+
+/* ---------------------------------------------------------
+   3. VARIANTE OSCURA · "Proceder al Pago"
+      (el blade le pone background-color: var(--color-tertiary)
+      inline; se detecta por ese atributo)
+   --------------------------------------------------------- */
+.btn-sensoria[style*="--color-tertiary"] {
+    background: linear-gradient(180deg, #2c5a2a 0%, var(--sb-tertiary) 100%) !important;
+    border-color: rgba(10, 30, 10, 0.3);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 4px 14px rgba(27, 61, 26, 0.3);
+}
+
+.btn-sensoria[style*="--color-tertiary"]:hover {
+    background: linear-gradient(180deg, var(--sb-tertiary) 0%, #132c12 100%) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 8px 20px rgba(27, 61, 26, 0.38);
+}
+
+/* ---------------------------------------------------------
+   4. ENLACE "← Seguir Comprando" · chip de cristal
+   --------------------------------------------------------- */
+.back-link {
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    font-family: var(--font-sensoria);
+    color: var(--sb-tertiary);
+    background: rgba(255, 255, 255, 0.65);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(27, 61, 26, 0.14);
+    border-radius: 9999px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 2px 8px rgba(27, 61, 26, 0.05);
+    transition: background 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.back-link:hover {
+    color: var(--sb-tertiary);
+    background: rgba(88, 148, 69, 0.12);
+    border-color: rgba(88, 148, 69, 0.45);
+    transform: translateX(-2px);
+}
+
+/* ---------------------------------------------------------
+   5. CANTIDAD · input del detalle de producto
+   --------------------------------------------------------- */
+.qty-input {
+    font-family: var(--font-sensoria);
+    font-weight: 600;
+    color: var(--sb-tertiary);
+    background: rgba(255, 255, 255, 0.85);
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.qty-input:focus {
+    outline: none;
+    border-color: var(--sb-primary);
+    box-shadow: 0 0 0 3px rgba(88, 148, 69, 0.15);
+}
+
+/* ---------------------------------------------------------
+   6. CARRITO · tabla dentro de .product-card
+   --------------------------------------------------------- */
+/* La tarjeta del carrito no debe "saltar" al pasar el mouse */
+.product-card:has(> table) {
+    overflow-x: auto;
+}
+
+.product-card:has(> table):hover {
+    transform: none;
+    box-shadow: 0 8px 32px rgba(27, 61, 26, 0.05);
+}
+
+.product-card > table {
+    font-family: var(--font-sensoria);
+}
+
+.product-card > table th {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: rgba(88, 148, 69, 0.07);
+    white-space: nowrap;
+}
+
+.product-card > table thead th:first-child {
+    border-top-left-radius: 10px;
+}
+
+.product-card > table thead th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.product-card > table td {
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.product-card > table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.product-card > table tbody tr:hover {
+    background-color: rgba(88, 148, 69, 0.06);
+}
+
+/* Línea separadora sobre el total */
+.product-card > table + div {
+    border-top: 1px solid rgba(27, 61, 26, 0.08);
+    font-family: var(--font-sensoria);
+    letter-spacing: -0.01em;
+}
+
+/* ---------------------------------------------------------
+   7. MENSAJE DE ÉXITO · alerta con estilos inline en el blade
+   --------------------------------------------------------- */
+.shop-container > div[style*="rgba(88, 148, 69, 0.15)"] {
+    font-family: var(--font-sensoria);
+    border: 1px solid rgba(88, 148, 69, 0.3);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 16px rgba(88, 148, 69, 0.08);
+}
+
+/* ---------------------------------------------------------
+   8. ESTADOS: foco visible
+   --------------------------------------------------------- */
+.btn-sensoria:focus-visible,
+.btn-add-cart:focus-visible,
+.back-link:focus-visible {
+    outline: 2px solid rgba(88, 148, 69, 0.6);
+    outline-offset: 2px;
+}
+
+.btn-sensoria:disabled,
+.btn-add-cart:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    pointer-events: none;
+}
+
+/* ---------------------------------------------------------
+   9. MÓVIL
+   --------------------------------------------------------- */
+@media (max-width: 480px) {
+    .form-add-cart {
+        flex-wrap: wrap;
+    }
+
+    .btn-add-cart {
+        flex: 1 1 100%;
+    }
+}
+
+/* ---------------------------------------------------------
+   10. ACCESIBILIDAD: respetar "reducir movimiento"
+   --------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    .btn-sensoria,
+    .btn-add-cart,
+    .back-link,
+    .product-card > table tbody tr {
+        transition: none;
+        transform: none !important;
+    }
 }

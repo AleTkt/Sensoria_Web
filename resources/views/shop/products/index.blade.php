@@ -38,12 +38,26 @@
                             <p class="card-desc">{{ $product->description }}</p>
                         </div>
 
-                        <div class="card-footer">
-                            <span class="card-price">${{ number_format($product->price, 2) }}</span>
-                            <a href="{{ route('shop.products.show', $product->id) }}" class="btn-sensoria">
-                                Ver detalle
-                            </a>
-                        </div>
+                            <div class="card-footer">
+                                <span class="card-price">${{ number_format($product->price, 2) }}</span>
+
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <!-- Botón secundario para ver detalle -->
+                                    <a href="{{ route('shop.products.show', $product->id) }}" class="btn-sensoria" style="width: 42px; height: 42px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 8px;" title="Ver detalle">
+                                        <i class="fa-regular fa-eye" style="font-size: 1rem; color: #FFFFFF;"></i>
+                                    </a>
+
+                                    <!-- Formulario principal con las clases para loading-buttons.js -->
+                                    <form action="{{ route('shop.cart.add', $product->id) }}" method="POST" class="form-with-loading" style="margin: 0;">
+                                        @csrf
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn-sensoria btn-submit-loading">
+                                            <i class="fa-solid fa-cart-plus"></i> Agregar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
                     </div>
                 @empty
                     <div style="text-align: center; padding: 3rem 0; color: #6b7280;">

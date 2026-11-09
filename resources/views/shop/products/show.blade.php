@@ -37,12 +37,12 @@
                         <p>{{ $product->description }}</p>
                     </div>
 
-                    <!-- Formulario de Carrito sin Tailwind -->
-                    <form action="#" method="POST" class="form-add-cart">
+                    <!-- Formulario de Carrito conectado al Backend -->
+                    <form action="{{ route('shop.cart.add', $product->id) }}" method="POST" class="form-add-cart">
                         @csrf
                         <label for="quantity" style="display:none;">Cantidad</label>
                         <input type="number" id="quantity" name="quantity" value="1" min="1" class="qty-input">
-                        <button type="button" class="btn-add-cart">
+                        <button type="submit" class="btn-add-cart">
                             Añadir al Carrito
                         </button>
                     </form>

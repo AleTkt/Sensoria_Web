@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\Products\KitController;
 use App\Http\Controllers\Admin\Products\HardwareController;
 use App\Http\Controllers\Admin\Products\KitProductController;
+use App\Http\Controllers\Shop\CartController;
 use App\Http\Controllers\Auth\InvitationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanySelectionController;
@@ -31,6 +32,10 @@ Route::post('/invitacion/{token}', [InvitationController::class, 'accept'])->nam
 //Rutas del E-Commerce B2B
 Route::get('shop/products', [ProductCatalogController::class, 'index']) ->name('shop.products.index');
 Route::get('/tienda/{id}', [ProductCatalogController::class, 'show'])->name('shop.products.show');
+
+//Rutas para el carrito de compras
+Route::get('/carrito', [CartController::class, 'index'])->name('shop.cart.index');
+Route::post('/carrito/agregar/{id}', [CartController::class, 'add'])->name('shop.cart.add');
 
 
 Route::middleware('auth')->group(function () {
