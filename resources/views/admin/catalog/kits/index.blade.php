@@ -5,6 +5,12 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/products/kit.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/toast.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+
+
 @endpush
 
 @section('header-actions')
@@ -68,23 +74,14 @@
                 <button type="button" class="btn-close" onclick="closeKitModal()">&times;</button>
             </div>
 
-            <form id="kitForm" method="POST" action="#">
+            <!-- 'novalidate' desactiva la validación del navegador para usar la de Laravel -->
+            <form id="kitForm" method="POST" action="#" class="form-with-loading" novalidate>
                 @csrf
                 <input type="hidden" name="_method" id="formMethod" value="POST">
                 <input type="hidden" name="id" id="kitId" value="">
 
                 <div class="modal-body">
-                    @if ($errors->any())
-                        <div class="alert-danger-custom">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <!-- Fila 1: SKU y Nombre (Responsive: 1 col en móvil, 2 cols en escritorio) -->
+                    <!-- Fila 1: SKU y Nombre -->
                     <div class="form-row form-row-2">
                         <div class="form-group mb-0">
                             <label for="sku">SKU</label>
@@ -96,7 +93,7 @@
                         </div>
                     </div>
 
-                    <!-- Fila 2: Sector Objetivo y Precio (Responsive: 2 columnas iguales) -->
+                    <!-- Fila 2: Sector Objetivo y Precio -->
                     <div class="form-row form-row-equal">
                         <div class="form-group mb-0">
                             <label for="sector">Sector Objetivo (Ej. Comercio Seguro)</label>
@@ -125,24 +122,65 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn-sensoria-outline" onclick="closeKitModal()">Cancelar</button>
-                    <button type="submit" class="btn-sensoria">Guardar Kit</button>
+                    <button type="submit" class="btn-sensoria btn-submit-loading">Guardar Kit</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- ========================================== -->
+    <!-- CONTENEDOR DE TOASTS REUTILIZABLES         -->
+    <!-- ========================================== -->
+    <div class="toast-container-brutal" id="toast-container">
+        @if(session('success'))
+            <div class="toast-brutal toast-success">
+                <div class="toast-header">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <strong>¡Éxito!</strong>
+                    <button class="btn-close" type="button">&times;</button>
+                </div>
+                <div class="toast-body">
+                    {{ session('success') }}
+                </div>
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="toast-brutal toast-error">
+                <div class="toast-header">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <strong>Error de validación</strong>
+                    <button class="btn-close" type="button">&times;</button>
+                </div>
+                <div class="toast-body">
+                    {{ $errors->first() }}
+                </div>
+            </div>
+        @endif
+    </div>
 @endsection
 
 @push('scripts')
+    <!-- 1. Script de loading para el botón -->
+    <script src="{{ asset('js/loading-buttons.js') }}"></script>
+
+    <!-- 2. Tu componente reutilizable de Toasts -->
+    <script src="{{ asset('js/toast.js') }}"></script>
+
     <script>
         $(document).ready(function() {
             $('#kitsTable').DataTable();
 
+            // Si hay errores de validación, abrimos el modal automáticamente
             @if ($errors->any())
             document.getElementById('kitModal').style.display = 'flex';
             @endif
 
+            // Prevenir envío con Enter en campos que no sean textarea
             document.getElementById('kitForm').addEventListener('keydown', function(event) {
-                if (event.key === 'Enter' && event.target.tagName !== 'TEXTAREA') event.preventDefault();
+                if (event.key === 'Enter' && event.target.tagName !== 'TEXTAREA') {
+                    event.preventDefault();
+                }
             });
         });
 
