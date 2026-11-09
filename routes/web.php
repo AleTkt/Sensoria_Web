@@ -36,6 +36,8 @@ Route::get('/tienda/{id}', [ProductCatalogController::class, 'show'])->name('sho
 //Rutas para el carrito de compras
 Route::get('/carrito', [CartController::class, 'index'])->name('shop.cart.index');
 Route::post('/carrito/agregar/{id}', [CartController::class, 'add'])->name('shop.cart.add');
+Route::patch('/carrito/actualizar/{key}', [CartController::class, 'updateQuantity'])->name('shop.cart.update'); // NUEVA
+Route::delete('/carrito/eliminar/{key}', [CartController::class, 'removeItem'])->name('shop.cart.remove');
 
 
 Route::middleware('auth')->group(function () {
