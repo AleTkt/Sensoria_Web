@@ -108,7 +108,12 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/usuarios/{user}/password-reset', [AdminUserController::class, 'sendPasswordReset'])->name('users.password-reset');
 
     // Catálogo
+      //Kits
       Route::get('/Products/kits', [KitController::class, 'index'])->name('catalog.kits');
+      Route::post('/catalogo/kits', [KitController::class, 'store'])->name('catalog.kits.store');
+
+
+      //Hardware
       Route::get('/Products/hardware', [HardwareController::class, 'index'])->name('catalog.hardware');
       //Ruta para creacion de hardware
       Route::post('/Products/hardware', [HardwareController::class, 'store'])->name('catalog.hardware.store');

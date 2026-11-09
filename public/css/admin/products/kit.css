@@ -409,3 +409,9 @@
         transform: none !important;
     }
 }
+
+
+/* Forzar z-index más alto que el modal (9999) */
+.toast-container-brutal {
+    z-index: 100000 !important;
+}
