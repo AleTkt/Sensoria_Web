@@ -52,7 +52,11 @@
             <tbody>
             @forelse($tickets as $ticket)
                 <tr style="border-bottom: 1px solid #f1f5f9; font-size: 0.9rem;">
-                    <td style="padding: 12px; font-weight: bold; color: #475569;">{{ $ticket->ticket_number }}</td>
+                    <td style="padding: 12px; font-weight: bold;">
+                        <a href="{{ route('workspace.tickets.show', $ticket->id) }}" style="color: var(--color-primary); text-decoration: none;">
+                            {{ $ticket->ticket_number }} <i class="fa-solid fa-arrow-right" style="font-size: 0.75rem; margin-left: 4px;"></i>
+                        </a>
+                    </td>
                     <td style="padding: 12px; font-weight: 600; color: #0f172a;">{{ $ticket->subject }}</td>
                     <td style="padding: 12px; color: #64748b;">{{ $ticket->category }}</td>
                     <td style="padding: 12px; color: #64748b;">{{ $ticket->priority }}</td>

@@ -54,4 +54,42 @@ class TicketController extends Controller
 
         return redirect()->route('workspace.tickets.index')->with('success', 'Ticket de soporte creado exitosamente.');
     }
+
+    public function show($id)
+    {
+        $companyId = session('current_company_id');
+
+        // Cargamos el ticket asegurando que pertenezca a la empresa en sesión
+        // y traemos la relación de mensajes ordenados cronológicamente
+        $ticket = Ticket::with(['user', 'assignedAgent', 'messages.user'])
+            ->where('company_id', $companyId)
+            ->findOrFail($id);
+
+        return view('workspace.tickets.show', compact('ticket'));
+    }
+
+    public function reply(Request $request, $id)
+    {
+        $request->validate([
+            'message' => ['required', 'string'],
+        ]);
+
+        $companyId = session('current_company_id');
+        $ticket = Ticket::where('company_id', $companyId)->findOrFail($id);
+
+        // Si el ticket estaba cerrado y el cliente responde, lo reabrimos
+        if (in_array($ticket->status, ['RESUELTO', 'CERRADO'])) {
+            $ticket->update(['status' => 'ABIERTO']);
+        }
+
+        TicketMessage::create([
+            'ticket_id' => $ticket->id,
+            'user_id' => \Illuminate\Support\Facades\Auth::id(),
+            'message' => $request->message,
+            'is_internal_note' => false,
+        ]);
+
+        return redirect()->route('workspace.tickets.show', $ticket->id)
+            ->with('success', 'Mensaje enviado correctamente.');
+    }
 }

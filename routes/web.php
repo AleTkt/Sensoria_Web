@@ -78,8 +78,10 @@ Route::prefix('workspace')->name('workspace.')->group(function () {
     Route::get('/devices', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'devices'])->name('devices');
     Route::get('/tickets', [\App\Http\Controllers\Workspace\TicketController::class, 'index'])->name('tickets.index');
     Route::post('/tickets', [\App\Http\Controllers\Workspace\TicketController::class, 'store'])->name('tickets.store');
+    Route::get('/tickets/{id}', [\App\Http\Controllers\Workspace\TicketController::class, 'show'])->name('tickets.show');
+    Route::post('/tickets/{id}/reply', [\App\Http\Controllers\Workspace\TicketController::class, 'reply'])->name('tickets.reply');
     Route::get('/devices', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'devices'])->name('devices');
-    Route::get('/devices/{id}/metrics', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'metrics'])->name('devices.metrics'); // NUEVA
+    Route::get('/devices/{id}/metrics', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'metrics'])->name('devices.metrics');
 });
 
 // Grupo exclusivo para el Staff de Sensoría (Super Admins y Soporte)
