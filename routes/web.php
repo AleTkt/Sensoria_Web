@@ -13,7 +13,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\SetCurrentCompany;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Shop\ProductCatalogController;
-use App\Http\Controllers\Admin\AdminCompanyTeamController;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -81,6 +81,7 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/empresas', [AdminCompanyController::class, 'store'])->name('companies.store');
     Route::put('/empresas/{company}', [AdminCompanyController::class, 'update'])->name('companies.update');
     Route::patch('/empresas/{company}/toggle-status', [AdminCompanyController::class, 'toggleStatus'])->name('companies.toggle-status');
+    Route::get('/usuarios', [AdminUserController::class, 'index'])->name('users.index');
 
     // Gestión del Equipo de la Empresa (Admin)
     Route::post('/empresas/{company}/equipo', [AdminCompanyTeamController::class, 'store'])->name('companies.team.store');
@@ -95,8 +96,13 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/usuarios/{user}/password-reset', [AdminUserController::class, 'sendPasswordReset'])->name('users.password-reset');
 
     // Catálogo
-    Route::get('/Products/kits', [KitController::class, 'index'])->name('catalog.kits');
-    Route::get('/Products/hardware', [HardwareController::class, 'index'])->name('catalog.hardware');
+      Route::get('/Products/kits', [KitController::class, 'index'])->name('catalog.kits');
+      Route::get('/Products/hardware', [HardwareController::class, 'index'])->name('catalog.hardware');
+      //Ruta para creacion de hardware
+    Route::post('/Products/hardware', [HardwareController::class, 'store'])->name('catalog.hardware.store');
+    //Ruta para editar los campos
+    Route::put('/Products/hardware/{id}', [HardwareController::class, 'update'])->name('catalog.hardware.update');
+
     // Logística y Soporte
     // Route::get('/pedidos', [OrderController::class, 'index'])->name('orders.index');
     // Route::get('/tickets', [TicketController::class,y  'index'])->name('tickets.index');
