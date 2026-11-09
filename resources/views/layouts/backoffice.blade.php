@@ -53,11 +53,18 @@
             <!-- Catálogo (Módulo B) -->
             <div class="nav-section">
                 <h3>Catálogo y Hardware</h3>
-                <a href="{{ route('admin.catalog.kits') }}" class="{{ request()->routeIs('admin.catalog.kits*') ? 'active' : '' }}">
-                    <i class="icon-kit"></i> Kits Comerciales
+                <a href="{{ route('admin.catalog.kits') }}"
+                   class="{{ request()->routeIs('admin.catalog.kits') && !request()->routeIs('admin.catalog.kits.products*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-box-open"></i> Kits Comerciales
                 </a>
-                <a href="{{ route('admin.catalog.hardware') }}" class="{{ request()->routeIs('admin.catalog.hardware*') ? 'active' : '' }}">
-                    <i class="icon-device"></i> Hardware Base
+                <!-- Productos en Kits -->
+                <a href="{{ route('admin.catalog.kits.products.index') }}"
+                   class="{{ request()->routeIs('admin.catalog.kits.products*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-cubes"></i> Productos en Kits
+                </a>
+                <a href="{{ route('admin.catalog.hardware') }}"
+                   class="{{ request()->routeIs('admin.catalog.hardware*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-microchip"></i> Hardware Base
                 </a>
             </div>
 
