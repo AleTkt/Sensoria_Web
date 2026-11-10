@@ -60,6 +60,11 @@
             border-color: var(--color-primary, #589445);
             box-shadow: 0 0 0 3px rgba(88, 148, 69, 0.15);
         }
+        /* Estilos para campos con error */
+        .wallet-input.is-invalid {
+            border-color: #e53e3e;
+            background-color: #fff5f5;
+        }
     </style>
 @endpush
 
@@ -166,27 +171,39 @@
                 <button type="button" onclick="togglePaymentModal()" style="background: none; border: none; font-size: 1.5rem; color: #6b7280; cursor: pointer; line-height: 1;">&times;</button>
             </div>
 
-            <!-- Formulario conectado a la ruta POST y con el efecto Loading -->
-            <form action="{{ route('wallet.payment.store') }}" method="POST" class="form-with-loading">
+            <!-- Formulario conectado a la ruta POST, novalidate y con el efecto Loading -->
+            <form action="{{ route('wallet.payment.store') }}" method="POST" class="form-with-loading" novalidate>
                 @csrf
                 <div>
                     <label style="font-size: 0.85rem; font-weight: 700; color: var(--color-tertiary);">Nombre del Titular</label>
-                    <input type="text" name="cardholder_name" class="wallet-input" placeholder="Ej. Rodrigo Maldonado" required>
+                    <input type="text" name="cardholder_name" class="wallet-input @error('cardholder_name') is-invalid @enderror" placeholder="Ej. Rodrigo Maldonado" value="{{ old('cardholder_name') }}" required>
+                    @error('cardholder_name')
+                    <span style="color: #e53e3e; font-size: 0.75rem;">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div>
                     <label style="font-size: 0.85rem; font-weight: 700; color: var(--color-tertiary);">Número de Tarjeta (Ficticia)</label>
-                    <input type="text" name="card_number" class="wallet-input" placeholder="4532 •••• •••• ••••" maxlength="19" required>
+                    <input type="text" name="card_number" class="wallet-input @error('card_number') is-invalid @enderror" placeholder="4532 •••• •••• ••••" maxlength="19" value="{{ old('card_number') }}" required>
+                    @error('card_number')
+                    <span style="color: #e53e3e; font-size: 0.75rem;">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div>
                         <label style="font-size: 0.85rem; font-weight: 700; color: var(--color-tertiary);">Mes Expiración</label>
-                        <input type="text" name="exp_month" class="wallet-input" placeholder="MM (ej. 12)" maxlength="2" required>
+                        <input type="text" name="exp_month" class="wallet-input @error('exp_month') is-invalid @enderror" placeholder="MM (ej. 12)" maxlength="2" value="{{ old('exp_month') }}" required>
+                        @error('exp_month')
+                        <span style="color: #e53e3e; font-size: 0.75rem; display: block;">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div>
                         <label style="font-size: 0.85rem; font-weight: 700; color: var(--color-tertiary);">Año Expiración</label>
-                        <input type="text" name="exp_year" class="wallet-input" placeholder="AAAA (ej. 2028)" maxlength="4" required>
+                        <input type="text" name="exp_year" class="wallet-input @error('exp_year') is-invalid @enderror" placeholder="AAAA (ej. 2028)" maxlength="4" value="{{ old('exp_year') }}" required>
+                        @error('exp_year')
+                        <span style="color: #e53e3e; font-size: 0.75rem; display: block;">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -215,5 +232,12 @@
                 document.body.style.overflow = '';
             }
         }
+
+        // Reabrir el modal automáticamente si hay errores de validación del FormRequest
+        @if ($errors->any())
+        document.addEventListener("DOMContentLoaded", function() {
+            togglePaymentModal();
+        });
+        @endif
     </script>
 @endpush

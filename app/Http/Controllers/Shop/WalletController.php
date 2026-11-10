@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PaymentMethod;
+use App\Http\Requests\StorePaymentMethodRequest; // ¡Asegúrate de importar esto!
 
 class WalletController extends Controller
 {
@@ -14,7 +15,6 @@ class WalletController extends Controller
      */
     public function index()
     {
-        // Recuperamos los métodos de pago del usuario autenticado
         $paymentMethods = PaymentMethod::where('user_id', Auth::id())
             ->orderBy('is_default', 'desc')
             ->orderBy('created_at', 'desc')
@@ -22,23 +22,19 @@ class WalletController extends Controller
 
         return view('shop.wallet.index', compact('paymentMethods'));
     }
-    /**
-     * Almacena un nuevo método de pago para el usuario autenticado.
-     */
-    public function storePaymentMethod(Request $request)
-    {
-        $request->validate([
-            'cardholder_name' => 'required|string|max:255',
-            'card_number'     => 'required|string|min:15|max:19',
-            'exp_month'       => 'required|string|max:2',
-            'exp_year'        => 'required|string|max:4',
-        ]);
 
-        // Limpieza correcta del número de tarjeta
+    /**
+     * Almacena un nuevo método de pago para el usuario autenticado usando FormRequest.
+     */
+    public function storePaymentMethod(StorePaymentMethodRequest $request) // <-- Cambio aquí
+    {
+        // Si el código llega hasta aquí, la validación del FormRequest ya fue exitosa.
+
+        // Limpieza del número de tarjeta
         $cardNumber = preg_replace('/\D/', '', $request->input('card_number'));
         $last4 = substr($cardNumber, -4);
 
-        // Detección de marca
+        // Detección básica de marca
         $firstDigit = substr($cardNumber, 0, 1);
         $brand = 'visa';
         if ($firstDigit === '5') {
@@ -47,7 +43,6 @@ class WalletController extends Controller
             $brand = 'amex';
         }
 
-        // Verificamos si ya tiene tarjetas registradas
         $hasCards = PaymentMethod::where('user_id', Auth::id())->exists();
 
         PaymentMethod::create([
@@ -62,5 +57,4 @@ class WalletController extends Controller
 
         return redirect()->route('wallet.index')->with('success', 'Método de pago registrado correctamente.');
     }
-
 }
