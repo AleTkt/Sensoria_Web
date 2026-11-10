@@ -13,6 +13,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanySelectionController;
 use App\Http\Controllers\CompanyTeamController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Workspace\AlertController;
 use App\Http\Middleware\SetCurrentCompany;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Shop\ProductCatalogController;
@@ -104,6 +105,10 @@ Route::prefix('workspace')->name('workspace.')->group(function () {
     Route::post('/tickets/{id}/reply', [\App\Http\Controllers\Workspace\TicketController::class, 'reply'])->name('tickets.reply');
     Route::get('/devices/{id}/metrics', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'metrics'])->name('devices.metrics');
     Route::post('/devices/redeem', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'redeem'])->name('devices.redeem');
+
+    // Módulo de Alertas
+    Route::get('/alerts', [AlertController::class, 'index'])->name('alerts.index');
+    Route::post('/alerts/{id}/resolve', [AlertController::class, 'resolve'])->name('alerts.resolve');
 });
 
 // Grupo exclusivo para el Staff de Sensoría (Super Admins y Soporte)
