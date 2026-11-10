@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\Products\KitController;
 use App\Http\Controllers\Admin\Products\HardwareController;
 use App\Http\Controllers\Admin\Products\KitProductController;
 use App\Http\Controllers\Shop\CartController;
+use App\Http\Controllers\Shop\WalletController;
 use App\Http\Controllers\Auth\InvitationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanySelectionController;
@@ -46,6 +47,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    //Ruta para la billerta de pagp
+    Route::get('/billetera-pagos', [WalletController::class, 'index'])->name('wallet.index');
 
 
 
