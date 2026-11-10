@@ -71,7 +71,7 @@
             <!-- Logística y Finanzas -->
             <div class="nav-section">
                 <h3>Logística y Finanzas</h3>
-                <a href="{{ url('/admin/pedidos') }}" class="{{ request()->is('admin/pedidos*') ? 'active' : '' }}">
+                <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
                     <i class="icon-orders"></i> Pedidos Globales
                 </a>
                 <a href="{{ url('/admin/facturacion') }}" class="{{ request()->is('admin/facturacion*') ? 'active' : '' }}">
