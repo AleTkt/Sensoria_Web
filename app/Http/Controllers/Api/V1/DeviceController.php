@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Device;
 use App\Models\Hub;
+use Illuminate\Http\Request;
 
 class DeviceController extends Controller
 {
@@ -25,15 +25,20 @@ class DeviceController extends Controller
 
         $hubIds = Hub::where('company_id', $companyId)->pluck('id');
 
-        $devices = Device::whereIn('hub_id', $hubIds)->get()->map(function ($device) {
-            return [
-                'id' => (string) $device->id,
-                'name' => $device->name,
-                'type' => $device->type,
-                'lastReading' => $device->last_reading ?? 'Sin datos',
-                'isOnline' => (bool) ($device->is_active ?? true)
-            ];
-        });
+        $devices = Device::whereIn('hub_id', $hubIds)
+            ->with('latestReading') // eager loading: evita una consulta por dispositivo
+            ->get()
+            ->map(function ($device) {
+                return [
+                    'id' => (string) $device->id,
+                    'name' => $device->name,
+                    'type' => $device->type,
+                    'lastReading' => $device->latestReading
+                        ? $this->formatReading($device->latestReading)
+                        : 'Sin datos',
+                    'isOnline' => (bool) ($device->is_active ?? true),
+                ];
+            });
 
         return response()->json([
             'data' => $devices
@@ -53,7 +58,7 @@ class DeviceController extends Controller
             return response()->json(['message' => 'No autorizado'], 403);
         }
 
-        $hubIds = \App\Models\Hub::where('company_id', $companyId)->pluck('id');
+        $hubIds = Hub::where('company_id', $companyId)->pluck('id');
         $device = Device::whereIn('hub_id', $hubIds)->find($id);
 
         if (!$device) {
@@ -61,7 +66,8 @@ class DeviceController extends Controller
         }
 
         $telemetry = $device->telemetryReadings()
-            ->orderBy('created_at', 'desc')
+            ->orderBy('recorded_at', 'desc')
+            ->orderBy('id', 'desc')
             ->take(50)
             ->get()
             ->map(function ($reading) {
@@ -69,7 +75,7 @@ class DeviceController extends Controller
                     'id' => $reading->id,
                     'value' => (float) $reading->value,
                     'unit' => $reading->unit ?? '',
-                    'timestamp' => $reading->created_at?->toIso8601String(),
+                    'timestamp' => $reading->recorded_at?->toIso8601String(),
                 ];
             });
 
@@ -78,5 +84,15 @@ class DeviceController extends Controller
             'device_name' => $device->name,
             'readings' => $telemetry
         ], 200);
+    }
+
+    /**
+     * Convierte una lectura en texto legible: "23.50" -> "23.5 °C", "100.00" -> "100 %".
+     */
+    private function formatReading($reading): string
+    {
+        $value = rtrim(rtrim(number_format((float) $reading->value, 2, '.', ''), '0'), '.');
+
+        return trim($value . ' ' . ($reading->unit ?? ''));
     }
 }
