@@ -29,18 +29,18 @@ class AuthController extends Controller
         return response()->json([
             'token' => $token,
             'user' => [
-                'id' => (string) $user->id,
+                'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
                 'companies' => $user->companies->map(function ($company) {
                     return [
-                        'id' => (string) $company->id,
-                        'name' => $company->legal_name ?? 'Workspace sin nombre',
-
+                        'id' => $company->id,
+                        'name' => $company->trade_name ?? $company->legal_name,
+                        'role' => $company->pivot->company_role,
                     ];
-                })->toArray()
+                })
             ]
-        ], 200);
+        ]);
     }
 
     public function logout(Request $request)
@@ -50,5 +50,20 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Sesión cerrada exitosamente'
         ], 200);
+    }
+
+    public function getMyCompanies(Request $request)
+    {
+        $user = $request->user();
+
+        $companies = $user->companies->map(function ($company) {
+            return [
+                'id' => $company->id,
+                'name' => $company->trade_name ?? $company->legal_name,
+                'role' => $company->pivot->company_role,
+            ];
+        })->values()->all();
+
+        return response()->json(['data' => $companies]);
     }
 }
