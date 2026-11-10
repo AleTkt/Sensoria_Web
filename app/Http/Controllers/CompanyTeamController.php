@@ -46,77 +46,116 @@ class CompanyTeamController extends Controller
 
         $company = Auth::user()->companies()->findOrFail(session('current_company_id'));
 
-        // 1. Verificar si el usuario ya es miembro de la empresa
+        // 1. Verificamos si el usuario ya existe en la base de datos de Sensoría
         $userExists = User::where('email', $request->email)->first();
-        if ($userExists && $company->users()->where('users.id', $userExists->id)->exists()) {
-            return back()->withErrors([
-                'email' => 'Este usuario ya es miembro de tu equipo.'
-            ])->withInput();
-        }
 
-        // 2. Verificar si ya hay una invitación pendiente enviada previamente
-        $pendingInvitation = Invitation::where('email', $request->email)
-            ->where('company_id', $company->id)
-            ->first();
-        if ($pendingInvitation) {
-            return back()->withErrors([
-                'email' => 'Ya se ha enviado una invitación a este correo previamente.'
-            ])->withInput();
-        }
+        if ($userExists) {
+            // FLUJO A: El usuario YA existe en la plataforma
 
-        // 3. Crear el token único y guardar la invitación en la base de datos
-        $token = Str::random(40);
+            // Verificamos si ya es miembro de esta empresa
+            if ($company->users()->where('users.id', $userExists->id)->exists()) {
+                return back()->withErrors([
+                    'email' => 'Este usuario ya es miembro de tu equipo.'
+                ])->withInput();
+            }
 
-        Invitation::create([
-            'email' => $request->email,
-            'token' => $token,
-            'company_id' => $company->id,
-            'role' => $request->role,
-        ]);
+            // Lo agregamos directamente a la empresa
+            $company->users()->attach($userExists->id, [
+                'company_role' => $request->role,
+                'is_active' => true,
+            ]);
 
-        // 4. Configurar y enviar el correo (Adaptado de tu lógica de Aurora Nexus)
-        $invitationLink = route('invitations.accept', ['token' => $token]);
-        $asunto = "Invitación al entorno de " . $company->trade_name . " - Sensoría IoT";
+            // Guardamos Log de Actividad
+            CompanyActivityLog::create([
+                'company_id' => $company->id,
+                'user_id' => Auth::id(),
+                'category' => 'EQUIPO',
+                'action' => 'Miembro añadido directamente',
+                'description' => "Se añadió directamente a {$userExists->name} ({$userExists->email}) al espacio de trabajo con el rol de {$request->role}, ya que contaba con un perfil en Sensoría.",
+            ]);
 
-        $cuerpo = '
-        <div style="background-color: #f8fafc; color: #334155; font-family: system-ui, -apple-system, sans-serif; padding: 40px 20px;">
-            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-
-                <!-- Encabezado -->
-                <div style="background-color: #0f172a; padding: 25px; text-align: center;">
-                    <h2 style="color: #ffffff; margin: 0; font-size: 24px;">Sensoría <span>IoT</span></h2>
-                    <span style="color: #cbd5e1; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Invitación de Equipo</span>
-                </div>
-
-                <!-- Contenido Principal -->
-                <div style="padding: 30px;">
-                    <h3 style="color: #0f172a; margin-top: 0;">¡Hola!</h3>
-                    <p style="color: #475569; line-height: 1.6;">Has sido invitado a unirte al entorno de trabajo de <strong>' . htmlspecialchars($company->trade_name) . '</strong> en la plataforma Sensoría IoT con el rol de <strong>' . $request->role . '</strong>.</p>
-
-                    <p style="color: #475569; line-height: 1.6;">Para aceptar la invitación y configurar tu cuenta, haz clic en el siguiente botón:</p>
-
-                    <div style="text-align: center; margin: 30px 0;">
-                        <a href="' . $invitationLink . '" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">Aceptar Invitación</a>
+            // Correo notificando que fue añadido directamente
+            $asunto = "Has sido añadido a " . $company->trade_name . " - Sensoría IoT";
+            $cuerpo = '
+            <div style="background-color: #f8fafc; color: #334155; font-family: system-ui, -apple-system, sans-serif; padding: 40px 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    <div style="background-color: #0f172a; padding: 25px; text-align: center;">
+                        <h2 style="color: #ffffff; margin: 0; font-size: 24px;">Sensoría <span>IoT</span></h2>
+                        <span style="color: #cbd5e1; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Nuevo Equipo</span>
                     </div>
-
-                    <p style="color: #64748b; font-size: 13px;">Si no solicitaste esto o no conoces a esta empresa, puedes ignorar este correo de forma segura. El enlace expirará automáticamente.</p>
+                    <div style="padding: 30px;">
+                        <h3 style="color: #0f172a; margin-top: 0;">¡Hola, ' . htmlspecialchars($userExists->name) . '!</h3>
+                        <p style="color: #475569; line-height: 1.6;">Has sido añadido directamente al entorno de trabajo de <strong>' . htmlspecialchars($company->trade_name) . '</strong> en Sensoría IoT con el rol de <strong>' . $request->role . '</strong>.</p>
+                        <p style="color: #475569; line-height: 1.6;">Puedes acceder inmediatamente iniciando sesión con tus credenciales habituales.</p>
+                        <div style="text-align: center; margin: 30px 0;">
+                            <a href="' . route('login') . '" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">Iniciar Sesión</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>';
+            </div>';
 
-        // Enviar el correo usando tu servicio
-        CorreoService::enviarCorreo($request->email, $asunto, $cuerpo);
+            CorreoService::enviarCorreo($userExists->email, $asunto, $cuerpo);
 
-        // 5. Guardar Log de Actividad
-        CompanyActivityLog::create([
-            'company_id' => $company->id,
-            'user_id' => Auth::id(),
-            'category' => 'EQUIPO',
-            'action' => 'Invitación enviada',
-            'description' => "Se envió una invitación a {$request->email} para unirse al espacio de trabajo con el rol de {$request->role}.",
-        ]);
+            return redirect()->route('company.team')->with('success', 'El usuario ya existía en la plataforma y ha sido añadido a tu equipo de inmediato.');
 
-        return redirect()->route('company.team')->with('success', 'Invitación enviada exitosamente a ' . $request->email);
+        } else {
+            // FLUJO B: El usuario NO existe, enviamos invitación de registro
+
+            // Verificamos si ya hay una invitación pendiente
+            $pendingInvitation = Invitation::where('email', $request->email)
+                ->where('company_id', $company->id)
+                ->first();
+
+            if ($pendingInvitation) {
+                return back()->withErrors([
+                    'email' => 'Ya se ha enviado una invitación a este correo previamente.'
+                ])->withInput();
+            }
+
+            // Creamos la invitación
+            $token = Str::random(40);
+            Invitation::create([
+                'email' => $request->email,
+                'token' => $token,
+                'company_id' => $company->id,
+                'role' => $request->role,
+            ]);
+
+            // Guardamos Log de Actividad
+            CompanyActivityLog::create([
+                'company_id' => $company->id,
+                'user_id' => Auth::id(),
+                'category' => 'EQUIPO',
+                'action' => 'Invitación enviada',
+                'description' => "Se envió una invitación a {$request->email} para registrarse y unirse al espacio de trabajo con el rol de {$request->role}.",
+            ]);
+
+            // Correo de invitación con enlace de registro
+            $invitationLink = route('invitations.accept', ['token' => $token]);
+            $asunto = "Invitación al entorno de " . $company->trade_name . " - Sensoría IoT";
+            $cuerpo = '
+            <div style="background-color: #f8fafc; color: #334155; font-family: system-ui, -apple-system, sans-serif; padding: 40px 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    <div style="background-color: #0f172a; padding: 25px; text-align: center;">
+                        <h2 style="color: #ffffff; margin: 0; font-size: 24px;">Sensoría <span>IoT</span></h2>
+                        <span style="color: #cbd5e1; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Invitación de Equipo</span>
+                    </div>
+                    <div style="padding: 30px;">
+                        <h3 style="color: #0f172a; margin-top: 0;">¡Hola!</h3>
+                        <p style="color: #475569; line-height: 1.6;">Has sido invitado a unirte al entorno de trabajo de <strong>' . htmlspecialchars($company->trade_name) . '</strong> en la plataforma Sensoría IoT con el rol de <strong>' . $request->role . '</strong>.</p>
+                        <p style="color: #475569; line-height: 1.6;">Para aceptar la invitación y configurar tu cuenta, haz clic en el siguiente botón:</p>
+                        <div style="text-align: center; margin: 30px 0;">
+                            <a href="' . $invitationLink . '" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">Aceptar Invitación</a>
+                        </div>
+                        <p style="color: #64748b; font-size: 13px;">Si no solicitaste esto o no conoces a esta empresa, puedes ignorar este correo de forma segura. El enlace expirará automáticamente.</p>
+                    </div>
+                </div>
+            </div>';
+
+            CorreoService::enviarCorreo($request->email, $asunto, $cuerpo);
+
+            return redirect()->route('company.team')->with('success', 'Invitación enviada exitosamente a ' . $request->email);
+        }
     }
 
     /**

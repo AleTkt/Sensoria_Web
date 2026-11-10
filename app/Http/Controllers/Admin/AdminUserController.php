@@ -93,12 +93,29 @@ class AdminUserController extends Controller
 
     public function sendPasswordReset(User $user)
     {
-        $status = Password::broker()->sendResetLink(['email' => $user->email]);
+        // 1. Generamos una nueva contraseña temporal
+        $newPassword = Str::random(12);
 
-        if ($status === Password::RESET_LINK_SENT) {
-            return back()->with('success', 'Se ha enviado un enlace de restablecimiento al correo del usuario.');
-        }
+        // 2. Actualizamos al usuario
+        $user->update([
+            'password' => Hash::make($newPassword)
+        ]);
 
-        return back()->with('error', 'No se pudo enviar el enlace de restablecimiento.');
+        // 3. Enviamos el correo
+        $asunto = "Restablecimiento de contraseña - Sensoría IoT";
+        $cuerpo = "
+            <h2>Hola, {$user->name}</h2>
+            <p>Un administrador ha restablecido tu contraseña en la plataforma Sensoría IoT.</p>
+            <p>Tus nuevas credenciales de acceso son:</p>
+            <ul>
+                <li><strong>Correo:</strong> {$user->email}</li>
+                <li><strong>Nueva contraseña temporal:</strong> {$newPassword}</li>
+            </ul>
+            <p>Por seguridad, te recomendamos cambiar esta contraseña inmediatamente desde tu panel después de iniciar sesión.</p>
+        ";
+
+        CorreoService::enviarCorreo($user->email, $asunto, $cuerpo);
+
+        return back()->with('success', 'Contraseña restablecida y enviada al correo del usuario exitosamente.');
     }
 }
