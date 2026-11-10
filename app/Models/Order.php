@@ -37,4 +37,12 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class, 'order_id');
     }
+
+    /**
+     * El código de activación generado para esta orden.
+     */
+    public function activationCode(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(ActivationCode::class, 'order_id');
+    }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\Company;
 use App\Models\User;
+use App\Models\Hub; // <-- Asegúrate de tener el modelo creado, si no, lo crearemos luego.
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -22,9 +23,6 @@ class RegisteredUserController extends Controller
 
     public function store(RegisterRequest $request): RedirectResponse
     {
-        // Si hay errores de validación, RegisterRequest devolverá back()
-        // automáticamente con los errores, y nuestro Toast de error de validación los mostrará.
-
         $validated = $request->validated();
 
         DB::transaction(function () use ($validated) {
@@ -54,10 +52,17 @@ class RegisteredUserController extends Controller
                 'is_active' => true
             ]);
 
+            DB::table('iot.hubs')->insert([
+                'company_id' => $company->id,
+                'name' => 'Hub Principal',
+                'status' => 'DESCONECTADO',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
             event(new Registered($user));
             Auth::login($user);
 
-            // Asignamos la empresa actual a la sesión, igual que en el login
             session(['current_company_id' => $company->id]);
         });
 
