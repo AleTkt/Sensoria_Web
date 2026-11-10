@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Device extends Model
 {
@@ -36,6 +37,15 @@ class Device extends Model
     public function telemetryReadings(): HasMany
     {
         return $this->hasMany(TelemetryReading::class, 'device_id');
+    }
+
+    public function latestReading(): HasOne
+    {
+        return $this->hasOne(TelemetryReading::class, 'device_id')
+            ->ofMany([
+                'recorded_at' => 'max',
+                'id' => 'max',
+            ]);
     }
 
     public function alerts(): HasMany
