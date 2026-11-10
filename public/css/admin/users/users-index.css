@@ -1,0 +1,127 @@
+    /* Estilos corporativos unificados para Sensoría */
+.sensoria-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(27, 61, 26, 0.05);
+    border: 1px solid rgba(88, 148, 69, 0.15);
+    padding: 2rem;
+}
+
+.btn-sensoria-primary {
+    background-color: var(--color-primary, #589445);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(88, 148, 69, 0.2);
+    text-decoration: none;
+}
+.btn-sensoria-primary:hover {
+    background-color: #486732;
+    transform: translateY(-1px);
+}
+
+.btn-sensoria-secondary {
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+.btn-sensoria-secondary:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.btn-action-icon {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    padding: 0.45rem 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #4b5563;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+.btn-action-icon:hover {
+    background: #f3f4f6;
+    border-color: var(--color-primary, #589445);
+    color: var(--color-tertiary, #1B3D1A);
+}
+
+/* Estándar unificado de Modales */
+.sensoria-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(27, 61, 26, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+.sensoria-modal-box {
+    background: #ffffff;
+    width: 100%;
+    max-width: 480px;
+    border-radius: 16px;
+    padding: 2rem;
+    box-sizing: border-box;
+    position: relative;
+    text-align: left;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(27, 61, 26, 0.15);
+    border: 1px solid rgba(88, 148, 69, 0.2);
+    animation: modalFadeIn 0.25s ease-out;
+}
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.sensoria-input {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    box-sizing: border-box;
+    background: #fafaf9;
+    color: #1f2937;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.sensoria-input:focus {
+    outline: none;
+    border-color: var(--color-primary, #589445);
+    box-shadow: 0 0 0 3px rgba(88, 148, 69, 0.15);
+    background: #ffffff;
+}
+
+.sensoria-label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
