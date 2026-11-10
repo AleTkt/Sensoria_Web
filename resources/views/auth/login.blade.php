@@ -87,16 +87,7 @@
                     @enderror
                 </div>
 
-                <!-- Recordarme -->
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <input id="remember_me"
-                           type="checkbox"
-                           name="remember"
-                           style="width: 16px; height: 16px; accent-color: var(--color-primary); cursor: pointer;">
-                    <label for="remember_me" style="font-size: 0.875rem; color: #718096; cursor: pointer; user-select: none;">
-                        Mantener sesión iniciada
-                    </label>
-                </div>
+
 
                 <!-- Botón de Envío -->
                 <button type="submit" class="btn-submit-loading" style="width: 100%; background-color: var(--color-primary); color: white; border: none; padding: 13px; border-radius: var(--radius-button); font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: var(--shadow-soft); margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
