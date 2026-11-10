@@ -552,29 +552,38 @@
     }
 }
 
-/* Estilos específicos para el Modal Glassmorphism */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(27, 61, 26, 0.4); /* Verde oscuro semitransparente (color-tertiary) */
+    /* Usamos !important para anular cualquier otra regla y forzar la posición global */
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+
+    background: rgba(0, 0, 0, 0.5); /* O el color corporativo que prefieras (ej. rgba(27, 61, 26, 0.4)) */
     backdrop-filter: blur(4px);
-    display: flex;
+    -webkit-backdrop-filter: blur(4px);
+
+    display: flex; /* Esto es clave para centrar el contenido */
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+
+    /* Un z-index altísimo para superar cualquier navbar o sidebar */
+    z-index: 9999 !important;
+
+    /* Para manejar la animación si usas la clase .active */
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
+/* Si tu lógica JS usa .active para mostrarlo (como en el carrito) */
 .modal-overlay.active {
     opacity: 1;
     visibility: visible;
 }
-
 .checkout-modal {
     background: rgba(250, 250, 247, 0.95); /* Color base de Sensoria casi opaco */
     border: 1px solid rgba(88, 148, 69, 0.2);

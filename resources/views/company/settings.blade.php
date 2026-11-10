@@ -132,7 +132,9 @@
         @endif
 
     </div>
+@endsection
 
+@push('modals')
     <!-- Modales de Zona de Peligro (Cargados SOLO si es Propietario) -->
     @if(Auth::user()->hasCompanyRole('PROPIETARIO'))
         <!-- MODAL 1: Transferir Propiedad -->
@@ -194,8 +196,7 @@
             </div>
         </div>
     @endif
-
-@endsection
+@endpush
 
 @push('scripts')
     @if(Auth::user()->hasCompanyRole('PROPIETARIO'))

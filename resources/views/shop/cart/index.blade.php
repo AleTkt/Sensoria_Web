@@ -121,103 +121,104 @@
 
         </div>
     </div>
-
-    <!-- EL MODAL DE CHECKOUT -->
-    @auth
-        @if(count($cart) > 0)
-            <div id="checkout-modal" class="modal-overlay">
-                <div class="checkout-modal">
-                    <div class="modal-header">
-                        <h3 class="modal-title"><i class="fa-solid fa-credit-card"></i> Confirmar Pago</h3>
-                        <button type="button" id="btn-close-modal" class="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
-                    </div>
-
-                    <div style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(88, 148, 69, 0.1); border-radius: 8px;">
-                        <span style="color: #4b5563; font-size: 0.875rem;">Total a cargar:</span>
-                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--color-primary);">
-                            ${{ number_format($total, 2) }}
-                        </div>
-                    </div>
-
-                    <form action="{{ route('shop.checkout.process') }}" method="POST" id="checkout-form" class="form-with-loading">
-                        @csrf
-
-                        <h4 style="margin-bottom: 1rem; color: var(--color-tertiary); font-size: 1rem;">Selecciona tu método de pago</h4>
-
-                        @if($paymentMethods->count() > 0)
-                            <div style="max-height: 200px; overflow-y: auto; margin-bottom: 1.5rem;">
-                                @foreach($paymentMethods as $method)
-                                    <label class="payment-method-option">
-                                        <input type="radio" name="payment_method_id" value="{{ $method->id }}" required {{ $loop->first ? 'checked' : '' }}>
-                                        <div class="card-details">
-                                            <span class="card-brand"><i class="fa-brands fa-cc-{{ strtolower($method->brand ?? 'visa') }}"></i> Tarjeta {{ ucfirst($method->brand ?? 'Crédito') }}</span>
-                                            <span class="card-last4">Termina en •••• {{ $method->last_four }}</span>
-                                        </div>
-                                    </label>
-                                @endforeach
-                            </div>
-
-                            <div style="text-align: right; margin-bottom: 1.5rem;">
-                                <a href="{{ route('wallet.index') }}" style="color: var(--color-primary); font-size: 0.875rem; text-decoration: underline;">Administrar tarjetas</a>
-                            </div>
-
-                            <button type="submit" class="btn-sensoria btn-submit-loading" style="width: 100%; background-color: var(--color-tertiary);">
-                                Confirmar y Pagar
-                            </button>
-                        @else
-                            <div style="text-align: center; padding: 1.5rem 0;">
-                                <p style="color: #4b5563; margin-bottom: 1rem;">No tienes métodos de pago registrados.</p>
-                                <a href="{{ route('wallet.index') }}" class="btn-sensoria">
-                                    <i class="fa-solid fa-plus"></i> Agregar Tarjeta
-                                </a>
-                            </div>
-                        @endif
-                    </form>
-                </div>
-            </div>
-
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const modal = document.getElementById('checkout-modal');
-                    const btnOpen = document.getElementById('btn-open-checkout-modal');
-                    const btnClose = document.getElementById('btn-close-modal');
-
-                    // Validamos que los elementos existan antes de asignar eventos
-                    if (btnOpen && modal && btnClose) {
-
-                        // Abrir modal
-                        btnOpen.addEventListener('click', function() {
-                            modal.classList.add('active');
-                            document.body.style.overflow = 'hidden'; // Prevenir scroll de fondo
-                        });
-
-                        // Cerrar modal
-                        btnClose.addEventListener('click', closeModal);
-
-                        // Cerrar al hacer clic fuera del modal (en el overlay)
-                        modal.addEventListener('click', function(e) {
-                            if (e.target === modal) {
-                                closeModal();
-                            }
-                        });
-
-                        // Cerrar con tecla Escape
-                        document.addEventListener('keydown', function(e) {
-                            if (e.key === 'Escape' && modal.classList.contains('active')) {
-                                closeModal();
-                            }
-                        });
-                    }
-
-                    function closeModal() {
-                        if (modal) {
-                            modal.classList.remove('active');
-                            document.body.style.overflow = ''; // Restaurar scroll
-                        }
-                    }
-                });
-            </script>
-        @endif
-    @endauth
-
 @endsection
+
+<!-- EL MODAL DE CHECKOUT -->
+@push('modals')
+@auth
+    @if(count($cart) > 0)
+        <div id="checkout-modal" class="modal-overlay">
+            <div class="checkout-modal">
+                <div class="modal-header">
+                    <h3 class="modal-title"><i class="fa-solid fa-credit-card"></i> Confirmar Pago</h3>
+                    <button type="button" id="btn-close-modal" class="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(88, 148, 69, 0.1); border-radius: 8px;">
+                    <span style="color: #4b5563; font-size: 0.875rem;">Total a cargar:</span>
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--color-primary);">
+                        ${{ number_format($total, 2) }}
+                    </div>
+                </div>
+
+                <form action="{{ route('shop.checkout.process') }}" method="POST" id="checkout-form" class="form-with-loading">
+                    @csrf
+
+                    <h4 style="margin-bottom: 1rem; color: var(--color-tertiary); font-size: 1rem;">Selecciona tu método de pago</h4>
+
+                    @if($paymentMethods->count() > 0)
+                        <div style="max-height: 200px; overflow-y: auto; margin-bottom: 1.5rem;">
+                            @foreach($paymentMethods as $method)
+                                <label class="payment-method-option">
+                                    <input type="radio" name="payment_method_id" value="{{ $method->id }}" required {{ $loop->first ? 'checked' : '' }}>
+                                    <div class="card-details">
+                                        <span class="card-brand"><i class="fa-brands fa-cc-{{ strtolower($method->brand ?? 'visa') }}"></i> Tarjeta {{ ucfirst($method->brand ?? 'Crédito') }}</span>
+                                        <span class="card-last4">Termina en •••• {{ $method->last_four }}</span>
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
+
+                        <div style="text-align: right; margin-bottom: 1.5rem;">
+                            <a href="{{ route('wallet.index') }}" style="color: var(--color-primary); font-size: 0.875rem; text-decoration: underline;">Administrar tarjetas</a>
+                        </div>
+
+                        <button type="submit" class="btn-sensoria btn-submit-loading" style="width: 100%; background-color: var(--color-tertiary);">
+                            Confirmar y Pagar
+                        </button>
+                    @else
+                        <div style="text-align: center; padding: 1.5rem 0;">
+                            <p style="color: #4b5563; margin-bottom: 1rem;">No tienes métodos de pago registrados.</p>
+                            <a href="{{ route('wallet.index') }}" class="btn-sensoria">
+                                <i class="fa-solid fa-plus"></i> Agregar Tarjeta
+                            </a>
+                        </div>
+                    @endif
+                </form>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const modal = document.getElementById('checkout-modal');
+                const btnOpen = document.getElementById('btn-open-checkout-modal');
+                const btnClose = document.getElementById('btn-close-modal');
+
+                // Validamos que los elementos existan antes de asignar eventos
+                if (btnOpen && modal && btnClose) {
+
+                    // Abrir modal
+                    btnOpen.addEventListener('click', function() {
+                        modal.classList.add('active');
+                        document.body.style.overflow = 'hidden'; // Prevenir scroll de fondo
+                    });
+
+                    // Cerrar modal
+                    btnClose.addEventListener('click', closeModal);
+
+                    // Cerrar al hacer clic fuera del modal (en el overlay)
+                    modal.addEventListener('click', function(e) {
+                        if (e.target === modal) {
+                            closeModal();
+                        }
+                    });
+
+                    // Cerrar con tecla Escape
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape' && modal.classList.contains('active')) {
+                            closeModal();
+                        }
+                    });
+                }
+
+                function closeModal() {
+                    if (modal) {
+                        modal.classList.remove('active');
+                        document.body.style.overflow = ''; // Restaurar scroll
+                    }
+                }
+            });
+        </script>
+    @endif
+@endauth
+@endpush

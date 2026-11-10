@@ -221,6 +221,10 @@
     </div>
 
     <!-- MODAL FLOTANTE PARA AGREGAR TARJETA -->
+
+@endsection
+
+@push('modals')
     <div class="wallet-modal-overlay" id="paymentModalOverlay">
         <div class="wallet-modal">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -277,7 +281,7 @@
             </form>
         </div>
     </div>
-@endsection
+@endpush
 
 @push('scripts')
     <script>

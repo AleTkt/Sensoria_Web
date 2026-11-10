@@ -78,9 +78,6 @@
 
             <!-- BLOQUE 3: Módulos B y C (Facturación y Soporte) -->
             <span style="display: block; padding: 0 16px; font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Servicios</span>
-            <a href="#" class="" title="Próximamente">
-                <i class="fa-solid fa-file-invoice-dollar"></i> Facturación y Pagos
-            </a>
             <a href="{{ route('workspace.tickets.index') }}" class="{{ request()->routeIs('workspace.tickets.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-headset"></i> Soporte Técnico
             </a>
@@ -128,6 +125,7 @@
 <!-- Componentes Globales -->
 @include('layouts.toast')
 
+@stack('modals')
 <!-- Scripts Vanilla JS -->
 <script src="{{ asset('js/toast.js') }}"></script>
 <script src="{{ asset('js/loading-buttons.js') }}"></script>
