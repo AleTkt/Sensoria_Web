@@ -57,4 +57,24 @@ class WalletController extends Controller
 
         return redirect()->route('wallet.index')->with('success', 'Método de pago registrado correctamente.');
     }
+
+
+    /**
+     * Establece un método de pago como predeterminado para el usuario autenticado.
+     */
+    public function setDefaultPaymentMethod($id)
+    {
+        // 1. Verificamos que la tarjeta pertenezca al usuario autenticado
+        $paymentMethod = PaymentMethod::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        // 2. Quitamos el estado predeterminado de todas las tarjetas del usuario
+        PaymentMethod::where('user_id', Auth::id())->update(['is_default' => false]);
+
+        // 3. Marcamos la tarjeta seleccionada como principal
+        $paymentMethod->update(['is_default' => true]);
+
+        return redirect()->route('wallet.index')->with('success', 'Método de pago predeterminado actualizado correctamente.');
+    }
 }
