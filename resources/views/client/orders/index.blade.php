@@ -2,67 +2,117 @@
 
 @section('title', 'Mis Compras y Códigos de Activación - Sensoría IoT')
 
-@section('content')
-    <div style="padding: 3rem 1rem; max-width: 1200px; margin: 0 auto; min-height: 70vh;">
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/client/orders/mis-compras.css') }}">
+@endpush
 
-        <h2 style="font-size: 1.8rem; font-weight: 700; color: var(--color-primary); margin-bottom: 2rem; border-bottom: 2px solid var(--color-tertiary); padding-bottom: 0.5rem;">
-            Mis Compras y Códigos de Activación
-        </h2>
+@section('content')
+    <div class="orders-page-wrapper">
+
+        <!-- HEADER DE LA PÁGINA -->
+        <div class="orders-header">
+            <div>
+                <h2 class="orders-title">
+                    <i class="fa-solid fa-boxes-packing" style="color: var(--color-primary);"></i>
+                    Mis Compras & Códigos de Activación
+                </h2>
+                <p class="orders-subtitle">
+                    Consulte el historial de sus adquisiciones de kits IoT, estados de pago y códigos de enlace para sus hubs.
+                </p>
+            </div>
+            @if(!$orders->isEmpty())
+                <span class="orders-count-badge">
+                    <i class="fa-solid fa-receipt"></i> {{ $orders->total() }} {{ $orders->total() === 1 ? 'Compra' : 'Compras' }}
+                </span>
+            @endif
+        </div>
 
         <!-- Alerta de Éxito al venir del Checkout -->
         @if (session('success'))
-            <div style="margin-bottom: 1.5rem; background-color: #d1fae5; border: 1px solid #34d399; color: #065f46; padding: 1rem; border-radius: var(--radius-card);" role="alert">
-                <strong style="font-weight: 700;">¡Éxito!</strong>
-                <span style="display: block; sm:inline">{{ session('success') }}</span>
+            <div style="margin-bottom: 1.5rem; background-color: rgba(88, 148, 69, 0.12); border: 1px solid var(--color-primary); color: var(--color-tertiary); padding: 1rem 1.25rem; border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 0.75rem;" role="alert">
+                <i class="fa-solid fa-circle-check" style="font-size: 1.3rem; color: var(--color-primary);"></i>
+                <div>
+                    <strong style="font-weight: 700; display: block;">¡Operación realizada con éxito!</strong>
+                    <span style="font-size: 0.9rem; font-weight: 500;">{{ session('success') }}</span>
+                </div>
             </div>
         @endif
 
-        <div style="background: white; border-radius: var(--radius-card); box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 1.5rem;">
+        <!-- TARJETA PRINCIPAL -->
+        <div class="orders-card-container">
 
             @if($orders->isEmpty())
-                <div style="text-align: center; padding: 3rem 0; color: #6b7280;">
-                    No tienes compras registradas aún.
+                <div class="empty-orders-state">
+                    <i class="fa-solid fa-basket-shopping empty-orders-icon"></i>
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--color-tertiary); margin-bottom: 0.5rem;">No tiene compras registradas aún</h3>
+                    <p style="font-size: 0.9rem; max-width: 420px; margin: 0 auto 1.5rem auto; color: #6b7280;">
+                        Explore nuestro catálogo de soluciones modulares e impulse la transformación de su empresa con Sensoría.
+                    </p>
+                    <a href="{{ route('shop.products.index') }}" class="btn-pdf-download" style="padding: 0.75rem 1.5rem; font-size: 0.9rem; background-color: var(--color-primary);">
+                        <i class="fa-solid fa-store"></i> Explorar Catálogo IoT
+                    </a>
                 </div>
             @else
                 <div style="overflow-x: auto;">
-                    <table style="width: 100%; text-align: left; border-collapse: collapse; min-width: 800px;">
-                        <thead style="background-color: #f9fafb; border-bottom: 2px solid var(--color-primary);">
+                    <table class="orders-table">
+                        <thead>
                         <tr>
-                            <th style="padding: 1rem; font-weight: 600; color: var(--color-primary);"># Orden</th>
-                            <th style="padding: 1rem; font-weight: 600; color: var(--color-primary);">Fecha</th>
-                            <th style="padding: 1rem; font-weight: 600; color: var(--color-primary);">Total</th>
-                            <th style="padding: 1rem; font-weight: 600; color: var(--color-primary);">Estado</th>
-                            <th style="padding: 1rem; font-weight: 600; color: var(--color-primary); text-align: center;">Código de Activación</th>
+                            <th># Orden</th>
+                            <th>Fecha de Compra</th>
+                            <th>Monto Total</th>
+                            <th>Estado</th>
+                            <th style="text-align: center;">Código de Activación</th>
+                            <th style="text-align: center;">Comprobante</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($orders as $order)
-                            <tr style="border-bottom: 1px solid #e5e7eb;">
-                                <td style="padding: 1rem; font-weight: 600;">
-                                    {{ $order->order_number }}
+                            <tr>
+                                <td>
+                                    <a href="{{ route('client.orders.show', $order->id) }}" class="order-number-link" title="Ver detalle de la compra">
+                                        <i class="fa-solid fa-hashtag" style="font-size: 0.75rem; color: var(--color-primary);"></i>
+                                        {{ $order->order_number }}
+                                    </a>
                                 </td>
-                                <td style="padding: 1rem; color: #4b5563;">
-                                    {{ $order->created_at->format('d/m/Y H:i') }}
+                                <td style="color: #4b5563;">
+                                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                                        <i class="fa-regular fa-calendar-alt" style="color: #9ca3af; font-size: 0.85rem;"></i>
+                                        {{ $order->created_at->format('d/m/Y H:i') }}
+                                    </div>
                                 </td>
-                                <td style="padding: 1rem; font-weight: 700;">
+                                <td style="font-weight: 800; color: var(--color-tertiary); font-size: 1rem;">
                                     ${{ number_format($order->total_amount, 2) }}
                                 </td>
-                                <td style="padding: 1rem;">
-                                    <span style="background-color: #d1fae5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">
+                                <td>
+                                    @php
+                                        $statusClass = match(strtoupper($order->status)) {
+                                            'PAGADO' => 'status-pagado',
+                                            'PENDIENTE' => 'status-pendiente',
+                                            default => 'status-cancelado',
+                                        };
+                                    @endphp
+                                    <span class="status-badge {{ $statusClass }}">
                                         {{ $order->status }}
                                     </span>
                                 </td>
-                                <td style="padding: 1rem; text-align: center;">
+                                <td style="text-align: center;">
                                     @if($order->activationCode)
-                                        <span style="font-family: monospace; font-weight: 700; color: #047857; background-color: #ecfdf5; border: 1px solid #a7f3d0; padding: 0.4rem 0.8rem; border-radius: 4px; letter-spacing: 1px;">
-                                            {{ $order->activationCode->code }}
-                                        </span>
-                                        <span style="font-size: 0.75rem; color: #6b7280; margin-left: 0.5rem; text-transform: uppercase;">
-                                            ({{ $order->activationCode->status }})
-                                        </span>
+                                        <div style="display: inline-flex; align-items: center; justify-content: center;">
+                                            <span class="activation-code-pill">
+                                                {{ $order->activationCode->code }}
+                                            </span>
+                                            <span class="activation-status-sub">
+                                                ({{ $order->activationCode->status }})
+                                            </span>
+                                        </div>
                                     @else
-                                        <span style="color: #9ca3af; font-size: 0.75rem;">N/A</span>
+                                        <span style="color: #9ca3af; font-size: 0.8rem; font-style: italic;">No disponible</span>
                                     @endif
+                                </td>
+                                <td style="text-align: center;">
+                                    <a href="{{ route('client.orders.pdf', $order->id) }}" class="btn-pdf-download" title="Descargar comprobante en PDF">
+                                        <i class="fa-solid fa-file-pdf" style="color: #f87171;"></i> PDF
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach
@@ -70,9 +120,12 @@
                     </table>
                 </div>
 
-                <div style="margin-top: 1.5rem;">
-                    {{ $orders->links() }}
-                </div>
+                <!-- PAGINACIÓN -->
+                @if($orders->hasPages())
+                    <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #f3f4f6;">
+                        {{ $orders->links() }}
+                    </div>
+                @endif
             @endif
 
         </div>
