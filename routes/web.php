@@ -73,6 +73,7 @@ Route::middleware(['auth', App\Http\Middleware\SetCurrentCompany::class])->group
     Route::prefix('mis-compras')->name('client.orders.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Client\OrderController::class, 'index'])->name('index');
         Route::get('/{id}', [\App\Http\Controllers\Client\OrderController::class, 'show'])->name('show');
+        Route::get('/{id}/pdf', [\App\Http\Controllers\Client\OrderController::class, 'downloadPdf'])->name('pdf');
     });
 
     // Módulo A: Edición de Empresa (Solo Propietarios y Administradores)

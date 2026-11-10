@@ -1,0 +1,516 @@
+/* public/css/client/orders/mis-compras.css */
+
+/* Fuente Plus Jakarta Sans (los @import deben ir al inicio del archivo) */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+/* Estilos exclusivos para la vista de Mis Compras */
+.orders-page-wrapper {
+    padding: 3rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 75vh;
+}
+
+.orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--color-primary, #589445);
+    padding-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.orders-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--color-tertiary, #1B3D1A);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.orders-subtitle {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-top: 0.35rem;
+}
+
+.orders-count-badge {
+    background-color: rgba(88, 148, 69, 0.12);
+    color: var(--color-tertiary, #1B3D1A);
+    padding: 0.4rem 0.9rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: 1px solid rgba(88, 148, 69, 0.25);
+}
+
+/* Card Container Principal con Glassmorphism */
+.orders-card-container {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(27, 61, 26, 0.06);
+    border: 1px solid rgba(88, 148, 69, 0.2);
+    padding: 1.75rem;
+}
+
+/* Tabla de Ordenes */
+.orders-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 900px;
+}
+
+.orders-table thead tr {
+    background-color: #f9faf7;
+    border-bottom: 2px solid rgba(88, 148, 69, 0.2);
+}
+
+.orders-table th {
+    padding: 1rem 1.25rem;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--color-tertiary, #1B3D1A);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid rgba(88, 148, 69, 0.15);
+}
+
+.orders-table tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.orders-table tbody tr:hover {
+    background-color: rgba(88, 148, 69, 0.04);
+}
+
+.orders-table td {
+    padding: 1.15rem 1.25rem;
+    vertical-align: middle;
+    font-size: 0.92rem;
+}
+
+.order-number-link {
+    color: var(--color-tertiary, #1B3D1A);
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.2s;
+}
+
+.order-number-link:hover {
+    color: var(--color-primary, #589445);
+}
+
+/* Chips de Estado */
+.status-badge {
+    display: inline-block;
+    padding: 0.28rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.status-pagado {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.status-pendiente {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.status-cancelado {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+/* Píldora del Código de Activación */
+.activation-code-pill {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    color: #047857;
+    background-color: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    padding: 0.45rem 0.85rem;
+    border-radius: 6px;
+    letter-spacing: 1.5px;
+    font-size: 0.9rem;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(4, 120, 87, 0.05);
+}
+
+.activation-status-sub {
+    font-size: 0.72rem;
+    color: #6b7280;
+    margin-left: 0.4rem;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* Botón PDF estilizado */
+.btn-pdf-download {
+    background-color: var(--color-tertiary, #1B3D1A);
+    color: #FAFAF7;
+    padding: 0.45rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 8px rgba(27, 61, 26, 0.15);
+}
+
+.btn-pdf-download:hover {
+    background-color: var(--color-primary, #589445);
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(88, 148, 69, 0.25);
+}
+
+/* Estado Vacío */
+.empty-orders-state {
+    text-align: center;
+    padding: 3.5rem 1.5rem;
+    color: #6b7280;
+}
+
+.empty-orders-icon {
+    font-size: 3.5rem;
+    color: var(--color-tertiary, #1B3D1A);
+    opacity: 0.25;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+
+/* =========================================================
+   ▼▼▼  NUEVO · SISTEMA VISUAL SENSORÍA · MIS COMPRAS  ▼▼▼
+   Glassmorphism sutil · Plus Jakarta Sans
+   Mejora cabecera, alerta, tabla, estados, código de
+   activación, botón PDF y estado vacío usando las clases que
+   YA existen en mis-compras.blade.php. No requiere cambios en
+   HTML ni en la lógica.
+
+   Nota: la alerta de éxito y el botón del estado vacío traen
+   estilos inline en el blade; esas reglas se apoyan en
+   [role="alert"] o en el atributo style y usan !important
+   donde hace falta.
+   ========================================================= */
+
+:root {
+    --font-sensoria: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-sensoria-mono: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Menlo, Consolas, 'Courier New', monospace;
+
+    --sb-primary: var(--color-primary, #589445);
+    --sb-primary-light: #66a551;
+    --sb-primary-dark: #4a7d3a;
+    --sb-tertiary: var(--color-tertiary, #1B3D1A);
+    --sb-radius: var(--radius-button, 10px);
+}
+
+/* ---------------------------------------------------------
+   1. TIPOGRAFÍA BASE DE LA PÁGINA
+   --------------------------------------------------------- */
+.orders-page-wrapper {
+    font-family: var(--font-sensoria);
+}
+
+/* ---------------------------------------------------------
+   2. CABECERA · línea fina con acento verde
+   --------------------------------------------------------- */
+.orders-header {
+    position: relative;
+    border-bottom: 1px solid rgba(27, 61, 26, 0.1);
+}
+
+.orders-header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 140px;
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--sb-primary) 0%, rgba(88, 148, 69, 0) 100%);
+}
+
+.orders-title {
+    letter-spacing: -0.02em;
+}
+
+.orders-count-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.65);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 2px 8px rgba(27, 61, 26, 0.05);
+}
+
+/* ---------------------------------------------------------
+   3. ALERTA DE ÉXITO (estilos inline en el blade)
+   --------------------------------------------------------- */
+.orders-page-wrapper > [role="alert"] {
+    font-family: var(--font-sensoria);
+    border-radius: 14px !important;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 6px 20px rgba(88, 148, 69, 0.10);
+    animation: ordersAlertIn 0.3s ease-out;
+}
+
+@keyframes ordersAlertIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------------------------------------------------------
+   4. TARJETA PRINCIPAL · cristal con brillo interior
+   --------------------------------------------------------- */
+.orders-card-container {
+    background: rgba(255, 255, 255, 0.78);
+    border-color: rgba(255, 255, 255, 0.75);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 10px 30px rgba(27, 61, 26, 0.07);
+}
+
+/* ---------------------------------------------------------
+   5. TABLA · líneas por celda (con border-separate las líneas
+      en <tr> no se dibujaban), cabecera redondeada
+   --------------------------------------------------------- */
+.orders-table thead tr {
+    background-color: transparent;
+    border-bottom: 0;
+}
+
+.orders-table th {
+    background: rgba(88, 148, 69, 0.07);
+    font-size: 0.75rem;
+    letter-spacing: 0.07em;
+    white-space: nowrap;
+}
+
+.orders-table thead th:first-child {
+    border-top-left-radius: 10px;
+}
+
+.orders-table thead th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.orders-table tbody tr {
+    border-bottom: 0;
+}
+
+.orders-table td {
+    border-bottom: 1px solid rgba(27, 61, 26, 0.07);
+    font-variant-numeric: tabular-nums;
+    transition: background-color 0.2s ease;
+}
+
+.orders-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.orders-table tbody tr:hover td {
+    background-color: rgba(88, 148, 69, 0.05);
+}
+
+.order-number-link {
+    letter-spacing: -0.005em;
+    text-underline-offset: 3px;
+}
+
+.order-number-link:hover {
+    text-decoration: underline;
+}
+
+/* ---------------------------------------------------------
+   6. CHIPS DE ESTADO · con indicador de color
+   --------------------------------------------------------- */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-sensoria);
+    white-space: nowrap;
+}
+
+.status-badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+/* El "Pendiente" late suavemente para llamar la atención */
+.status-pendiente::before {
+    animation: ordersDotPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes ordersDotPulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+}
+
+/* ---------------------------------------------------------
+   7. CÓDIGO DE ACTIVACIÓN · se selecciona completo con un clic
+   --------------------------------------------------------- */
+.activation-code-pill {
+    font-family: var(--font-sensoria-mono);
+    background: linear-gradient(180deg, #f2fcf7 0%, #e6f8ef 100%);
+    border-radius: 8px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 2px 6px rgba(4, 120, 87, 0.08);
+    user-select: all;
+    -webkit-user-select: all;
+    cursor: text;
+    white-space: nowrap;
+}
+
+.activation-status-sub {
+    font-family: var(--font-sensoria);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+/* ---------------------------------------------------------
+   8. BOTÓN PDF · mismo sistema de botones de Sensoría
+   --------------------------------------------------------- */
+.btn-pdf-download {
+    min-height: 34px;
+    font-family: var(--font-sensoria);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.005em;
+    justify-content: center;
+    white-space: nowrap;
+    color: #ffffff;
+    background: linear-gradient(180deg, #2c5a2a 0%, var(--sb-tertiary) 100%);
+    border: 1px solid rgba(10, 30, 10, 0.3);
+    border-radius: var(--sb-radius);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 4px 12px rgba(27, 61, 26, 0.22);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.btn-pdf-download:hover {
+    background: linear-gradient(180deg, var(--sb-primary-light) 0%, var(--sb-primary) 100%);
+    border-color: rgba(27, 61, 26, 0.14);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 8px 20px rgba(88, 148, 69, 0.34);
+    transform: translateY(-1px);
+}
+
+.btn-pdf-download:active {
+    transform: translateY(0);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.16);
+}
+
+.btn-pdf-download:focus-visible,
+.order-number-link:focus-visible {
+    outline: 2px solid rgba(88, 148, 69, 0.6);
+    outline-offset: 2px;
+    border-radius: var(--sb-radius);
+}
+
+/* ---------------------------------------------------------
+   9. ESTADO VACÍO · ícono en círculo y botón primario
+   --------------------------------------------------------- */
+.empty-orders-state h3,
+.empty-orders-state p {
+    font-family: var(--font-sensoria);
+}
+
+.empty-orders-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 1.25rem;
+    font-size: 2.4rem;
+    color: var(--sb-primary);
+    opacity: 0.9;
+    background: rgba(88, 148, 69, 0.1);
+    border: 1px solid rgba(88, 148, 69, 0.2);
+    border-radius: 50%;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* Botón "Explorar Catálogo IoT" (trae background inline) */
+.empty-orders-state .btn-pdf-download {
+    min-height: 44px;
+    background: linear-gradient(180deg, var(--sb-primary-light) 0%, var(--sb-primary) 100%) !important;
+    border-color: rgba(27, 61, 26, 0.14);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 4px 14px rgba(88, 148, 69, 0.28);
+}
+
+.empty-orders-state .btn-pdf-download:hover {
+    background: linear-gradient(180deg, var(--sb-primary) 0%, var(--sb-primary-dark) 100%) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 8px 20px rgba(88, 148, 69, 0.34);
+}
+
+/* ---------------------------------------------------------
+   10. RESPONSIVE
+   --------------------------------------------------------- */
+@media (max-width: 640px) {
+    .orders-page-wrapper {
+        padding: 2rem 0.75rem;
+    }
+
+    .orders-title {
+        font-size: 1.45rem;
+    }
+
+    .orders-card-container {
+        padding: 1rem;
+    }
+}
+
+/* ---------------------------------------------------------
+   11. ACCESIBILIDAD: respetar "reducir movimiento"
+   --------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    .orders-page-wrapper > [role="alert"],
+    .status-pendiente::before {
+        animation: none;
+    }
+
+    .btn-pdf-download,
+    .orders-table td {
+        transition: none;
+        transform: none !important;
+    }
+}

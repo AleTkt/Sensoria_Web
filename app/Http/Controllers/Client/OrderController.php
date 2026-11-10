@@ -38,4 +38,26 @@ class OrderController extends Controller
 
         return view('client.orders.show', compact('order'));
     }
+
+    /**
+     * Descarga el comprobante de compra en PDF para una orden específica.
+     */
+    public function downloadPdf(string $id)
+    {
+        $companyId = session('current_company_id');
+
+        // Buscamos la orden asegurando que pertenezca a la empresa en sesión y cargando sus relaciones
+        $order = Order::with(['items.product', 'items.kit', 'activationCode', 'paymentMethod', 'company'])
+            ->where('company_id', $companyId)
+            ->findOrFail($id);
+
+        $company = $order->company;
+        $activationCode = $order->activationCode;
+
+        // Generamos el PDF utilizando la vista que creaste (pdf.order-receipt)
+        $pdf = \PDF::loadView('pdf.order-receipt', compact('order', 'company', 'activationCode'));
+
+        // Descarga el archivo de forma local con el número de orden como nombre
+        return $pdf->download('Comprobante-' . $order->order_number . '.pdf');
+    }
 }
