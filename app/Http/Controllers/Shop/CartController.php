@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
+use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Kit;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -15,7 +17,16 @@ class CartController extends Controller
     public function index()
     {
         $cart = session()->get('cart', []);
-        return view('shop.cart.index', compact('cart'));
+
+        // Inicializar variables para usuarios invitados
+        $paymentMethods = collect();
+
+        if (Auth::check()) {
+            // Obtener las tarjetas del usuario autenticado
+            $paymentMethods = PaymentMethod::where('user_id', Auth::id())->get();
+        }
+
+        return view('shop.cart.index', compact('cart', 'paymentMethods'));
     }
 
     /**

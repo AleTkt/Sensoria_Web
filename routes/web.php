@@ -53,7 +53,7 @@ Route::middleware('auth')->group(function () {
     // Ruta PARA GUARDAR LA TARJETA:
     Route::post('/billetera-pagos/metodo', [WalletController::class, 'storePaymentMethod'])->name('wallet.payment.store');
 
-
+    Route::post('/shop/checkout', [\App\Http\Controllers\Shop\CheckoutController::class, 'process'])->name('shop.checkout.process');
 
 });
 
