@@ -5,41 +5,72 @@
 @section('content')
     <div style="padding: 1.5rem;">
 
-        <!-- ENCABEZADO DE SECCIÓN -->
-        <div style="margin-bottom: 2rem;">
-            <h1 style="font-size: 1.75rem; font-weight: 800; color: #1B3D1A; margin: 0;">
-                <i class="fa-solid fa-boxes-stacked" style="color: #589445;"></i> Pedidos Globales
-            </h1>
-            <p style="font-size: 0.9rem; color: #6b7280; margin-top: 0.25rem;">
-                Monitoreo y auditoría de todas las compras de kits IoT y soluciones realizadas por las empresas asociadas.
-            </p>
+        <!-- ENCABEZADO DE SECCIÓN CON BOTÓN DE EXPORTACIÓN -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h1 style="font-size: 1.75rem; font-weight: 800; color: #1B3D1A; margin: 0;">
+                    <i class="fa-solid fa-boxes-stacked" style="color: #589445;"></i> Pedidos Globales
+                </h1>
+                <p style="font-size: 0.9rem; color: #6b7280; margin-top: 0.25rem;">
+                    Monitoreo y auditoría de todas las compras de kits IoT y soluciones realizadas por las empresas asociadas.
+                </p>
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <span style="background-color: rgba(88, 148, 69, 0.12); color: #1B3D1A; padding: 0.45rem 1rem; border-radius: 9999px; font-weight: 700; font-size: 0.85rem; border: 1px solid rgba(88, 148, 69, 0.25);">
+                    Total: {{ $orders->total() }} {{ $orders->total() === 1 ? 'Pedido' : 'Pedidos' }}
+                </span>
+                <!-- Botón de Exportación CSV con parámetros actuales -->
+                <a href="{{ route('admin.orders.export', request()->all()) }}" style="background-color: #1B3D1A; color: white; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.4rem; transition: background-color 0.2s;" title="Descargar reporte en CSV">
+                    <i class="fa-solid fa-file-arrow-down"></i> Exportar CSV
+                </a>
+            </div>
         </div>
 
-        <!-- TARJETAS DE DASHBOARD DE PEDIDOS -->
+        <!-- TARJETAS DE DASHBOARD DE PEDIDOS (CON ICONOS E INDICADORES VISUALES) -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 2rem;">
 
             <!-- Total de Pedidos -->
-            <div style="background: white; padding: 20px; border: 1px solid var(--admin-border, #e2e8f0); border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                <h4 style="margin: 0; color: #64748b; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Total Pedidos</h4>
-                <p style="margin: 10px 0 0 0; font-size: 2rem; font-weight: 700; color: #0f172a;">{{ $stats['total_orders'] ?? 0 }}</p>
+            <div style="background: white; padding: 1.25rem 1.5rem; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h4 style="margin: 0; color: #64748b; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Total Pedidos</h4>
+                    <p style="margin: 0.35rem 0 0 0; font-size: 1.85rem; font-weight: 800; color: #0f172a;">{{ $stats['total_orders'] ?? 0 }}</p>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: 10px; background-color: rgba(59, 130, 246, 0.1); color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </div>
             </div>
 
             <!-- Ingresos Totales (Pagados) -->
-            <div style="background: white; padding: 20px; border: 1px solid var(--admin-border, #e2e8f0); border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                <h4 style="margin: 0; color: #64748b; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Ingresos (Pagados)</h4>
-                <p style="margin: 10px 0 0 0; font-size: 2rem; font-weight: 700; color: #16a34a;">${{ number_format($stats['total_revenue'] ?? 0, 2) }}</p>
+            <div style="background: white; padding: 1.25rem 1.5rem; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h4 style="margin: 0; color: #64748b; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Ingresos (Pagados)</h4>
+                    <p style="margin: 0.35rem 0 0 0; font-size: 1.85rem; font-weight: 800; color: #16a34a;">${{ number_format($stats['total_revenue'] ?? 0, 2) }}</p>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: 10px; background-color: rgba(22, 163, 74, 0.1); color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
             </div>
 
             <!-- Pedidos Pagados -->
-            <div style="background: white; padding: 20px; border: 1px solid var(--admin-border, #e2e8f0); border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                <h4 style="margin: 0; color: #64748b; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Órdenes Pagadas</h4>
-                <p style="margin: 10px 0 0 0; font-size: 2rem; font-weight: 700; color: #0f172a;">{{ $stats['paid_orders'] ?? 0 }}</p>
+            <div style="background: white; padding: 1.25rem 1.5rem; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h4 style="margin: 0; color: #64748b; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Órdenes Pagadas</h4>
+                    <p style="margin: 0.35rem 0 0 0; font-size: 1.85rem; font-weight: 800; color: #0f172a;">{{ $stats['paid_orders'] ?? 0 }}</p>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: 10px; background-color: rgba(13, 148, 136, 0.1); color: #0d9488; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
             </div>
 
             <!-- Pedidos Pendientes -->
-            <div style="background: white; padding: 20px; border: 1px solid var(--admin-border, #e2e8f0); border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                <h4 style="margin: 0; color: #64748b; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Órdenes Pendientes</h4>
-                <p style="margin: 10px 0 0 0; font-size: 2rem; font-weight: 700; color: #d97706;">{{ $stats['pending_orders'] ?? 0 }}</p>
+            <div style="background: white; padding: 1.25rem 1.5rem; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h4 style="margin: 0; color: #64748b; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Órdenes Pendientes</h4>
+                    <p style="margin: 0.35rem 0 0 0; font-size: 1.85rem; font-weight: 800; color: #d97706;">{{ $stats['pending_orders'] ?? 0 }}</p>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: 10px; background-color: rgba(217, 119, 6, 0.1); color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
             </div>
 
         </div>
