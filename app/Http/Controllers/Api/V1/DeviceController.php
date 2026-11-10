@@ -69,7 +69,7 @@ class DeviceController extends Controller
                     'id' => $reading->id,
                     'value' => (float) $reading->value,
                     'unit' => $reading->unit ?? '',
-                    'timestamp' => $reading->created_at->toIso8601String(),
+                    'timestamp' => $reading->created_at?->toIso8601String(),
                 ];
             });
 

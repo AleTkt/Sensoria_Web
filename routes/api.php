@@ -18,5 +18,6 @@ Route::prefix('v1')->group(function () {
         Route::post('/tickets', [TicketController::class, 'store']);
         Route::get('/tickets/{id}', [TicketController::class, 'show']);
         Route::post('/tickets/{id}/reply', [TicketController::class, 'reply']);
+        Route::get('/my-companies', [\App\Http\Controllers\Api\V1\AuthController::class, 'getMyCompanies']);
     });
 });
