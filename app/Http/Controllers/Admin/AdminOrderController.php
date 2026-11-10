@@ -1,36 +1,31 @@
 <?php
 
-namespace App\Http\Controllers\Crm;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Order;
+use Illuminate\Http\Request;
 
 class AdminOrderController extends Controller
 {
     /**
-     * Muestra todos los pedidos de la plataforma para los administradores.
+     * Muestra la lista global de todos los pedidos y sus métricas resumidas.
      */
     public function index()
     {
-        // Lógica futura: Listar todos los pedidos con paginación y filtros.
-        // return view('crm.orders.index', compact('orders'));
-    }
+        // Métricas de órdenes para las tarjetas superiores
+        $stats = [
+            'total_orders' => Order::count(),
+            'total_revenue' => Order::where('status', 'PAGADO')->sum('total_amount'),
+            'paid_orders' => Order::where('status', 'PAGADO')->count(),
+            'pending_orders' => Order::where('status', 'PENDIENTE')->count(),
+        ];
 
-    /**
-     * Muestra el detalle completo de un pedido, incluyendo cliente y facturación.
-     */
-    public function show(string $id)
-    {
-        // Lógica futura: Cargar el pedido con sus items y cliente.
-        // return view('crm.orders.show', compact('order'));
-    }
+        // Cargamos las órdenes globales con su empresa, método de pago y código de activación
+        $orders = Order::with(['company', 'paymentMethod', 'activationCode'])
+            ->latest('created_at')
+            ->paginate(15);
 
-    /**
-     * Actualiza el estado de un pedido (ej. de PAGADO a ENVIADO).
-     */
-    public function update(Request $request, string $id)
-    {
-        // Lógica futura: Validar y actualizar el campo 'status'.
+        return view('admin.orders.index', compact('orders', 'stats'));
     }
 }

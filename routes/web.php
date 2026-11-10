@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminCompanyController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\Products\KitController;
 use App\Http\Controllers\Admin\Products\HardwareController;
 use App\Http\Controllers\Admin\Products\KitProductController;
@@ -117,6 +118,9 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
 
     // Plataforma
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    // Pedidos Globales del Staff
+    Route::get('/pedidos', [AdminOrderController::class, 'index'])->name('orders.index');
 
     // Gestión de Empresas
     Route::get('/empresas', [AdminCompanyController::class, 'index'])->name('companies.index');
