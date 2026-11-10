@@ -122,6 +122,7 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
     // Pedidos Globales del Staff
     Route::get('/pedidos', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/pedidos/exportar-csv', [AdminOrderController::class, 'exportCsv'])->name('orders.export');
+    Route::get('/pedidos/exportar-pdf', [AdminOrderController::class, 'exportPdf'])->name('orders.export.pdf');
 
     // Gestión de Empresas
     Route::get('/empresas', [AdminCompanyController::class, 'index'])->name('companies.index');
