@@ -7,50 +7,52 @@
     <link rel="stylesheet" href="{{ asset('css/components/toast.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/products/product-in-kit.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-@endpush
+
 
 @section('content')
-    <div class="glass-surface" style="padding: 1.5rem;">
-        <table id="kitProductsTable" class="display responsive nowrap w-full">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre del Kit</th>
-                <th>SKU</th>
-                <th>Productos Incluidos</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($kits as $kit)
+    <div class="sensoria-card">
+        <div style="overflow-x: auto;">
+            <table id="kitProductsTable" class="display responsive nowrap" style="width:100%">
+                <thead>
                 <tr>
-                    <td>{{ $kit->id }}</td>
-                    <td style="font-weight: 600;">{{ $kit->name }}</td>
-                    <td style="font-family: monospace; color: #4b5563;">{{ $kit->sku }}</td>
-                    <td>
-                        @if($kit->products->count() > 0)
-                            <span style="background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">
-                                {{ $kit->products->count() }} productos
-                            </span>
-                        @else
-                            <span style="color: #6b7280; font-size: 12px; font-style: italic;">Sin productos</span>
-                        @endif
-                    </td>
-
-                    <td>
-                        <button type="button" class="btn-sensoria-secondary text-sm"
-                                onclick="openManageKitModal({{ $kit->id }}, '{{ $kit->name }}')"
-                                title="Gestionar productos de este kit">
-                            <i class="fa-solid fa-boxes-stacked"></i> Gestionar Productos
-                        </button>
-                    </td>
+                    <th style="padding: 1rem; font-weight: 700; color: var(--color-tertiary, #1B3D1A);">ID</th>
+                    <th style="padding: 1rem; font-weight: 700; color: var(--color-tertiary, #1B3D1A);">Nombre del Kit</th>
+                    <th style="padding: 1rem; font-weight: 700; color: var(--color-tertiary, #1B3D1A);">SKU</th>
+                    <th style="padding: 1rem; font-weight: 700; color: var(--color-tertiary, #1B3D1A);">Productos Incluidos</th>
+                    <th style="padding: 1rem; font-weight: 700; color: var(--color-tertiary, #1B3D1A); text-align: right;">Acciones</th>
                 </tr>
-            @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                @foreach($kits as $kit)
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 1rem; font-weight: 700; color: #4b5563;">{{ $kit->id }}</td>
+                        <td style="padding: 1rem; font-weight: 700; color: var(--color-tertiary, #1B3D1A); font-size: 1rem;">{{ $kit->name }}</td>
+                        <td style="padding: 1rem; font-family: monospace; color: #4b5563; font-size: 0.88rem;">{{ $kit->sku }}</td>
+                        <td style="padding: 1rem;">
+                            @if($kit->products->count() > 0)
+                                <span style="background: rgba(88, 148, 69, 0.12); color: var(--color-tertiary, #1B3D1A); padding: 0.3rem 0.75rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 800; border: 1px solid rgba(88, 148, 69, 0.25);">
+                                    {{ $kit->products->count() }} {{ $kit->products->count() === 1 ? 'producto' : 'productos' }}
+                                </span>
+                            @else
+                                <span style="color: #9ca3af; font-size: 0.82rem; font-style: italic;">Sin productos</span>
+                            @endif
+                        </td>
+
+                        <td style="padding: 1rem; text-align: right;">
+                            <button type="button" class="btn-sensoria-action"
+                                    onclick="openManageKitModal({{ $kit->id }}, '{{ $kit->name }}')"
+                                    title="Gestionar productos de este kit">
+                                <i class="fa-solid fa-boxes-stacked" style="color: var(--color-primary, #589445);"></i> Gestionar Productos
+                            </button>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- MODAL DE GESTIÓN DE PRODUCTOS POR KIT -->
+    <!-- MODAL DE GESTIÓN DE PRODUCTOS POR KIT (MANTENIDO INTACTO) -->
     <div id="manageKitModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -121,7 +123,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE CONFIRMACIÓN AL AGREGAR A KITS -->
+    <!-- MODAL DE CONFIRMACIÓN AL AGREGAR A KITS (MANTENIDO INTACTO) -->
     <div id="confirmAddKitModal" class="modal-overlay">
         <div class="modal-content" style="max-width: 500px;">
             <div class="modal-header">
