@@ -84,9 +84,6 @@
                 <a href="{{ url('/admin/tickets') }}" class="{{ request()->is('admin/tickets*') ? 'active' : '' }}">
                     <i class="icon-support"></i> Tickets Globales
                 </a>
-                <a href="{{ url('/admin/bitacora') }}" class="{{ request()->is('admin/bitacora*') ? 'active' : '' }}">
-                    <i class="icon-activity"></i> Auditoría de Sistema
-                </a>
             </div>
 
             <!-- Navegación General -->

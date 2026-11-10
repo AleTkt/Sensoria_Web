@@ -131,6 +131,7 @@
 <!-- Inclusión del Componente del Carrito (¡FUERA DEL CONTENEDOR PRINCIPAL!) -->
 @include('components.shop.cart-offcanvas', ['cart' => $cart, 'cartCount' => $cartCount, 'cartTotal' => $cartTotal])
 
+@stack('modals')
 <!-- JavaScript Nativo -->
 <script src="{{ asset('js/toast.js') }}"></script>
 <script src="{{ asset('js/loading-buttons.js') }}"></script>

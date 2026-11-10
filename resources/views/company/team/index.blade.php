@@ -99,7 +99,10 @@
         </div>
 
     </div>
+@endsection
 
+
+@push('modals')
     <!-- MODAL 1: Invitar Miembro -->
     <div id="invite-member-modal" class="modal-overlay">
         <div class="glass-surface modal-content">
@@ -219,7 +222,7 @@
             </form>
         </div>
     </div>
-@endsection
+@endpush
 
 @push('scripts')
     <script>

@@ -56,7 +56,9 @@
         </div>
 
     </div>
+@endsection
 
+@push('modals')
     <!-- Modal de Edición (Cargado SOLO si tiene permisos) -->
     @if(Auth::user()->hasCompanyRole(['PROPIETARIO', 'ADMINISTRADOR']))
         <div id="company-edit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center;">
@@ -129,7 +131,7 @@
             </div>
         </div>
     @endif
-@endsection
+@endpush
 
 @push('scripts')
     @if(Auth::user()->hasCompanyRole(['PROPIETARIO', 'ADMINISTRADOR']))

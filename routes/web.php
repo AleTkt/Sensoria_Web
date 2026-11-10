@@ -108,9 +108,9 @@ Route::middleware(['auth', 'prevent-back-history', App\Http\Middleware\SetCurren
     Route::get('/tickets/{id}', [\App\Http\Controllers\Workspace\TicketController::class, 'show'])->name('tickets.show');
     Route::post('/tickets/{id}/reply', [\App\Http\Controllers\Workspace\TicketController::class, 'reply'])->name('tickets.reply');
     Route::get('/devices/{id}/metrics', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'metrics'])->name('devices.metrics');
-    Route::post('/workspace/redeem', [WorkspaceDashboardController::class, 'redeem'])
+    Route::post('/devices/redeem', [WorkspaceDashboardController::class, 'redeem'])
         ->middleware(['auth', 'throttle:5,1']) // 5 intentos cada 1 minuto
-        ->name('workspace.redeem');
+        ->name('devices.redeem');
     // Módulo de Alertas
     Route::get('/alerts', [AlertController::class, 'index'])->name('alerts.index');
     Route::post('/alerts/{id}/resolve', [AlertController::class, 'resolve'])->name('alerts.resolve');
