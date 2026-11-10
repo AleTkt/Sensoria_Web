@@ -70,7 +70,7 @@
 
 @section('content')
     <div class="shop-page-wrapper">
-        <div class="shop-container">
+        <div class="shop-container" style="max-width: 1100px; margin: 0 auto;">
 
             <a href="{{ route('shop.products.index') }}" class="back-link">
                 ← Volver a la Tienda
@@ -99,7 +99,7 @@
             </div>
 
             @if(isset($paymentMethods) && $paymentMethods->count() > 0)
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 3.5rem;">
                     @foreach($paymentMethods as $method)
                         <div class="product-card glass-surface" style="position: relative; border: 1px solid rgba(88, 148, 69, 0.2);">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
@@ -137,7 +137,7 @@
                 </div>
             @else
                 <!-- Estado Vacío -->
-                <div class="product-card glass-surface" style="padding: 2.5rem 2rem; text-align: center; margin-bottom: 3rem;">
+                <div class="product-card glass-surface" style="padding: 2.5rem 2rem; text-align: center; margin-bottom: 3.5rem;">
                     <i class="fa-regular fa-credit-card" style="font-size: 2.5rem; color: var(--color-tertiary); opacity: 0.3; margin-bottom: 0.75rem; display: block;"></i>
                     <h3 class="card-title" style="font-size: 1.1rem;">No tiene métodos de pago registrados</h3>
                     <p class="card-desc" style="max-width: 350px; margin: 0 auto 1rem auto; font-size: 0.875rem;">
@@ -149,15 +149,72 @@
                 </div>
             @endif
 
-            <div class="product-card glass-surface" style="padding: 3rem 2rem; text-align: center;">
-                <i class="fa-solid fa-wallet" style="font-size: 3rem; color: var(--color-tertiary); opacity: 0.3; margin-bottom: 1rem; display: block;"></i>
-                <h3 class="card-title">No hay transacciones registradas</h3>
-                <p class="card-desc" style="max-width: 400px; margin: 0 auto 1.5rem auto;">
-                    Cuando adquiera kits modulares o servicios de soporte en Sensoría, el detalle de sus pagos figurará en este espacio.
-                </p>
-                <a href="{{ route('shop.products.index') }}" class="btn-sensoria" style="display: inline-flex;">
-                    Explorar Catálogo IoT
-                </a>
+            <!-- SECCIÓN: HISTORIAL DE TRANSACCIONES (REDISEÑADO EN FORMATO TABLA PROFESIONAL) -->
+            <div style="background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(27, 61, 26, 0.06); border: 1px solid rgba(88, 148, 69, 0.2); padding: 2rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-primary); padding-bottom: 0.75rem;">
+                    <i class="fa-solid fa-receipt" style="font-size: 1.4rem; color: var(--color-primary);"></i>
+                    <h2 style="font-size: 1.4rem; color: var(--color-tertiary); font-weight: 700; margin: 0;">
+                        Historial de Transacciones
+                    </h2>
+                </div>
+
+                @if(isset($transactions) && $transactions->count() > 0)
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; text-align: left; border-collapse: collapse; min-width: 750px;">
+                            <thead>
+                            <tr style="background-color: #f9fafb; border-bottom: 2px solid #e5e7eb; color: var(--color-primary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                                <th style="padding: 1rem; font-weight: 700;"># Orden</th>
+                                <th style="padding: 1rem; font-weight: 700;">Fecha y Hora</th>
+                                <th style="padding: 1rem; font-weight: 700;">Método de Pago Usado</th>
+                                <th style="padding: 1rem; font-weight: 700; text-align: right;">Total</th>
+                                <th style="padding: 1rem; font-weight: 700; text-align: center;">Estado</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($transactions as $tx)
+                                <tr style="border-bottom: 1px solid #f3f4f6; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#fafaf9'" onmouseout="this.style.backgroundColor='transparent'">
+                                    <td style="padding: 1.1rem 1rem; font-weight: 700; color: var(--color-tertiary);">
+                                        {{ $tx->order_number }}
+                                    </td>
+                                    <td style="padding: 1.1rem 1rem; color: #4b5563; font-size: 0.9rem;">
+                                        {{ \Carbon\Carbon::parse($tx->paid_at ?? $tx->created_at)->format('d/m/Y H:i') }}
+                                    </td>
+                                    <td style="padding: 1.1rem 1rem; color: #374151; font-size: 0.9rem;">
+                                        @if($tx->paymentMethod)
+                                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                                <i class="fa-solid fa-credit-card" style="color: var(--color-primary);"></i>
+                                                <span><strong>{{ ucfirst($tx->paymentMethod->brand) }}</strong> •••• {{ $tx->paymentMethod->last_4_digits }}</span>
+                                            </div>
+                                        @else
+                                            <span style="color: #9ca3af; font-style: italic;">No especificado</span>
+                                        @endif
+                                    </td>
+                                    <td style="padding: 1.1rem 1rem; font-weight: 800; color: var(--color-tertiary); text-align: right; font-size: 1.05rem;">
+                                        ${{ number_format($tx->total_amount, 2) }}
+                                    </td>
+                                    <td style="padding: 1.1rem 1rem; text-align: center;">
+                                            <span style="background-color: #d1fae5; color: #065f46; padding: 0.3rem 0.8rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">
+                                                {{ $tx->status }}
+                                            </span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <!-- Estado Vacío de Transacciones -->
+                    <div style="text-align: center; padding: 3rem 1rem; color: #6b7280;">
+                        <i class="fa-solid fa-wallet" style="font-size: 3rem; color: var(--color-tertiary); opacity: 0.3; margin-bottom: 1rem; display: block;"></i>
+                        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-tertiary); margin-bottom: 0.5rem;">No hay transacciones registradas</h3>
+                        <p style="font-size: 0.9rem; max-width: 380px; margin: 0 auto 1.5rem auto;">
+                            Cuando adquiera kits modulares o servicios de soporte en Sensoría, el detalle de sus pagos figurará en este espacio.
+                        </p>
+                        <a href="{{ route('shop.products.index') }}" class="btn-sensoria" style="display: inline-flex;">
+                            Explorar Catálogo IoT
+                        </a>
+                    </div>
+                @endif
             </div>
 
         </div>
