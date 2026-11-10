@@ -49,7 +49,7 @@
             <a href="{{ route('workspace.devices') }}" class="{{ request()->routeIs('workspace.devices*') ? 'active' : '' }}">
                 <i class="fa-solid fa-microchip"></i> Hubs y Dispositivos
             </a>
-            <a href="#" class="" title="Próximamente">
+            <a href="{{route('workspace.alerts.index')}}" class="" title="Próximamente">
                 <i class="fa-solid fa-bell"></i> Centro de Alertas
             </a>
 

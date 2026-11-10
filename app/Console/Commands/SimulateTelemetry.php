@@ -7,6 +7,7 @@ use App\Models\Hub;
 use App\Models\Device;
 use App\Models\TelemetryReading;
 use Illuminate\Support\Str;
+use App\Models\Alert;
 
 class SimulateTelemetry extends Command
 {
@@ -54,7 +55,7 @@ class SimulateTelemetry extends Command
                 $sensorData = $this->generateSensorReading($device->type, $device->name);
 
                 // 4. Registrar la lectura en la base de datos
-                TelemetryReading::create([
+                $reading = TelemetryReading::create([
                     'device_id' => $device->id,
                     'value' => $sensorData['value'],
                     'unit' => $sensorData['unit'],
@@ -65,6 +66,9 @@ class SimulateTelemetry extends Command
                     ],
                     'recorded_at' => now(),
                 ]);
+
+                // 5. Evaluamos si el valor recién generado requiere disparar una alerta
+                $this->evaluateAlerts($hub, $device, $sensorData);
 
                 $readingsCount++;
             }
@@ -113,5 +117,63 @@ class SimulateTelemetry extends Command
             'value' => round(rand(100, 999) / 100, 2),
             'unit' => 'N/A'
         ];
+    }
+
+    /**
+     * Evalúa los límites del sensor e inserta una alerta si hay una anomalía.
+     */
+    private function evaluateAlerts(Hub $hub, Device $device, array $sensorData): void
+    {
+        $value = $sensorData['value'];
+        $unit = $sensorData['unit'];
+        $textToAnalyze = strtoupper($device->type . ' ' . $device->name);
+
+        $title = null;
+        $message = null;
+        $severity = 'MEDIA';
+
+        // 1. Regla para Temperatura: Alerta si pasa de 6.0 °C o baja de 1.0 °C
+        if (str_contains($textToAnalyze, 'TEMP') || str_contains($textToAnalyze, 'TERMOSTATO')) {
+            if ($value > 6.0) {
+                $title = 'Temperatura Elevada Detectada';
+                $message = "El dispositivo {$device->name} registró {$value} {$unit}, superando el umbral máximo de 6.0 °C.";
+                $severity = 'ALTA';
+            } elseif ($value < 1.0) {
+                $title = 'Temperatura Inusualmente Baja';
+                $message = "El dispositivo {$device->name} registró {$value} {$unit}, por debajo del umbral mínimo de 1.0 °C.";
+                $severity = 'MEDIA';
+            }
+        }
+
+        // 2. Regla para Consumo Eléctrico: Alerta si sobrepasa 3.0 kWh
+        if (str_contains($textToAnalyze, 'CONSUMO') || str_contains($textToAnalyze, 'MEDIDOR') || str_contains($textToAnalyze, 'ENERGIA')) {
+            if ($value > 3.0) {
+                $title = 'Pico de Consumo Eléctrico';
+                $message = "Se ha detectado un consumo elevado de {$value} {$unit} en {$device->name}.";
+                $severity = 'ALTA';
+            }
+        }
+
+        // 3. Regla para Sensores de Puerta: Alerta si el estado es 1 (Abierta)
+        if (str_contains($textToAnalyze, 'PUERTA') || str_contains($textToAnalyze, 'CONTACTO') || str_contains($textToAnalyze, 'MAGNETICO')) {
+            if ($value == 1.00) {
+                $title = 'Puerta / Acceso Abierto';
+                $message = "El sensor {$device->name} reporta acceso abierto en las instalaciones.";
+                $severity = 'MEDIA';
+            }
+        }
+
+        // Si se cumplió alguna condición de anomalía, registramos la alerta
+        if ($title && $message) {
+            Alert::create([
+                'company_id' => $hub->company_id,
+                'hub_id' => $hub->id,
+                'device_id' => $device->id,
+                'title' => $title,
+                'message' => $message,
+                'severity' => $severity,
+                'is_resolved' => false,
+            ]);
+        }
     }
 }
