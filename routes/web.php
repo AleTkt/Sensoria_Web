@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function () {
 
     //Ruta para la billerta de pagp
     Route::get('/billetera-pagos', [WalletController::class, 'index'])->name('wallet.index');
+    // Ruta PARA GUARDAR LA TARJETA:
+    Route::post('/billetera-pagos/metodo', [WalletController::class, 'storePaymentMethod'])->name('wallet.payment.store');
 
 
 
