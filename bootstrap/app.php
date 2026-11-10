@@ -12,15 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->web(append: [
-            \App\Http\Middleware\SetCurrentCompany::class,
-        ]);
-
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckCompanyRole::class,
             'staff' => \App\Http\Middleware\CheckStaffRole::class,
-        ]);
-        $middleware->alias([
             'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
         ]);
     })

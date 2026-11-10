@@ -42,8 +42,14 @@ class SetCurrentCompany
             }
             // 2. Si no hay empresa en sesión
             else {
-                // Si es Staff y está intentando acceder a un área de cliente, lo mandamos a elegir empresa
+                // Si es Staff y NO tiene empresa seleccionada:
                 if ($isStaff) {
+                    // Evitamos el bucle infinito: Si ya está en la vista de selección o en su panel de administración, lo dejamos pasar.
+                    if ($request->routeIs('company.select') || $request->routeIs('company.select.store') || $request->routeIs('admin.*')) {
+                        return $next($request);
+                    }
+
+                    // Si intenta ir a una ruta de cliente (como /workspace) sin empresa, lo mandamos a elegir.
                     return redirect()->route('company.select')->with('warning', 'Selecciona una empresa para visualizar su Workspace.');
                 }
 
