@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ asset('css/base/variables.css') }}">
     <link rel="stylesheet" href="{{ asset('css/base/animations.css') }}"> <!-- ANIMACIONES -->
     <link rel="stylesheet" href="{{ asset('css/layouts/admin-layout.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/layouts/backoffice.css') }}">
     <link rel="stylesheet" href="{{ asset('css/components/toast.css') }}"> <!-- TOASTS -->
 
     <!-- FontAwesome -->
@@ -68,11 +69,12 @@
                 </a>
             </div>
 
+
             <!-- Logística y Finanzas -->
             <div class="nav-section">
                 <h3>Logística y Finanzas</h3>
                 <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
-                    <i class="icon-orders"></i> Pedidos Globales
+                    <i class="fa-solid fa-boxes-packing" style="color: #ffffff;"></i> Pedidos Globales
                 </a>
             </div>
 
