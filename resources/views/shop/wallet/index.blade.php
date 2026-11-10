@@ -153,7 +153,7 @@
                 <i class="fa-solid fa-wallet" style="font-size: 3rem; color: var(--color-tertiary); opacity: 0.3; margin-bottom: 1rem; display: block;"></i>
                 <h3 class="card-title">No hay transacciones registradas</h3>
                 <p class="card-desc" style="max-width: 400px; margin: 0 auto 1.5rem auto;">
-                    Когда adquiera kits modulares o servicios de soporte en Sensoría, el detalle de sus pagos figurará en este espacio.
+                    Cuando adquiera kits modulares o servicios de soporte en Sensoría, el detalle de sus pagos figurará en este espacio.
                 </p>
                 <a href="{{ route('shop.products.index') }}" class="btn-sensoria" style="display: inline-flex;">
                     Explorar Catálogo IoT
