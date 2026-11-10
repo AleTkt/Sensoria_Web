@@ -125,4 +125,56 @@ class AdminOrderController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+
+    /**
+     * Exporta el listado filtrado de órdenes en formato PDF para auditoría.
+     */
+    public function exportPdf(Request $request)
+    {
+        // 1. Reutilizamos la misma lógica de filtros del index
+        $query = Order::with(['company', 'paymentMethod', 'activationCode']);
+
+        $filterDescriptions = [];
+
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('order_number', 'like', "%{$searchTerm}%")
+                    ->orWhereHas('company', function ($companyQuery) use ($searchTerm) {
+                        $companyQuery->where('trade_name', 'like', "%{$searchTerm}%")
+                            ->orWhere('business_name', 'like', "%{$searchTerm}%");
+                    });
+            });
+            $filterDescriptions[] = "Búsqueda: \"{$searchTerm}\"";
+        }
+
+        if ($request->filled('status')) {
+            $status = $request->input('status');
+            $query->where('status', $status);
+            $filterDescriptions[] = "Estado: {$status}";
+        }
+
+        if ($request->filled('date_from')) {
+            $dateFrom = $request->input('date_from');
+            $query->whereDate('created_at', '>=', $dateFrom);
+            $filterDescriptions[] = "Desde: {$dateFrom}";
+        }
+        if ($request->filled('date_to')) {
+            $dateTo = $request->input('date_to');
+            $query->whereDate('created_at', '<=', $dateTo);
+            $filterDescriptions[] = "Hasta: {$dateTo}";
+        }
+
+        $orders = $query->latest('created_at')->get();
+
+        // Corrección: Asegurar el signo '$' en $filterDescriptions
+        $filtersText = count($filterDescriptions) > 0 ? implode(' | ', $filterDescriptions) : 'Ninguno (Todas las órdenes)';
+
+        // 2. Generar el PDF con DomPDF
+        $pdf = \PDF::loadView('admin.orders.pdf-report', compact('orders', 'filtersText'));
+
+        // 3. Descarga directa del reporte
+        return $pdf->download('Reporte-Pedidos-Sensoria-' . date('Y-m-d') . '.pdf');
+    }
 }
