@@ -174,6 +174,9 @@ Route::middleware(['auth', 'prevent-back-history', 'staff'])->prefix('admin')->n
     Route::delete('/catalogo/kits/{kitId}/productos/{productId}', [KitProductController::class, 'removeProduct'])->name('catalog.kits.products.destroy');
 
     // Logística y Soporte
+    Route::get('/tickets', [\App\Http\Controllers\Admin\TicketController::class, 'index'])->name('tickets.index');
+    Route::get('/tickets/{id}', [\App\Http\Controllers\Admin\TicketController::class, 'show'])->name('tickets.show');
+    Route::post('/tickets/{id}/reply', [\App\Http\Controllers\Admin\TicketController::class, 'reply'])->name('tickets.reply');
     // Route::get('/pedidos', [OrderController::class, 'index'])->name('orders.index');
     // Route::get('/tickets', [TicketController::class,y  'index'])->name('tickets.index');
     // Route::get('/bitacora', [AdminLogController::class, 'index'])->name('logs.index');
