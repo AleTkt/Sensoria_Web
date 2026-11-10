@@ -74,9 +74,6 @@
                 <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
                     <i class="icon-orders"></i> Pedidos Globales
                 </a>
-                <a href="{{ url('/admin/facturacion') }}" class="{{ request()->is('admin/facturacion*') ? 'active' : '' }}">
-                    <i class="icon-billing"></i> Facturación
-                </a>
             </div>
 
             <!-- Soporte y Auditoría -->
