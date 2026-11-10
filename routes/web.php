@@ -15,6 +15,7 @@ use App\Http\Controllers\CompanySelectionController;
 use App\Http\Controllers\CompanyTeamController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Workspace\AlertController;
+use App\Http\Controllers\Workspace\WorkspaceDashboardController;
 use App\Http\Middleware\SetCurrentCompany;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Shop\ProductCatalogController;
@@ -26,7 +27,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'prevent-back-history'])->name('dashboard');
 
 
 // Public Invitation Routes
@@ -44,7 +45,7 @@ Route::patch('/carrito/actualizar/{key}', [CartController::class, 'updateQuantit
 Route::delete('/carrito/eliminar/{key}', [CartController::class, 'removeItem'])->name('shop.cart.remove');
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'prevent-back-history'])->group(function () {
     Route::get('/select-company', [CompanySelectionController::class, 'show'])->name('company.select');
     Route::post('/select-company', [CompanySelectionController::class, 'setCompany'])->name('company.select.store');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -63,7 +64,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Rutas protegidas que requieren usuario logueado y una empresa activa
-Route::middleware(['auth', App\Http\Middleware\SetCurrentCompany::class])->group(function () {
+Route::middleware(['auth', 'prevent-back-history', App\Http\Middleware\SetCurrentCompany::class])->group(function () {
 
     // Rutas de lectura (Disponibles para todos los miembros)
     Route::get('/company', [CompanyController::class, 'edit'])->name('company.edit');
@@ -99,7 +100,7 @@ Route::middleware(['auth', App\Http\Middleware\SetCurrentCompany::class])->group
 // ==========================================
 // Módulo C y D: Operativa B2B (Workspace IoT y Soporte)
 // ==========================================
-Route::prefix('workspace')->name('workspace.')->group(function () {
+Route::middleware(['auth', 'prevent-back-history', App\Http\Middleware\SetCurrentCompany::class])->prefix('workspace')->name('workspace.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'index'])->name('dashboard');
     Route::get('/devices', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'devices'])->name('devices');
     Route::get('/tickets', [\App\Http\Controllers\Workspace\TicketController::class, 'index'])->name('tickets.index');
@@ -107,15 +108,16 @@ Route::prefix('workspace')->name('workspace.')->group(function () {
     Route::get('/tickets/{id}', [\App\Http\Controllers\Workspace\TicketController::class, 'show'])->name('tickets.show');
     Route::post('/tickets/{id}/reply', [\App\Http\Controllers\Workspace\TicketController::class, 'reply'])->name('tickets.reply');
     Route::get('/devices/{id}/metrics', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'metrics'])->name('devices.metrics');
-    Route::post('/devices/redeem', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'redeem'])->name('devices.redeem');
-
+    Route::post('/workspace/redeem', [WorkspaceDashboardController::class, 'redeem'])
+        ->middleware(['auth', 'throttle:5,1']) // 5 intentos cada 1 minuto
+        ->name('workspace.redeem');
     // Módulo de Alertas
     Route::get('/alerts', [AlertController::class, 'index'])->name('alerts.index');
     Route::post('/alerts/{id}/resolve', [AlertController::class, 'resolve'])->name('alerts.resolve');
 });
 
 // Grupo exclusivo para el Staff de Sensoría (Super Admins y Soporte)
-Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'prevent-back-history', 'staff'])->prefix('admin')->name('admin.')->group(function () {
 
     // Plataforma
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');

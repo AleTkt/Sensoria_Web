@@ -13,28 +13,41 @@ class SetCurrentCompany
     {
         if (Auth::check()) {
             $user = Auth::user();
+            $isStaff = in_array($user->global_role, ['ADMIN', 'SOPORTE']);
 
-            // Ignoramos esta restricción si es el Staff, para que puedan moverse libremente
-            if (in_array($user->global_role, ['ADMIN', 'SOPORTE'])) {
-                return $next($request);
-            }
-
-            // A. Si ya tiene una empresa en sesión, auditamos que siga activa
+            // 1. Verificamos si hay una empresa en sesión
             if (session()->has('current_company_id')) {
-                $activeCompany = $user->companies()
-                    ->where('companies.id', session('current_company_id'))
-                    ->where('companies.is_active', true) // ¿Sigue activa globalmente?
-                    ->wherePivot('is_active', true)      // ¿Sigue siendo usuario válido ahí?
-                    ->first();
+                $companyId = session('current_company_id');
+
+                // Si es Staff, solo validamos que la empresa exista y esté activa globalmente
+                if ($isStaff) {
+                    $activeCompany = \App\Models\Company::where('id', $companyId)
+                        ->where('is_active', true)
+                        ->first();
+                }
+                // Si es cliente, validamos que exista, esté activa y ÉL pertenezca a ella
+                else {
+                    $activeCompany = $user->companies()
+                        ->where('companies.id', $companyId)
+                        ->where('companies.is_active', true)
+                        ->wherePivot('is_active', true)
+                        ->first();
+                }
 
                 if (!$activeCompany) {
-                    // Si se suspendió, le quitamos la sesión de la empresa y lo bloqueamos
                     session()->forget('current_company_id');
-                    abort(403, 'El acceso a esta empresa ha sido suspendido por la administración de Sensoría.');
+                    $mensaje = $isStaff ? 'La empresa seleccionada ya no está activa.' : 'El acceso a esta empresa ha sido suspendido.';
+                    abort(403, $mensaje);
                 }
             }
-            // B. Si no tiene empresa en sesión, le asignamos la primera DISPONIBLE y ACTIVA
+            // 2. Si no hay empresa en sesión
             else {
+                // Si es Staff y está intentando acceder a un área de cliente, lo mandamos a elegir empresa
+                if ($isStaff) {
+                    return redirect()->route('company.select')->with('warning', 'Selecciona una empresa para visualizar su Workspace.');
+                }
+
+                // Si es cliente, le asignamos su primera empresa disponible
                 $defaultCompany = $user->companies()
                     ->where('companies.is_active', true)
                     ->wherePivot('is_active', true)

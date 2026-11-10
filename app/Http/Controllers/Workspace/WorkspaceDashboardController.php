@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Hub;
 use App\Models\Device;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\ActivationCode;
 
@@ -69,25 +70,25 @@ class WorkspaceDashboardController extends Controller
 
     public function redeem(Request $request)
     {
-        $request->validate([
-            'activation_code' => 'required|string|max:50'
-        ]);
-
+        $request->validate(['activation_code' => 'required|string|max:50']);
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            return back()->with('error', 'No hay una empresa activa en la sesión.');
-        }
 
-        // 1. Buscar el código en la base de datos
-        $activation = ActivationCode::where('code', $request->activation_code)->first();
+        if (!$companyId) return back()->with('error', 'No hay una empresa activa.');
 
-        if (!$activation) {
-            return back()->with('error', 'El código ingresado no existe. Verifica los guiones y mayúsculas.');
-        }
+        // 1. Iniciamos transacción segura
+        return DB::transaction(function () use ($request, $companyId) {
+            // Bloqueamos la fila (lockForUpdate) para que ninguna otra petición la toque hasta terminar
+            $activation = ActivationCode::where('code', $request->activation_code)
+                ->lockForUpdate()
+                ->first();
 
-        if ($activation->status !== 'PENDIENTE') {
-            return back()->with('error', 'Este código ya ha sido canjeado previamente.');
-        }
+            if (!$activation) {
+                return back()->with('error', 'El código ingresado no existe.');
+            }
+
+            if ($activation->status !== 'PENDIENTE') {
+                return back()->with('error', 'Este código ya ha sido canjeado.');
+            }
 
         // 2. Extraer la orden relacionada
         $order = Order::with('items.product', 'items.kit.products')->find($activation->order_id);
@@ -159,5 +160,5 @@ class WorkspaceDashboardController extends Controller
         $activation->save();
 
         return back()->with('success', '¡Hardware activado con éxito! Tus dispositivos comprados ya están vinculados a tu Hub.');
-    }
-}
+    });}}
+
