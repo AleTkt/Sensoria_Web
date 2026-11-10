@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AdminCompanyTeamController extends Controller
 {
     public function store(Request $request, Company $company)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'user_id' => ['required', Rule::exists(User::class, 'id')],
             'role' => 'required|in:PROPIETARIO,ADMINISTRADOR,TECNICO,MIEMBRO',
         ]);
 
