@@ -44,13 +44,61 @@
 
         </div>
 
+        <!-- SECCIÓN DE FILTROS RÁPIDOS (DISEÑO HORIZONTAL LIMPIO) -->
+        <div style="background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.08); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;">
+            <form method="GET" action="{{ route('admin.orders.index') }}" style="display: grid; grid-template-columns: minmax(240px, 2fr) 180px 150px 150px auto; gap: 1rem; align-items: end;">
+
+                <!-- Buscador de texto -->
+                <div>
+                    <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #4b5563; text-transform: uppercase; margin-bottom: 0.4rem; letter-spacing: 0.03em;">Búsqueda</label>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Nº Orden o Empresa..." style="width: 100%; padding: 0.55rem 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.88rem; box-sizing: border-box; background: #fafaf9;">
+                </div>
+
+                <!-- Selector de Estado -->
+                <div>
+                    <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #4b5563; text-transform: uppercase; margin-bottom: 0.4rem; letter-spacing: 0.03em;">Estado</label>
+                    <select name="status" style="width: 100%; padding: 0.55rem 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.88rem; background: #fafaf9; box-sizing: border-box;">
+                        <option value="">Todos los estados</option>
+                        <option value="PAGADO" {{ request('status') === 'PAGADO' ? 'selected' : '' }}>PAGADO</option>
+                        <option value="PENDIENTE" {{ request('status') === 'PENDIENTE' ? 'selected' : '' }}>PENDIENTE</option>
+                        <option value="CANCELADO" {{ request('status') === 'CANCELADO' ? 'selected' : '' }}>CANCELADO</option>
+                    </select>
+                </div>
+
+                <!-- Fecha Desde -->
+                <div>
+                    <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #4b5563; text-transform: uppercase; margin-bottom: 0.4rem; letter-spacing: 0.03em;">Desde</label>
+                    <input type="date" name="date_from" value="{{ request('date_from') }}" style="width: 100%; padding: 0.55rem 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.88rem; box-sizing: border-box; background: #fafaf9;">
+                </div>
+
+                <!-- Fecha Hasta -->
+                <div>
+                    <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #4b5563; text-transform: uppercase; margin-bottom: 0.4rem; letter-spacing: 0.03em;">Hasta</label>
+                    <input type="date" name="date_to" value="{{ request('date_to') }}" style="width: 100%; padding: 0.55rem 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.88rem; box-sizing: border-box; background: #fafaf9;">
+                </div>
+
+                <!-- Botones de Acción -->
+                <div style="display: flex; gap: 0.5rem; height: 38px;">
+                    <button type="submit" style="background-color: #1B3D1A; color: white; border: none; padding: 0 1rem; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; font-size: 0.88rem; height: 100%; transition: background-color 0.2s;" title="Aplicar filtros">
+                        <i class="fa-solid fa-filter"></i> Filtrar
+                    </button>
+                    @if(request()->anyFilled(['search', 'status', 'date_from', 'date_to']))
+                        <a href="{{ route('admin.orders.index') }}" style="background-color: #f3f4f6; color: #4b5563; padding: 0 0.85rem; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; font-size: 0.88rem; height: 100%; border: 1px solid #e5e7eb;" title="Limpiar filtros">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </a>
+                    @endif
+                </div>
+
+            </form>
+        </div>
         <!-- TABLA CONTENEDORA -->
         <div style="background: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.08); padding: 1.5rem;">
 
             @if($orders->isEmpty())
                 <div style="text-align: center; padding: 3rem 1rem; color: #6b7280;">
-                    <i class="fa-solid fa-receipt" style="font-size: 3rem; opacity: 0.25; color: #1B3D1A; margin-bottom: 1rem; display: block;"></i>
-                    <h3 style="font-size: 1.1rem; font-weight: 700; color: #1B3D1A;">No hay pedidos registrados en el sistema</h3>
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; opacity: 0.25; color: #1B3D1A; margin-bottom: 1rem; display: block;"></i>
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: #1B3D1A;">No se encontraron pedidos con los filtros especificados</h3>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">Pruebe ajustando los criterios de búsqueda o limpiando los filtros.</p>
                 </div>
             @else
                 <div style="overflow-x: auto;">
@@ -107,7 +155,7 @@
                     </table>
                 </div>
 
-                <!-- PAGINACIÓN -->
+                <!-- PAGINACIÓN CON QUERIES ACTIVAS -->
                 @if($orders->hasPages())
                     <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #f3f4f6;">
                         {{ $orders->links() }}
