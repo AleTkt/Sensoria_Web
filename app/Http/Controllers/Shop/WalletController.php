@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PaymentMethod;
-use App\Http\Requests\StorePaymentMethodRequest; // ¡Asegúrate de importar esto!
+use App\Models\Order;
+use App\Http\Requests\StorePaymentMethodRequest;
 
 class WalletController extends Controller
 {
@@ -15,26 +16,36 @@ class WalletController extends Controller
      */
     public function index()
     {
-        $paymentMethods = PaymentMethod::where('user_id', Auth::id())
+        $userId = Auth::id();
+        $companyId = session('current_company_id'); // <-- Obtenemos la empresa activa en sesión
+
+        // 1. Obtener métodos de pago del usuario
+        $paymentMethods = PaymentMethod::where('user_id', $userId)
             ->orderBy('is_default', 'desc')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('shop.wallet.index', compact('paymentMethods'));
+        // 2. Obtener el historial de transacciones de la empresa activa con su tarjeta asociada
+        $transactions = collect();
+        if ($companyId) {
+            $transactions = Order::where('company_id', $companyId)
+                ->where('status', 'PAGADO')
+                ->with('paymentMethod')
+                ->orderBy('paid_at', 'desc')
+                ->get();
+        }
+
+        return view('shop.wallet.index', compact('paymentMethods', 'transactions'));
     }
 
     /**
-     * Almacena un nuevo método de pago para el usuario autenticado usando FormRequest.
+     * Almacena un nuevo método de pago para el usuario autenticado.
      */
-    public function storePaymentMethod(StorePaymentMethodRequest $request) // <-- Cambio aquí
+    public function storePaymentMethod(StorePaymentMethodRequest $request)
     {
-        // Si el código llega hasta aquí, la validación del FormRequest ya fue exitosa.
-
-        // Limpieza del número de tarjeta
         $cardNumber = preg_replace('/\D/', '', $request->input('card_number'));
         $last4 = substr($cardNumber, -4);
 
-        // Detección básica de marca
         $firstDigit = substr($cardNumber, 0, 1);
         $brand = 'visa';
         if ($firstDigit === '5') {
@@ -58,21 +69,16 @@ class WalletController extends Controller
         return redirect()->route('wallet.index')->with('success', 'Método de pago registrado correctamente.');
     }
 
-
     /**
-     * Establece un método de pago como predeterminado para el usuario autenticado.
+     * Establece un método de pago como predeterminado.
      */
     public function setDefaultPaymentMethod($id)
     {
-        // 1. Verificamos que la tarjeta pertenezca al usuario autenticado
         $paymentMethod = PaymentMethod::where('id', $id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-        // 2. Quitamos el estado predeterminado de todas las tarjetas del usuario
         PaymentMethod::where('user_id', Auth::id())->update(['is_default' => false]);
-
-        // 3. Marcamos la tarjeta seleccionada como principal
         $paymentMethod->update(['is_default' => true]);
 
         return redirect()->route('wallet.index')->with('success', 'Método de pago predeterminado actualizado correctamente.');
