@@ -66,6 +66,12 @@ Route::middleware(['auth', App\Http\Middleware\SetCurrentCompany::class])->group
     Route::get('/company/settings', [CompanyController::class, 'settings'])->name('company.settings');
     Route::get('/company/activity', [CompanyController::class, 'activity'])->name('company.activity');
 
+    // Historial de Compras del Cliente (E-commerce)
+    Route::prefix('mis-compras')->name('client.orders.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Client\OrderController::class, 'index'])->name('index');
+        Route::get('/{id}', [\App\Http\Controllers\Client\OrderController::class, 'show'])->name('show');
+    });
+
     // Módulo A: Edición de Empresa (Solo Propietarios y Administradores)
     Route::middleware('role:PROPIETARIO,ADMINISTRADOR')->group(function () {
         Route::patch('/company', [CompanyController::class, 'update'])->name('company.update');
@@ -94,8 +100,8 @@ Route::prefix('workspace')->name('workspace.')->group(function () {
     Route::post('/tickets', [\App\Http\Controllers\Workspace\TicketController::class, 'store'])->name('tickets.store');
     Route::get('/tickets/{id}', [\App\Http\Controllers\Workspace\TicketController::class, 'show'])->name('tickets.show');
     Route::post('/tickets/{id}/reply', [\App\Http\Controllers\Workspace\TicketController::class, 'reply'])->name('tickets.reply');
-    Route::get('/devices', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'devices'])->name('devices');
     Route::get('/devices/{id}/metrics', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'metrics'])->name('devices.metrics');
+    Route::post('/devices/redeem', [\App\Http\Controllers\Workspace\WorkspaceDashboardController::class, 'redeem'])->name('devices.redeem');
 });
 
 // Grupo exclusivo para el Staff de Sensoría (Super Admins y Soporte)

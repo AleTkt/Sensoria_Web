@@ -88,7 +88,7 @@
 
                             <div class="dropdown-divider"></div>
 
-                            <a href="#" style="opacity: 0.7;" title="Próximamente"><i class="fa-solid fa-box"></i>  Mis Pedidos</a>
+                                <a href="{{ route('client.orders.index') }}" style="color: var(--color-tertiary); font-weight: 600;"><i class="fa-solid fa-box"></i>  Mis Pedidos</a>
                                 <a href="{{ route('wallet.index') }}" style="color: var(--color-tertiary); font-weight: 600;"><i class="fa-solid fa-wallet"></i>  Billetera y Pagos</a>
                             <a href="{{'profile'}}"><i class="fa-solid fa-user-gear"></i>  Ajustes de Perfil</a>
 
