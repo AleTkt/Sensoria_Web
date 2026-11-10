@@ -43,11 +43,16 @@ class WorkspaceDashboardController extends Controller
         $companyId = session('current_company_id');
 
         $hubIds = \App\Models\Hub::where('company_id', $companyId)->pluck('id');
-        $devices = \App\Models\Device::whereIn('hub_id', $hubIds)->get();
+
+        // Cargamos los dispositivos junto con su última lectura de telemetría
+        $devices = \App\Models\Device::whereIn('hub_id', $hubIds)
+            ->with(['telemetryReadings' => function ($query) {
+                $query->latest('recorded_at')->limit(1);
+            }])
+            ->get();
 
         return view('workspace.devices.index', compact('devices'));
     }
-
     public function metrics(Request $request, $id)
     {
         $companyId = session('current_company_id');

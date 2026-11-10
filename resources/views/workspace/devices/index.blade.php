@@ -67,7 +67,20 @@
                             {{ ($device->is_active ?? true) ? 'EN LÍNEA' : 'INACTIVO' }}
                         </span>
                     </td>
-                    <td style="padding: 12px; color: #64748b;">{{ $device->last_reading ?? 'Sin datos' }}</td>
+                    <td style="padding: 12px; color: #64748b;">
+                        @php
+                            $latestReading = $device->telemetryReadings->first();
+                        @endphp
+
+                        @if($latestReading)
+                            <strong>{{ $latestReading->value }} {{ $latestReading->unit }}</strong>
+                            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">
+                                 {{ $latestReading->recorded_at ? $latestReading->recorded_at->diffForHumans() : $latestReading->created_at->diffForHumans() }}
+                            </span>
+                        @else
+                            <span style="color: #94a3b8;">Sin datos</span>
+                        @endif
+                    </td>
                 </tr>
             @empty
                 <tr>
