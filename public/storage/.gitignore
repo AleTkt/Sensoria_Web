@@ -1,0 +1,7 @@
+# Ignorar todo por defecto dentro de storage
+*
+
+# PERO permitir que se ignoren a sí mismos y forzar el seguimiento de carpetas y archivos de imagen
+!.gitignore
+!hardware/
+!hardware/**
