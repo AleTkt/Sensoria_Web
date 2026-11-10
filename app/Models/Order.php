@@ -45,4 +45,14 @@ class Order extends Model
     {
         return $this->hasOne(ActivationCode::class, 'order_id');
     }
+
+    /**
+     * Método de pago utilizado en la orden.
+     */
+    public function paymentMethod(): BelongsTo
+    {
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
+    }
+
+
 }

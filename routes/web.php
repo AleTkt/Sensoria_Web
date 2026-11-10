@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\Products\KitController;
 use App\Http\Controllers\Admin\Products\HardwareController;
 use App\Http\Controllers\Admin\Products\KitProductController;
 use App\Http\Controllers\Shop\CartController;
+use App\Http\Controllers\Shop\WalletController;
 use App\Http\Controllers\Auth\InvitationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanySelectionController;
@@ -36,6 +37,8 @@ Route::get('/tienda/{id}', [ProductCatalogController::class, 'show'])->name('sho
 //Rutas para el carrito de compras
 Route::get('/carrito', [CartController::class, 'index'])->name('shop.cart.index');
 Route::post('/carrito/agregar/{id}', [CartController::class, 'add'])->name('shop.cart.add');
+Route::patch('/carrito/actualizar/{key}', [CartController::class, 'updateQuantity'])->name('shop.cart.update'); // NUEVA
+Route::delete('/carrito/eliminar/{key}', [CartController::class, 'removeItem'])->name('shop.cart.remove');
 
 
 Route::middleware('auth')->group(function () {
@@ -44,6 +47,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    //Ruta para la billerta de pagp
+    Route::get('/billetera-pagos', [WalletController::class, 'index'])->name('wallet.index');
 
 
 

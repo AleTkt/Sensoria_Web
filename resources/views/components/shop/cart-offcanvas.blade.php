@@ -8,19 +8,27 @@
 
     <div class="cart-sidebar-content">
         @if(isset($cart) && count($cart) > 0)
-            @foreach($cart as $id => $details)
+            @foreach($cart as $key => $details)
+                @php $isKitItem = $details['is_kit'] ?? false; @endphp
                 <div class="cart-item">
                     @if(isset($details['image_path']) && $details['image_path'])
                         <img src="{{ asset('storage/' . $details['image_path']) }}" alt="{{ $details['name'] }}" class="cart-item-img">
                     @else
                         <div class="cart-item-img" style="display: flex; align-items: center; justify-content: center;">
-                            <i class="fa-solid fa-microchip" style="color: var(--color-tertiary); opacity: 0.3; font-size: 1.5rem;"></i>
+                            <i class="{{ $isKitItem ? 'fa-solid fa-box-open' : 'fa-solid fa-microchip' }}" style="color: var(--color-tertiary); opacity: 0.4; font-size: 1.4rem;"></i>
                         </div>
                     @endif
 
                     <div style="flex: 1;">
                         <h4 style="font-weight: 700; color: var(--color-tertiary); font-size: 0.875rem; margin: 0 0 0.25rem 0;">{{ $details['name'] }}</h4>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                        <div style="margin-bottom: 0.25rem;">
+                            @if($isKitItem)
+                                <span style="font-size: 0.65rem; background-color: var(--color-primary); color: white; padding: 0.1rem 0.4rem; border-radius: 9999px; font-weight: bold;">Kit Modular</span>
+                            @else
+                                <span style="font-size: 0.65rem; background-color: rgba(88, 148, 69, 0.15); color: var(--color-tertiary); padding: 0.1rem 0.4rem; border-radius: 9999px; font-weight: bold;">Dispositivo</span>
+                            @endif
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
                             <span style="font-size: 0.875rem; color: #4b5563;">Cant: {{ $details['quantity'] }}</span>
                             <span style="color: var(--color-primary); font-weight: 700; font-size: 0.875rem;">${{ number_format($details['price'] * $details['quantity'], 2) }}</span>
                         </div>
@@ -55,7 +63,6 @@
                 </p>
             @endguest
             @auth
-                <!-- Este botón redirige a la vista completa de tu carrito (shop/cart/index.blade.php) -->
                 <a href="{{ route('shop.cart.index') }}" style="display: block; text-align: center; width: 100%; padding: 1rem; background-color: var(--color-primary); color: white; border-radius: 8px; text-decoration: none; font-weight: bold;">
                     Revisar Pedido Completo
                 </a>
