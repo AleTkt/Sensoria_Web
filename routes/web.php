@@ -18,6 +18,7 @@ use App\Http\Controllers\Workspace\AlertController;
 use App\Http\Middleware\SetCurrentCompany;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Shop\ProductCatalogController;
+use App\Http\Controllers\Admin\AdminCompanyTeamController;
 
 Route::get('/', function () {
     return view('welcome');
