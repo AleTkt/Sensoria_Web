@@ -121,9 +121,11 @@
                                     @if($method->is_default)
                                         <span style="background-color: var(--color-primary); color: white; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 700;">Predeterminada</span>
                                     @else
-                                        <form action="#" method="POST" style="margin: 0;">
+                                        <!-- Formulario con soporte para loading-buttons.js -->
+                                        <form action="{{ route('wallet.payment.default', $method->id) }}" method="POST" class="form-with-loading" style="margin: 0;">
                                             @csrf
-                                            <button type="submit" style="background: none; border: none; color: var(--color-secondary); font-size: 0.75rem; font-weight: 600; cursor: pointer; text-decoration: underline;" title="Establecer como predeterminada">
+                                            @method('PATCH')
+                                            <button type="submit" class="btn-submit-loading" style="background: none; border: none; color: var(--color-secondary); font-size: 0.75rem; font-weight: 600; cursor: pointer; text-decoration: underline;" title="Establecer como predeterminada">
                                                 Hacer principal
                                             </button>
                                         </form>
@@ -151,7 +153,7 @@
                 <i class="fa-solid fa-wallet" style="font-size: 3rem; color: var(--color-tertiary); opacity: 0.3; margin-bottom: 1rem; display: block;"></i>
                 <h3 class="card-title">No hay transacciones registradas</h3>
                 <p class="card-desc" style="max-width: 400px; margin: 0 auto 1.5rem auto;">
-                    Cuando adquiera kits modulares o servicios de soporte en Sensoría, el detalle de sus pagos figurará en este espacio.
+                    Когда adquiera kits modulares o servicios de soporte en Sensoría, el detalle de sus pagos figurará en este espacio.
                 </p>
                 <a href="{{ route('shop.products.index') }}" class="btn-sensoria" style="display: inline-flex;">
                     Explorar Catálogo IoT

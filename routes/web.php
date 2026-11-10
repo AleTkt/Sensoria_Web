@@ -52,6 +52,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/billetera-pagos', [WalletController::class, 'index'])->name('wallet.index');
     // Ruta PARA GUARDAR LA TARJETA:
     Route::post('/billetera-pagos/metodo', [WalletController::class, 'storePaymentMethod'])->name('wallet.payment.store');
+    // Dentro del grupo de rutas protegidas por 'auth':
+    Route::patch('/billetera-pagos/{id}/predeterminada', [\App\Http\Controllers\Shop\WalletController::class, 'setDefaultPaymentMethod'])->name('wallet.payment.default');
 
     Route::post('/shop/checkout', [\App\Http\Controllers\Shop\CheckoutController::class, 'process'])->name('shop.checkout.process');
 
